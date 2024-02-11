@@ -1,11 +1,15 @@
-import commonjs from '@rollup/plugin-commonjs';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
+import commonjs from "@rollup/plugin-commonjs";
+import { nodeResolve } from "@rollup/plugin-node-resolve";
 
 export default {
-  input: 'src/index.js',
+  input: "src/index.js",
   output: {
-    dir: 'output',
-    format: 'cjs'
+    dir: "output",
+    format: "cjs",
   },
-  plugins: [commonjs(), nodeResolve()]
+  plugins: [
+    commonjs(),
+    nodeResolve(),
+    externalGlobals({ diff_match_patch: "diff_match_patch" }),
+  ],
 };

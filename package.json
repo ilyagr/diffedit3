@@ -20,6 +20,7 @@
     "@tauri-apps/cli": "^1.5.8",
     "@types/codemirror": "5",
     "@types/diff-match-patch": "^1.0.36",
+    "rollup-plugin-external-globals": "^0.9.2",
     "typescript": "^5.0.2",
     "vite": "^5.0.0"
   }
