@@ -15,6 +15,10 @@
         filter: drop-shadow(0 0 2em #2d79c7);
       }
     </style>
+    <!-- <script src="node_modules/.vite/deps/diff_match_patch.js"></script> -->
+    <script src="node_modules/diff_match_patch/lib/diff_match_patch.js"></script>
+    <!-- <script src="diff_match_patch/lib/diff_match_patch.js"></script> -->
+    <!-- <link rel="stylesheet" href="codemirror/" /> -->
   </head>
 
   <body>
@@ -40,6 +44,8 @@
           />
         </a>
       </div>
+
+      <div id="cm"></div>
 
       <p>Click on the Tauri logo to learn more about the framework</p>
 

@@ -1,4 +1,9 @@
 import { invoke } from "@tauri-apps/api/tauri";
+// import "diff_match_patch" 
+import CodeMirror from "codemirror";
+import "codemirror/mode/meta";
+import "codemirror/lib/codemirror.css";
+import "codemirror/addon/merge/merge";
 
 let greetInputEl: HTMLInputElement | null;
 let greetMsgEl: HTMLElement | null;
@@ -19,4 +24,22 @@ window.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     greet();
   });
+
+  let cmEl = document.getElementById("cm");
+  if (cmEl == null) return;
+  let panes = 2,
+    highlight = true,
+    connect = "align",
+    collapse = false;
+  let config: any = {
+    value: "First\nSecond\nFourth\nFifth",
+    origLeft: "First", //panes == 3 ? orig1 : null,
+    orig: "Fifth",
+    lineNumbers: true,
+    mode: "text/html",
+    highlightDifferences: highlight, // Not in typedef
+    connect: connect,
+    collapseIdentical: collapse,
+  };
+  let merge_view = CodeMirror.MergeView(cmEl, config);
 });

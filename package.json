@@ -11,11 +11,13 @@
   },
   "dependencies": {
     "@tauri-apps/api": "^1.5.2",
-    "codemirror": "5"
+    "codemirror": "5",
+    "diff_match_patch": "^0.1.1"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.5.8",
     "@types/codemirror": "5",
+    "@types/diff-match-patch": "^1.0.36",
     "typescript": "^5.0.2",
     "vite": "^5.0.0"
   }
