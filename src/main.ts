@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/tauri";
-// import "diff_match_patch" 
+import "diff_match_patch" 
 import CodeMirror from "codemirror";
 import "codemirror/mode/meta";
 import "codemirror/lib/codemirror.css";
@@ -42,4 +42,5 @@ window.addEventListener("DOMContentLoaded", () => {
     collapseIdentical: collapse,
   };
   let merge_view = CodeMirror.MergeView(cmEl, config);
+  // TODO: Resizing. See https://codemirror.net/5/demo/merge.html
 });
