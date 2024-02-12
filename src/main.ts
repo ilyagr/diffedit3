@@ -115,10 +115,6 @@ function render_input(unique_id: string, merge_input: MergeInput) {
       `nextChange_${k}_${unique_id}`
     )!;
 
-    let /* panes = 2, */
-      highlight = true,
-      connect = "align",
-      collapse = false;
     let config = {
       value: merge_input[k].edit ?? "",
       origLeft: merge_input[k].left ?? "", // Set to null for 2 panes
@@ -126,9 +122,8 @@ function render_input(unique_id: string, merge_input: MergeInput) {
       lineNumbers: true,
       lineWrapping: true,
       mode: "text/plain",
-      highlightDifferences: highlight,
-      connect: connect,
-      collapseIdentical: collapse,
+      connect: "align",
+      collapseIdentical: true,
     };
     let merge_view = CodeMirror.MergeView(cmEl, config);
     merge_view.editor().setOption("extraKeys", {
