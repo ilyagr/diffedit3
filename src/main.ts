@@ -53,6 +53,13 @@ window.addEventListener("DOMContentLoaded", () => {
     greet();
   });
 
+  // https://github.com/tauri-apps/tauri/discussions/6119
+  if ("__TAURI__" in globalThis) {
+    console.log("In Tauri");
+  } else {
+    console.log("Not in Tauri");
+  }
+
   let cmEl = document.getElementById("cm");
   if (cmEl == null) return;
   cmEl.innerHTML = "";
