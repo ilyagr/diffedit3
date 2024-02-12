@@ -43,7 +43,10 @@ type MergeInput = Record<string, SingleMerge>;
 let thirds = Array(29).join("Third\n");
 let INPUT: MergeInput = {
   edited_file: {
-    left: "First\n" + thirds + "Fourth\nFourthAndAHalf\n\nFifth\nSixth\n----\none two",
+    left:
+      "First\n" +
+      thirds +
+      "Fourth\nFourthAndAHalf\n\nFifth\nSixth\n----\none two",
     edit: "First\nSecond\n" + thirds + "\nFifth\nSixth\n----\none\n",
     right: "",
   },
@@ -65,33 +68,32 @@ for (let x in INPUT) {
 import { html, render as lit_html_render } from "lit-html";
 function render_input(unique_id: string, merge_input: MergeInput) {
   let templates = [];
+  let k_uid = (k: string) => `${k}_${unique_id}`;
   for (let k in merge_input) {
     templates.push(html`
       <details open>
         <summary>
           <code>${k}</code>
-          <button id="collapse_${k}_${unique_id}" hidden>
-            (Un)Collapse <!-- Doesn't work -->
+          <button id="collapse_${k_uid(k)}" hidden>
+            (Un)Collapse (Doesn't work)
           </button>
           <button
-            id="prevChange_${k}_${unique_id}"
+            id="prevChange_${k_uid(k)}"
             alt="Previous Change"
             title="Previous Change"
           >
             ⇧ Previous Change
           </button>
           <button
-            id="nextChange_${k}_${unique_id}"
+            id="nextChange_${k_uid(k)}"
             alt="Next Change"
             title="Next Change"
           >
             ⇩ Next Change
           </button>
-          <button id="linewrap_${k}_${unique_id}">
-            (Un)Wrap Lines
-          </button>
+          <button id="linewrap_${k_uid(k)}">(Un)Wrap Lines</button>
         </summary>
-        <div id="cm_${k}_${unique_id}"></div>
+        <div id="cm_${k_uid(k)}"></div>
       </details>
     `);
   }
@@ -100,20 +102,12 @@ function render_input(unique_id: string, merge_input: MergeInput) {
 
   let merge_views: Record<string, MergeView> = {};
   for (let k in merge_input) {
-    let cmEl = document.getElementById(`cm_${k}_${unique_id}`)!;
+    let cmEl = document.getElementById(`cm_${k_uid(k)}`)!;
     cmEl.innerHTML = "";
-    let collapseButtonEl = document.getElementById(
-      `collapse_${k}_${unique_id}`
-    )!;
-    let linewrapButtonEl = document.getElementById(
-      `linewrap_${k}_${unique_id}`
-    )!;
-    let prevChangeButtonEl = document.getElementById(
-      `prevChange_${k}_${unique_id}`
-    )!;
-    let nextChangeButtonEl = document.getElementById(
-      `nextChange_${k}_${unique_id}`
-    )!;
+    let collapseButtonEl = document.getElementById(`collapse_${k_uid(k)}`)!;
+    let linewrapButtonEl = document.getElementById(`linewrap_${k_uid(k)}`)!;
+    let prevChangeButtonEl = document.getElementById(`prevChange_${k_uid(k)}`)!;
+    let nextChangeButtonEl = document.getElementById(`nextChange_${k_uid(k)}`)!;
 
     let config = {
       value: merge_input[k].edit ?? "",
