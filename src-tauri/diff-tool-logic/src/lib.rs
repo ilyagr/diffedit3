@@ -1,4 +1,5 @@
 use std::path::{Path, PathBuf};
+
 use walkdir::{DirEntry, WalkDir};
 
 pub fn scan(root: &Path) -> impl Iterator<Item = (DirEntry, String)> {
@@ -18,10 +19,12 @@ pub fn scan(root: &Path) -> impl Iterator<Item = (DirEntry, String)> {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, serde::Serialize, serde::Deserialize)]
-//struct EntriesToCompare<P, const N: usize>(std::collections::BTreeMap<P, [Option<String>; N]>);
+//struct EntriesToCompare<P, const N: usize>(std::collections::BTreeMap<P,
+// [Option<String>; N]>);
 pub struct EntriesToCompare(std::collections::BTreeMap<PathBuf, [Option<String>; 3]>);
 
-// pub fn scan_several<const N: usize>(roots: [&Path; N]) -> EntriesToCompare<PathBuf, N> {
+// pub fn scan_several<const N: usize>(roots: [&Path; N]) ->
+// EntriesToCompare<PathBuf, N> {
 pub fn scan_several(roots: [&Path; 3]) -> EntriesToCompare {
     let mut result = EntriesToCompare::default();
     for (i, root) in roots.iter().enumerate() {
