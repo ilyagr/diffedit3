@@ -17,7 +17,7 @@ pub fn scan(root: &Path) -> impl Iterator<Item = (DirEntry, String)> {
         })
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, serde::Serialize, serde::Deserialize)]
 //struct EntriesToCompare<P, const N: usize>(std::collections::BTreeMap<P, [Option<String>; N]>);
 pub struct EntriesToCompare(std::collections::BTreeMap<PathBuf, [Option<String>; 3]>);
 
@@ -45,8 +45,110 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let path = PathBuf::from_str(".").unwrap();
+        let path = PathBuf::from_str("../src").unwrap();
         // dbg!(scan(&path).collect_vec());
-        dbg!(scan_several([&path, &path, &path]));
+        insta::assert_toml_snapshot!(scan_several([&path, &path, &path]), @r###"
+        "../src/main.rs" = [
+            '''
+        // Prevents additional console window on Windows in release, DO NOT REMOVE!!
+        #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
+        use indexmap::IndexMap;
+
+        #[tauri::command]
+        fn args() -> Vec<String> {
+            std::env::args().collect()
+        }
+
+        #[tauri::command]
+        fn logoutput(result: IndexMap<String, String>) {
+            for (name, contents) in result {
+                let len = contents.len();
+                println!("{name}: {len} bytes");
+            }
+            println!();
+        }
+
+        // TODO: Zoom. The `zoom` CSS property does not work with CodeMirror.
+        // See https://github.com/tauri-apps/tauri/issues/3310. Or just use a browser
+        // https://github.com/phcode-dev/phoenix-desktop/pull/162/files
+        //
+        // So far, the most promising approach is to change the `font-size` root
+        // CSS property
+        fn main() {
+            tauri::Builder::default()
+                .invoke_handler(tauri::generate_handler![args, logoutput])
+                .run(tauri::generate_context!())
+                .expect("error while running tauri application");
+        }
+        ''',
+            '''
+        // Prevents additional console window on Windows in release, DO NOT REMOVE!!
+        #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
+        use indexmap::IndexMap;
+
+        #[tauri::command]
+        fn args() -> Vec<String> {
+            std::env::args().collect()
+        }
+
+        #[tauri::command]
+        fn logoutput(result: IndexMap<String, String>) {
+            for (name, contents) in result {
+                let len = contents.len();
+                println!("{name}: {len} bytes");
+            }
+            println!();
+        }
+
+        // TODO: Zoom. The `zoom` CSS property does not work with CodeMirror.
+        // See https://github.com/tauri-apps/tauri/issues/3310. Or just use a browser
+        // https://github.com/phcode-dev/phoenix-desktop/pull/162/files
+        //
+        // So far, the most promising approach is to change the `font-size` root
+        // CSS property
+        fn main() {
+            tauri::Builder::default()
+                .invoke_handler(tauri::generate_handler![args, logoutput])
+                .run(tauri::generate_context!())
+                .expect("error while running tauri application");
+        }
+        ''',
+            '''
+        // Prevents additional console window on Windows in release, DO NOT REMOVE!!
+        #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
+        use indexmap::IndexMap;
+
+        #[tauri::command]
+        fn args() -> Vec<String> {
+            std::env::args().collect()
+        }
+
+        #[tauri::command]
+        fn logoutput(result: IndexMap<String, String>) {
+            for (name, contents) in result {
+                let len = contents.len();
+                println!("{name}: {len} bytes");
+            }
+            println!();
+        }
+
+        // TODO: Zoom. The `zoom` CSS property does not work with CodeMirror.
+        // See https://github.com/tauri-apps/tauri/issues/3310. Or just use a browser
+        // https://github.com/phcode-dev/phoenix-desktop/pull/162/files
+        //
+        // So far, the most promising approach is to change the `font-size` root
+        // CSS property
+        fn main() {
+            tauri::Builder::default()
+                .invoke_handler(tauri::generate_handler![args, logoutput])
+                .run(tauri::generate_context!())
+                .expect("error while running tauri application");
+        }
+        ''',
+        ]
+        "###);
     }
 }

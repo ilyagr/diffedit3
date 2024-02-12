@@ -566,6 +566,7 @@ version = "0.1.0"
 dependencies = [
  "insta",
  "itertools",
+ "serde",
  "walkdir",
 ]
 
@@ -1329,6 +1330,7 @@ dependencies = [
  "linked-hash-map",
  "serde",
  "similar",
+ "toml 0.5.11",
  "yaml-rust",
 ]
 
