@@ -45,6 +45,72 @@ async function greet() {
   }
 }
 
+type SingleMerge = {
+  left: string | null;
+  right: string | null;
+  edit: string | null;
+};
+type MergeInput = Record<string, SingleMerge>;
+let INPUT: MergeInput = {
+  edited_file: {
+    left: "First\nThird\nFourth\nFifth one\n----\none two",
+    edit: "First\nSecond\nThird\nFifth one\n----\none\n",
+    right: "",
+  },
+  added_file: {
+    left: null,
+    edit: "Added",
+    right: "",
+  },
+  removed_file: {
+    left: "Deleted",
+    edit: null,
+    right: null,
+  },
+};
+for (let x in INPUT) {
+  INPUT[x].right = INPUT[x].edit;
+}
+
+import { html, render as lit_html_render } from "lit-html";
+function render_input(unique_id: string, merge_input: MergeInput) {
+  let templates = [];
+  for (let k in merge_input) {
+    templates.push(html`<li>
+        <details open>
+          <summary>
+            <code>${k}</code>
+            <button id = "save_${unique_id}_${k}">Save (non-functional)</button>
+          </summary>
+          <div id="cm_${unique_id}_${k}"></div>
+        </details>
+      </li>`);
+  }
+
+  lit_html_render(html`${templates}`, document.getElementById(unique_id)!);
+
+  for (let k in merge_input) {
+    let cmEl = document.getElementById(`cm_${unique_id}_${k}`)!;
+    cmEl.innerHTML = "";
+    let /* panes = 2, */
+      highlight = true,
+      connect = "align",
+      collapse = false;
+    let config = {
+      value: merge_input[k].edit ?? "",
+      origLeft: merge_input[k].left ?? "", // Set to null for 2 panes
+      orig: merge_input[k].right ?? "",
+      lineNumbers: true,
+      mode: "text/plain",
+      highlightDifferences: highlight,
+      connect: connect,
+      collapseIdentical: collapse,
+    };
+    // TODO: Resizing. See https://codemirror.net/5/demo/merge.html
+    /* let merge_view = */ CodeMirror.MergeView(cmEl, config);
+  }
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   greetInputEl = document.querySelector("#greet-input");
   greetMsgEl = document.querySelector("#greet-msg");
@@ -60,25 +126,5 @@ window.addEventListener("DOMContentLoaded", () => {
     console.log("Not in Tauri");
   }
 
-  let cmEl = document.getElementById("cm");
-  if (cmEl == null) return;
-  cmEl.innerHTML = "";
-  let /* panes = 2, */
-    highlight = true,
-    connect = "align",
-    collapse = false;
-  let base = "First\nThird\nFourth\nFifth one\n----\none two";
-  let value = "First\nSecond\nThird\nFifth one\n----\none\n";
-  let config = {
-    value: value,
-    origLeft: base, // Set to null for 2 panes
-    orig: value,
-    lineNumbers: true,
-    mode: "text/plain",
-    highlightDifferences: highlight,
-    connect: connect,
-    collapseIdentical: collapse,
-  };
-  /* let merge_view = */ CodeMirror.MergeView(cmEl, config);
-  // TODO: Resizing. See https://codemirror.net/5/demo/merge.html
+  render_input("lit", INPUT);
 });
