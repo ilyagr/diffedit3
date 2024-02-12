@@ -1,7 +1,10 @@
 import { defineConfig } from "vite";
-import commonjs from "@rollup/plugin-commonjs";
-import { nodeResolve } from "@rollup/plugin-node-resolve";
-import externalGlobals from "rollup-plugin-external-globals";
+
+// These plugins seemed like they could be useful for importing CodeMirror,
+// but weren't. If using them again, `npm i --save-dev` them first.
+// import commonjs from "@rollup/plugin-commonjs";
+// import { nodeResolve } from "@rollup/plugin-node-resolve";
+// import externalGlobals from "rollup-plugin-external-globals";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -20,13 +23,9 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      input: "src/index.js",
-      output: {
-        dir: "output",
-        format: "cjs",
-      },
       plugins: [
-        externalGlobals({ diff_match_patch: "diff_match_patch" }),
+        // externalGlobals() would be nice, but doesn't seem to work
+        // externalGlobals({ diff_match_patch: "diff_match_patch" }),
         // commonjs(),
         // nodeResolve(),
       ],

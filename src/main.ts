@@ -8,7 +8,9 @@ import "codemirror/addon/merge/merge";
 
 // diff_match_patch needs to be in the global scope for merge addon to work
 // Conceivably, it could be imported from the HTML, but I have not found a way to convince
-// Vite/TS/Rollup to do that. It's possible that Webpack would have been easier.
+// Vite/TS/Rollup to do that. If using Webpack instead of Rollup, it's possible that this
+// can be done as disucussed in
+// https://discuss.codemirror.net/t/issues-on-using-merge-addon-and-diff-match-patch-solved/4371/4.
 import {
   diff_match_patch,
   DIFF_ADD,
@@ -18,6 +20,7 @@ import {
 } from "diff_match_patch";
 
 declare global {
+  // Make Typescript happier about this
   var diff_match_patch: any,
     DIFF_ADD: any,
     DIFF_EQUAL: any,
@@ -61,11 +64,11 @@ window.addEventListener("DOMContentLoaded", () => {
   let value = "First\nSecond\nThird\nFifth one\n----\none\n";
   let config = {
     value: value,
-    origLeft: base, // Set to null for 1 panes
+    origLeft: base, // Set to null for 2 panes
     orig: value,
     lineNumbers: true,
     mode: "text/plain",
-    highlightDifferences: highlight, // Not in typedef
+    highlightDifferences: highlight,
     connect: connect,
     collapseIdentical: collapse,
   };
