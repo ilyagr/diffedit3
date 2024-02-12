@@ -1,6 +1,6 @@
 import { InvokeArgs, invoke } from "@tauri-apps/api/tauri";
 
-import CodeMirror from "codemirror";
+import CodeMirror, { Editor } from "codemirror";
 // import "codemirror/mode/htmlmixed/htmlmixed.js";
 import "codemirror/lib/codemirror.css";
 import "codemirror/addon/merge/merge.css";
@@ -40,10 +40,11 @@ type SingleMerge = {
   edit: string | null;
 };
 type MergeInput = Record<string, SingleMerge>;
+let thirds = Array(29).join("Third\n");
 let INPUT: MergeInput = {
   edited_file: {
-    left: "First\nThird\nFourth\nFifth one\n----\none two",
-    edit: "First\nSecond\nThird\nFifth one\n----\none\n",
+    left: "First\n" + thirds + "Fourth\nFourthAndAHalf\n\nFifth\nSixth\n----\none two",
+    edit: "First\nSecond\n" + thirds + "\nFifth\nSixth\n----\none\n",
     right: "",
   },
   added_file: {
@@ -66,14 +67,30 @@ function render_input(unique_id: string, merge_input: MergeInput) {
   let templates = [];
   for (let k in merge_input) {
     templates.push(html`
-        <details open>
-          <summary>
-            <code>${k}</code>
-            <button id = "save_${k}_${unique_id}">Save (non-functional)</button>
-          </summary>
-          <div id="cm_${k}_${unique_id}"></div>
-        </details>
-      `);
+      <details open>
+        <summary>
+          <code>${k}</code>
+          <button id="collapse_${k}_${unique_id}" hidden>
+            (Un)Collapse<!-- Doesn't work -->
+          </button>
+          <button
+            id="prevChange_${k}_${unique_id}"
+            alt="Previous Change"
+            title="Previous Change"
+          >
+            ⇧ Previous Change
+          </button>
+          <button
+            id="nextChange_${k}_${unique_id}"
+            alt="Next Change"
+            title="Next Change"
+          >
+            ⇩ Next Change
+          </button>
+        </summary>
+        <div id="cm_${k}_${unique_id}"></div>
+      </details>
+    `);
   }
 
   lit_html_render(html`${templates}`, document.getElementById(unique_id)!);
@@ -82,6 +99,16 @@ function render_input(unique_id: string, merge_input: MergeInput) {
   for (let k in merge_input) {
     let cmEl = document.getElementById(`cm_${k}_${unique_id}`)!;
     cmEl.innerHTML = "";
+    let collapseButtonEl = document.getElementById(
+      `collapse_${k}_${unique_id}`
+    )!;
+    let prevChangeButtonEl = document.getElementById(
+      `prevChange_${k}_${unique_id}`
+    )!;
+    let nextChangeButtonEl = document.getElementById(
+      `nextChange_${k}_${unique_id}`
+    )!;
+
     let /* panes = 2, */
       highlight = true,
       connect = "align",
@@ -96,18 +123,53 @@ function render_input(unique_id: string, merge_input: MergeInput) {
       connect: connect,
       collapseIdentical: collapse,
     };
+    let merge_view = CodeMirror.MergeView(cmEl, config);
+    merge_view.editor().setOption("extraKeys", {
+      "Alt-Down": cm_nextChange,
+      "Option-Down": cm_nextChange,
+      "Cmd-Down": cm_nextChange,
+      "Alt-Up": cm_prevChange,
+      "Option-Up": cm_prevChange,
+      "Cmd-Up": cm_prevChange,
+      Tab: cm_nextChange,
+    });
+    collapseButtonEl.onclick = () => cm_collapseSame(merge_view.editor());
+    prevChangeButtonEl.onclick = () => cm_prevChange(merge_view.editor());
+    nextChangeButtonEl.onclick = () => cm_nextChange(merge_view.editor());
+
     // TODO: Resizing. See https://codemirror.net/5/demo/merge.html
-    merge_views[k] = CodeMirror.MergeView(cmEl, config);
+    merge_views[k] = merge_view;
   }
 
-  return new MergeState(merge_views)
+  return new MergeState(merge_views);
+}
+
+function cm_collapseSame(cm: any) {
+  // console.log(cm.getOption("collapseIdentical"));
+  cm.setOption(
+    /* TODO: Doesn't seem to work. Might need to recreate the whole editor */
+    "collapseIdentical",
+    !cm.getOption("collapseIdentical")
+  );
+  cm.setValue(cm.getValue());
+  console.log(cm.getOption("collapseIdentical"));
+  cm.scrollIntoView(null, 50);
+}
+
+function cm_nextChange(cm: Editor) {
+  cm.execCommand("goNextDiff");
+  cm.scrollIntoView(null, 50);
+}
+function cm_prevChange(cm: Editor) {
+  cm.execCommand("goPrevDiff");
+  cm.scrollIntoView(null, 50);
 }
 
 class MergeState {
-  merge_views: Record<string, MergeView>
+  merge_views: Record<string, MergeView>;
 
   constructor(merge_views: Record<string, MergeView>) {
-    this.merge_views = merge_views
+    this.merge_views = merge_views;
   }
 
   values(): Record<string, string> {
@@ -125,7 +187,7 @@ async function command_line_args(): Promise<string[]> {
 
 async function logoutput(result: InvokeArgs) {
   console.log(result);
-  await invoke("logoutput", {result: result});
+  await invoke("logoutput", { result: result });
 }
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -137,11 +199,15 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   let merge_views = render_input("lit", INPUT);
-  document.getElementById("button_show")!.onclick = () => logoutput(merge_views.values());
+  document.getElementById("button_show")!.onclick = () =>
+    logoutput(merge_views.values());
 });
 
 window.addEventListener("DOMContentLoaded", async () => {
   let args: string[] = await command_line_args();
   let one_arg_tmpl = (arg: string) => html`<code>${arg}</code>`;
-  lit_html_render(html`<p>Args: ${args.map(one_arg_tmpl)}</p>`, document.getElementById("args")!);
+  lit_html_render(
+    html`<p>Args: ${args.map(one_arg_tmpl)}</p>`,
+    document.getElementById("args")!
+  );
 });
