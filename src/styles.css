@@ -1,7 +1,7 @@
 :root {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  line-height: 24px;
+  /* font-size: 16px;
+  line-height: 24px; */
   font-weight: 400;
 
   color: #0f0f0f;
@@ -58,6 +58,7 @@ button {
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
+  margin: 0.1em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
@@ -88,6 +89,8 @@ button {
   margin-right: 5px;
 }
 
+/* TODO: CodeMirror themes do not style the merge addons correctly */
+/*
 @media (prefers-color-scheme: dark) {
   :root {
     color: #f6f6f6;
@@ -107,3 +110,4 @@ button {
     background-color: #0f0f0f69;
   }
 }
+*/

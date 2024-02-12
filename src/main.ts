@@ -77,7 +77,7 @@ import { html, render as lit_html_render } from "lit-html";
 function render_input(unique_id: string, merge_input: MergeInput) {
   let templates = [];
   for (let k in merge_input) {
-    templates.push(html`<li>
+    templates.push(html`
         <details open>
           <summary>
             <code>${k}</code>
@@ -85,7 +85,7 @@ function render_input(unique_id: string, merge_input: MergeInput) {
           </summary>
           <div id="cm_${k}_${unique_id}"></div>
         </details>
-      </li>`);
+      `);
   }
 
   lit_html_render(html`${templates}`, document.getElementById(unique_id)!);
