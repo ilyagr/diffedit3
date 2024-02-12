@@ -1,14 +1,24 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
+use itertools::Itertools;
+use std::{
+    fs::DirEntry,
+    path::{Path, PathBuf},
+};
+
+pub fn scan(root: &Path) -> Vec<DirEntry> {
+    root.read_dir()
+        .unwrap()
+        .map(|maybe_entry| maybe_entry.unwrap())
+        .collect_vec()
 }
 
 #[cfg(test)]
 mod tests {
+    use std::str::FromStr;
+
     use super::*;
 
     #[test]
     fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+        dbg!(scan(&PathBuf::from_str(".").unwrap()));
     }
 }
