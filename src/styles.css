@@ -53,11 +53,6 @@ h1 {
   text-align: center;
 }
 
-#args code {
-  background-color: white;
-  margin-right: 1em;
-}
-
 input,
 button {
   border-radius: 8px;
@@ -88,6 +83,20 @@ button:active {
 input,
 button {
   outline: none;
+}
+
+/* https://discuss.codemirror.net/t/how-to-always-display-cursor/227/12 */
+.CodeMirror-merge-editor .CodeMirror:not(.CodeMirror-focused) .CodeMirror-cursors {
+  visibility: visible !important;
+}
+.CodeMirror-merge-editor .CodeMirror:not(.CodeMirror-focused) .CodeMirror-cursor {
+  border-left: 1ex solid;
+  opacity: 0.3;
+}
+
+#args code {
+  background-color: white;
+  margin-right: 1em;
 }
 
 #greet-input {
