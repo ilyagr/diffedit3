@@ -45,110 +45,57 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let path = PathBuf::from_str("../src").unwrap();
+        let path = PathBuf::from_str(".").unwrap();
         // dbg!(scan(&path).collect_vec());
-        insta::assert_toml_snapshot!(scan_several([&path, &path, &path]), @r###"
-        "../src/main.rs" = [
+        insta::assert_toml_snapshot!(scan_several([&path, &path, &path]), {
+            r#"["./src/lib.rs"]"# => "(skipped because of amusing recursion)"
+        },
+        @r###"
+        "./Cargo.toml" = [
             '''
-        // Prevents additional console window on Windows in release, DO NOT REMOVE!!
-        #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+        [package]
+        name = "diff-tool-logic"
+        version = "0.1.0"
+        edition = "2021"
 
-        use indexmap::IndexMap;
+        [dependencies]
+        itertools = "0.12.1"
+        serde = { version = "1.0.196", features = ["serde_derive"] }
+        walkdir = "2.4.0"
 
-        #[tauri::command]
-        fn args() -> Vec<String> {
-            std::env::args().collect()
-        }
-
-        #[tauri::command]
-        fn logoutput(result: IndexMap<String, String>) {
-            for (name, contents) in result {
-                let len = contents.len();
-                println!("{name}: {len} bytes");
-            }
-            println!();
-        }
-
-        // TODO: Zoom. The `zoom` CSS property does not work with CodeMirror.
-        // See https://github.com/tauri-apps/tauri/issues/3310. Or just use a browser
-        // https://github.com/phcode-dev/phoenix-desktop/pull/162/files
-        //
-        // So far, the most promising approach is to change the `font-size` root
-        // CSS property
-        fn main() {
-            tauri::Builder::default()
-                .invoke_handler(tauri::generate_handler![args, logoutput])
-                .run(tauri::generate_context!())
-                .expect("error while running tauri application");
-        }
+        [dev-dependencies]
+        insta = { version = "1.34.0", features = ["redactions", "serde", "toml", "json"] }
         ''',
             '''
-        // Prevents additional console window on Windows in release, DO NOT REMOVE!!
-        #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+        [package]
+        name = "diff-tool-logic"
+        version = "0.1.0"
+        edition = "2021"
 
-        use indexmap::IndexMap;
+        [dependencies]
+        itertools = "0.12.1"
+        serde = { version = "1.0.196", features = ["serde_derive"] }
+        walkdir = "2.4.0"
 
-        #[tauri::command]
-        fn args() -> Vec<String> {
-            std::env::args().collect()
-        }
-
-        #[tauri::command]
-        fn logoutput(result: IndexMap<String, String>) {
-            for (name, contents) in result {
-                let len = contents.len();
-                println!("{name}: {len} bytes");
-            }
-            println!();
-        }
-
-        // TODO: Zoom. The `zoom` CSS property does not work with CodeMirror.
-        // See https://github.com/tauri-apps/tauri/issues/3310. Or just use a browser
-        // https://github.com/phcode-dev/phoenix-desktop/pull/162/files
-        //
-        // So far, the most promising approach is to change the `font-size` root
-        // CSS property
-        fn main() {
-            tauri::Builder::default()
-                .invoke_handler(tauri::generate_handler![args, logoutput])
-                .run(tauri::generate_context!())
-                .expect("error while running tauri application");
-        }
+        [dev-dependencies]
+        insta = { version = "1.34.0", features = ["redactions", "serde", "toml", "json"] }
         ''',
             '''
-        // Prevents additional console window on Windows in release, DO NOT REMOVE!!
-        #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+        [package]
+        name = "diff-tool-logic"
+        version = "0.1.0"
+        edition = "2021"
 
-        use indexmap::IndexMap;
+        [dependencies]
+        itertools = "0.12.1"
+        serde = { version = "1.0.196", features = ["serde_derive"] }
+        walkdir = "2.4.0"
 
-        #[tauri::command]
-        fn args() -> Vec<String> {
-            std::env::args().collect()
-        }
-
-        #[tauri::command]
-        fn logoutput(result: IndexMap<String, String>) {
-            for (name, contents) in result {
-                let len = contents.len();
-                println!("{name}: {len} bytes");
-            }
-            println!();
-        }
-
-        // TODO: Zoom. The `zoom` CSS property does not work with CodeMirror.
-        // See https://github.com/tauri-apps/tauri/issues/3310. Or just use a browser
-        // https://github.com/phcode-dev/phoenix-desktop/pull/162/files
-        //
-        // So far, the most promising approach is to change the `font-size` root
-        // CSS property
-        fn main() {
-            tauri::Builder::default()
-                .invoke_handler(tauri::generate_handler![args, logoutput])
-                .run(tauri::generate_context!())
-                .expect("error while running tauri application");
-        }
+        [dev-dependencies]
+        insta = { version = "1.34.0", features = ["redactions", "serde", "toml", "json"] }
         ''',
         ]
+        "./src/lib.rs" = '(skipped because of amusing recursion)'
         "###);
     }
 }
