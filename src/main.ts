@@ -98,7 +98,9 @@ function render_input(unique_id: string, merge_input: MergeInput) {
     `);
   }
 
-  lit_html_render(html`${templates}`, document.getElementById(unique_id)!);
+  let target_element = document.getElementById(unique_id)!;
+  target_element.innerHTML = "";
+  lit_html_render(html`${templates}`, target_element);
 
   let merge_views: Record<string, MergeView> = {};
   for (let k in merge_input) {
