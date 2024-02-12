@@ -1,4 +1,4 @@
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use walkdir::{DirEntry, WalkDir};
 
 pub fn scan(root: &Path) -> impl Iterator<Item = (DirEntry, String)> {
@@ -17,16 +17,36 @@ pub fn scan(root: &Path) -> impl Iterator<Item = (DirEntry, String)> {
         })
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+//struct EntriesToCompare<P, const N: usize>(std::collections::BTreeMap<P, [Option<String>; N]>);
+pub struct EntriesToCompare(std::collections::BTreeMap<PathBuf, [Option<String>; 3]>);
+
+// pub fn scan_several<const N: usize>(roots: [&Path; N]) -> EntriesToCompare<PathBuf, N> {
+pub fn scan_several(roots: [&Path; 3]) -> EntriesToCompare {
+    let mut result = EntriesToCompare::default();
+    for (i, root) in roots.iter().enumerate() {
+        for (file_entry, contents) in scan(root) {
+            let value = result
+                .0
+                .entry(PathBuf::from(file_entry.path()))
+                .or_insert(Default::default())
+                .as_mut();
+            value[i] = Some(contents);
+        }
+    }
+    result
+}
+
 #[cfg(test)]
 mod tests {
-    use itertools::Itertools;
-    use std::path::PathBuf;
     use std::str::FromStr;
 
     use super::*;
 
     #[test]
     fn it_works() {
-        dbg!(scan(&PathBuf::from_str(".").unwrap()).collect_vec());
+        let path = PathBuf::from_str(".").unwrap();
+        // dbg!(scan(&path).collect_vec());
+        dbg!(scan_several([&path, &path, &path]));
     }
 }
