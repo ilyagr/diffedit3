@@ -5,6 +5,7 @@ import CodeMirror from "codemirror";
 import "codemirror/lib/codemirror.css";
 import "codemirror/addon/merge/merge.css";
 import "codemirror/addon/merge/merge";
+import { MergeView } from "codemirror/addon/merge/merge";
 
 // diff_match_patch needs to be in the global scope for merge addon to work
 // Conceivably, it could be imported from the HTML, but I have not found a way to convince
@@ -80,17 +81,18 @@ function render_input(unique_id: string, merge_input: MergeInput) {
         <details open>
           <summary>
             <code>${k}</code>
-            <button id = "save_${unique_id}_${k}">Save (non-functional)</button>
+            <button id = "save_${k}_${unique_id}">Save (non-functional)</button>
           </summary>
-          <div id="cm_${unique_id}_${k}"></div>
+          <div id="cm_${k}_${unique_id}"></div>
         </details>
       </li>`);
   }
 
   lit_html_render(html`${templates}`, document.getElementById(unique_id)!);
 
+  let merge_views: Record<string, MergeView> = {};
   for (let k in merge_input) {
-    let cmEl = document.getElementById(`cm_${unique_id}_${k}`)!;
+    let cmEl = document.getElementById(`cm_${k}_${unique_id}`)!;
     cmEl.innerHTML = "";
     let /* panes = 2, */
       highlight = true,
@@ -107,7 +109,25 @@ function render_input(unique_id: string, merge_input: MergeInput) {
       collapseIdentical: collapse,
     };
     // TODO: Resizing. See https://codemirror.net/5/demo/merge.html
-    /* let merge_view = */ CodeMirror.MergeView(cmEl, config);
+    merge_views[k] = CodeMirror.MergeView(cmEl, config);
+  }
+
+  return new MergeState(merge_views)
+}
+
+class MergeState {
+  merge_views: Record<string, MergeView>
+
+  constructor(merge_views: Record<string, MergeView>) {
+    this.merge_views = merge_views
+  }
+
+  values(): Record<string, string> {
+    let result: Record<string, string> = {};
+    for (let k in this.merge_views) {
+      result[k] = this.merge_views[k].editor().getValue();
+    }
+    return result;
   }
 }
 
@@ -126,5 +146,6 @@ window.addEventListener("DOMContentLoaded", () => {
     console.log("Not in Tauri");
   }
 
-  render_input("lit", INPUT);
+  let merge_views = render_input("lit", INPUT);
+  document.getElementById("button_show")!.onclick = () => console.log(merge_views.values());
 });
