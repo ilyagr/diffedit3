@@ -1,4 +1,4 @@
-import { invoke } from "@tauri-apps/api/tauri";
+import { InvokeArgs, invoke } from "@tauri-apps/api/tauri";
 
 import CodeMirror from "codemirror";
 // import "codemirror/mode/htmlmixed/htmlmixed.js";
@@ -33,18 +33,6 @@ globalThis.DIFF_ADD = DIFF_ADD;
 globalThis.DIFF_EQUAL = DIFF_EQUAL;
 globalThis.DIFF_INSERT = DIFF_INSERT;
 globalThis.DIFF_DELETE = DIFF_DELETE;
-
-let greetInputEl: HTMLInputElement | null;
-let greetMsgEl: HTMLElement | null;
-
-async function greet() {
-  if (greetMsgEl && greetInputEl) {
-    // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-    greetMsgEl.textContent = await invoke("greet", {
-      name: greetInputEl.value,
-    });
-  }
-}
 
 type SingleMerge = {
   left: string | null;
@@ -131,14 +119,16 @@ class MergeState {
   }
 }
 
-window.addEventListener("DOMContentLoaded", () => {
-  greetInputEl = document.querySelector("#greet-input");
-  greetMsgEl = document.querySelector("#greet-msg");
-  document.querySelector("#greet-form")?.addEventListener("submit", (e) => {
-    e.preventDefault();
-    greet();
-  });
+async function command_line_args(): Promise<string[]> {
+  return await invoke("args");
+}
 
+async function logoutput(result: InvokeArgs) {
+  console.log(result);
+  await invoke("logoutput", {result: result});
+}
+
+window.addEventListener("DOMContentLoaded", () => {
   // https://github.com/tauri-apps/tauri/discussions/6119
   if ("__TAURI__" in globalThis) {
     console.log("In Tauri");
@@ -147,5 +137,11 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   let merge_views = render_input("lit", INPUT);
-  document.getElementById("button_show")!.onclick = () => console.log(merge_views.values());
+  document.getElementById("button_show")!.onclick = () => logoutput(merge_views.values());
+});
+
+window.addEventListener("DOMContentLoaded", async () => {
+  let args: string[] = await command_line_args();
+  let one_arg_tmpl = (arg: string) => html`<code>${arg}</code>`;
+  lit_html_render(html`<p>Args: ${args.map(one_arg_tmpl)}</p>`, document.getElementById("args")!);
 });

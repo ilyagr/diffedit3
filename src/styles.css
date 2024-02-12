@@ -53,6 +53,11 @@ h1 {
   text-align: center;
 }
 
+#args code {
+  background-color: white;
+  margin-right: 1em;
+}
+
 input,
 button {
   border-radius: 8px;
