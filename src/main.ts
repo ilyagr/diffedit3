@@ -71,7 +71,7 @@ function render_input(unique_id: string, merge_input: MergeInput) {
         <summary>
           <code>${k}</code>
           <button id="collapse_${k}_${unique_id}" hidden>
-            (Un)Collapse<!-- Doesn't work -->
+            (Un)Collapse <!-- Doesn't work -->
           </button>
           <button
             id="prevChange_${k}_${unique_id}"
@@ -87,6 +87,9 @@ function render_input(unique_id: string, merge_input: MergeInput) {
           >
             ⇩ Next Change
           </button>
+          <button id="linewrap_${k}_${unique_id}">
+            (Un)Wrap Lines
+          </button>
         </summary>
         <div id="cm_${k}_${unique_id}"></div>
       </details>
@@ -101,6 +104,9 @@ function render_input(unique_id: string, merge_input: MergeInput) {
     cmEl.innerHTML = "";
     let collapseButtonEl = document.getElementById(
       `collapse_${k}_${unique_id}`
+    )!;
+    let linewrapButtonEl = document.getElementById(
+      `linewrap_${k}_${unique_id}`
     )!;
     let prevChangeButtonEl = document.getElementById(
       `prevChange_${k}_${unique_id}`
@@ -118,6 +124,7 @@ function render_input(unique_id: string, merge_input: MergeInput) {
       origLeft: merge_input[k].left ?? "", // Set to null for 2 panes
       orig: merge_input[k].right ?? "",
       lineNumbers: true,
+      lineWrapping: true,
       mode: "text/plain",
       highlightDifferences: highlight,
       connect: connect,
@@ -134,6 +141,7 @@ function render_input(unique_id: string, merge_input: MergeInput) {
       Tab: cm_nextChange,
     });
     collapseButtonEl.onclick = () => cm_collapseSame(merge_view.editor());
+    linewrapButtonEl.onclick = () => cm_toggleLineWrapping(merge_view.editor());
     prevChangeButtonEl.onclick = () => cm_prevChange(merge_view.editor());
     nextChangeButtonEl.onclick = () => cm_nextChange(merge_view.editor());
 
@@ -154,6 +162,16 @@ function cm_collapseSame(cm: any) {
   cm.setValue(cm.getValue());
   console.log(cm.getOption("collapseIdentical"));
   cm.scrollIntoView(null, 50);
+}
+
+function cm_toggleLineWrapping(cm: any) {
+  cm.setOption(
+    /* TODO: Interferes with collapseIdentical, always moves cursor to beginning */
+    "lineWrapping",
+    !cm.getOption("lineWrapping")
+  );
+  cm.setValue(cm.getValue());
+  // cm.scrollIntoView(null, 50); // Always happens automatically
 }
 
 function cm_nextChange(cm: Editor) {
