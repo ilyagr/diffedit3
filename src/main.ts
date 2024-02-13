@@ -219,8 +219,6 @@ async function get_merge_data() {
   return data;
 }
 
-// Put this first or the loading message in the hopes it makes the 
-// loading message update from "Javascript is not working" sooner.
 window.addEventListener("DOMContentLoaded", async () => {
   // https://github.com/tauri-apps/tauri/discussions/6119
   if ("__TAURI__" in globalThis) {
@@ -250,7 +248,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   let merge_views = render_input("lit", input);
 
-  lit_html_render(html``, loading_elt);
+  lit_html_render(html` <dialog open>Haha</dialog> `, loading_elt);
   document.getElementById("button_show")!.onclick = () =>
     logoutput(merge_views.values());
 
@@ -258,7 +256,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   // Not sure whether I need to "unlisten"
   /* const _unlisten1 = */ await listen("quit_and_save", async (_event) => {
     await save(merge_views.values());
-    await exit(0);
+    await exit(0); // Could be window.close(), but also need to return error code sometimes
   });
   /* const unlisten2 = */ await listen("save", async (_event) => {
     await save(merge_views.values());
