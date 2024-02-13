@@ -40,6 +40,8 @@ type SingleMerge = {
   edit: string | null;
 };
 type MergeInput = Record<string, SingleMerge>;
+
+/*
 let thirds = Array(29).join("Third\n");
 let INPUT: MergeInput = {
   edited_file: {
@@ -64,6 +66,7 @@ let INPUT: MergeInput = {
 for (let x in INPUT) {
   INPUT[x].right = INPUT[x].edit;
 }
+*/
 
 import { html, render as lit_html_render } from "lit-html";
 function render_input(unique_id: string, merge_input: MergeInput) {
@@ -216,6 +219,8 @@ async function get_merge_data() {
   return data;
 }
 
+// Put this first or the loading message in the hopes it makes the 
+// loading message update from "Javascript is not working" sooner.
 window.addEventListener("DOMContentLoaded", async () => {
   // https://github.com/tauri-apps/tauri/discussions/6119
   if ("__TAURI__" in globalThis) {
@@ -258,9 +263,6 @@ window.addEventListener("DOMContentLoaded", async () => {
   /* const unlisten2 = */ await listen("save", async (_event) => {
     await save(merge_views.values());
   });
-});
-
-window.addEventListener("DOMContentLoaded", async () => {
   let args: string[] = await command_line_args();
   let one_arg_tmpl = (arg: string) => html`<code>${arg}</code>`;
   lit_html_render(
