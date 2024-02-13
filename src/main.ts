@@ -192,8 +192,8 @@ class MergeState {
 
 // Tauri interop
 
-import { listen } from '@tauri-apps/api/event';
-import { exit } from '@tauri-apps/api/process';
+import { listen } from "@tauri-apps/api/event";
+import { exit } from "@tauri-apps/api/process";
 async function command_line_args(): Promise<string[]> {
   return await invoke("args");
 }
@@ -209,13 +209,12 @@ async function save(result: InvokeArgs) {
 }
 
 async function get_merge_data() {
-  let data = await invoke("get_merge_data")
+  let data: any = await invoke("get_merge_data");
   for (let k in data) {
-    data[k] = {left: data[k][0], right: data[k][1], edit: data[k][2]}
+    data[k] = { left: data[k][0], right: data[k][1], edit: data[k][2] };
   }
   return data;
 }
-
 
 window.addEventListener("DOMContentLoaded", async () => {
   // https://github.com/tauri-apps/tauri/discussions/6119
@@ -225,32 +224,38 @@ window.addEventListener("DOMContentLoaded", async () => {
     console.log("Not in Tauri");
   }
 
-  let loading_elt = document.getElementById("loading_message");
-  loading_elt.innerHTML="";
-  await lit_html_render(html`
+  let loading_elt = document.getElementById("loading_message")!;
+  loading_elt.innerHTML = "";
+  lit_html_render(
+    html`
       <h2>Loading...</h2>
       <p>Getting the data we want to merge...</p>
-  `, loading_elt);
+    `,
+    loading_elt
+  );
   // TODO: Try the until directive?
   let input = await get_merge_data();
-  await lit_html_render(html`
+  lit_html_render(
+    html`
       <h2>Loading...</h2>
       <p>Rendering diffs...</p>
-  `, loading_elt);
+    `,
+    loading_elt
+  );
 
   let merge_views = render_input("lit", input);
 
   lit_html_render(html``, loading_elt);
   document.getElementById("button_show")!.onclick = () =>
     logoutput(merge_views.values());
-  
+
   // Tauri-specific
   // Not sure whether I need to "unlisten"
-  const unlisten1 = await listen('quit_and_save', async (event) => {
+  /* const _unlisten1 = */ await listen("quit_and_save", async (_event) => {
     await save(merge_views.values());
     await exit(0);
   });
-  const unlisten2 = await listen('save', async (event) => {
+  /* const unlisten2 = */ await listen("save", async (_event) => {
     await save(merge_views.values());
   });
 });

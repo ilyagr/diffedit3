@@ -6,6 +6,8 @@ import { defineConfig } from "vite";
 // import { nodeResolve } from "@rollup/plugin-node-resolve";
 // import externalGlobals from "rollup-plugin-external-globals";
 
+import checker from "vite-plugin-checker";
+
 // https://vitejs.dev/config/
 export default defineConfig({
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
@@ -21,6 +23,13 @@ export default defineConfig({
       ignored: ["**/src-tauri/**"],
     },
   },
+  plugins: [
+    checker({
+      // See https://vite-plugin-checker.netlify.app/introduction/getting-started.html
+      // for disabling during testing.
+      typescript: true,
+    }),
+  ],
   build: {
     rollupOptions: {
       plugins: [
