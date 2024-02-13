@@ -217,16 +217,11 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   let loading_elt = document.getElementById("loading_message");
   loading_elt.innerHTML="";
-  await lit_html_render(html`
+  lit_html_render(html`
       <h2>Loading...</h2>
       <p>Getting the data we want to merge...</p>
   `, loading_elt);
-  // TODO: Try the until directive?
   let input = await get_merge_data();
-  await lit_html_render(html`
-      <h2>Loading...</h2>
-      <p>Rendering diffs...</p>
-  `, loading_elt);
 
   let merge_views = render_input("lit", input);
 

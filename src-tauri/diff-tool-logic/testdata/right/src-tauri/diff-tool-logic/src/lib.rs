@@ -66,9 +66,7 @@ pub fn scan_several(roots: [&PathBuf; 3]) -> EntriesToCompare {
         for (file_entry, contents) in scan(root) {
             let value = result
                 .0
-                .entry(PathBuf::from(
-                    file_entry.path().strip_prefix(root).expect("TODO:FIXME"),
-                ))
+                .entry(PathBuf::from(file_entry.path()))
                 .or_insert(Default::default())
                 .as_mut();
             value[i] = Some(contents);

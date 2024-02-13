@@ -23,52 +23,15 @@ pub fn scan(root: &Path) -> impl Iterator<Item = (DirEntry, String)> {
 // [Option<String>; N]>);
 pub struct EntriesToCompare(std::collections::BTreeMap<PathBuf, [Option<String>; 3]>);
 
-pub fn fake_data() -> EntriesToCompare {
-    // let mut two_sides_map = btreemap! {
-    //     "edited_file" => [
-    //           Some("First\nThird\nFourth\nFourthAndAHalf\n\nFifth\nSixth\n----\
-    // none two"),           Some("First\nSecond\nThird\nFifth\nSixth\n----\
-    // none\n")     ],
-    //     "deleted_file" => [Some("deleted"), None],
-    //     "added file" => [None, Some("added")]
-    // };
-    let two_sides_map = vec![
-        (
-            "edited_file",
-            [
-                Some("First\nThird\nFourth\nFourthAndAHalf\n\nFifth\nSixth\n----\none two"),
-                Some("First\nSecond\nThird\nFifth\nSixth\n----\none\n"),
-            ],
-        ),
-        ("deleted_file", [Some("deleted"), None]),
-        ("added file", [None, Some("added")]),
-    ];
-    let optstr = |opt: Option<&str>| opt.map(|s| s.to_string());
-    EntriesToCompare(
-        two_sides_map
-            .into_iter()
-            .map(|(key, [left, right])| {
-                (
-                    PathBuf::from(key),
-                    [optstr(left), optstr(right), optstr(right)],
-                )
-            })
-            .collect(),
-    )
-}
-
 // pub fn scan_several<const N: usize>(roots: [&Path; N]) ->
 // EntriesToCompare<PathBuf, N> {
-// TODO: Change &PathBuf to &Path or something
-pub fn scan_several(roots: [&PathBuf; 3]) -> EntriesToCompare {
+pub fn scan_several(roots: [&Path; 3]) -> EntriesToCompare {
     let mut result = EntriesToCompare::default();
     for (i, root) in roots.iter().enumerate() {
         for (file_entry, contents) in scan(root) {
             let value = result
                 .0
-                .entry(PathBuf::from(
-                    file_entry.path().strip_prefix(root).expect("TODO:FIXME"),
-                ))
+                .entry(PathBuf::from(file_entry.path()))
                 .or_insert(Default::default())
                 .as_mut();
             value[i] = Some(contents);
