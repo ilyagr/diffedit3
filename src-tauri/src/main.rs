@@ -31,28 +31,15 @@ fn logoutput(result: IndexMap<String, String>) {
 }
 
 #[tauri::command]
-fn save(result: IndexMap<String, String>) {
-    println!("Can't actually save yet :(");
-    println!();
-    for (name, contents) in result {
-        let len = contents.len();
-        println!("{name}: {len} bytes");
-    }
+fn save(result: IndexMap<String, String>, state: tauri::State<diff_tool_logic::Input>) {
+    state.save(result);
 }
 
 #[tauri::command]
-fn get_merge_data() -> diff_tool_logic::EntriesToCompare {
-    let cli = Cli::parse();
-    if cli.demo {
-        diff_tool_logic::fake_data()
-    } else {
-        let dirs = match &cli.dirs.as_slice() {
-            [left, right, output] => [left, right, output],
-            [left, right] => [left, right, right],
-            _ => panic!("Arguments should have been verified by now!"),
-        };
-        diff_tool_logic::scan_several(dirs)
-    }
+fn get_merge_data(
+    state: tauri::State<diff_tool_logic::Input>,
+) -> diff_tool_logic::EntriesToCompare {
+    state.scan()
 }
 
 // TODO: Zoom. The `zoom` CSS property does not work with CodeMirror.
@@ -63,19 +50,34 @@ fn get_merge_data() -> diff_tool_logic::EntriesToCompare {
 // CSS property
 fn main() {
     let cli = Cli::parse();
-
-    if !cli.demo && (cli.dirs.len() < 2 || cli.dirs.len() > 3) {
-        todo!("ERROR");
+    let input = if cli.demo {
+        diff_tool_logic::Input::FakeData
+    } else {
+        match cli.dirs.as_slice() {
+            [left, right, output] => diff_tool_logic::Input::Dirs {
+                left: left.to_path_buf(),
+                right: right.to_path_buf(),
+                edit: output.to_path_buf(),
+            },
+            [left, right] => diff_tool_logic::Input::Dirs {
+                left: left.to_path_buf(),
+                right: right.to_path_buf(),
+                edit: right.to_path_buf(),
+            },
+            _ => todo!("ERROR: wrong number of argumetns. TODO: proper clap error"),
+        }
     };
 
     let quit_and_save = CustomMenuItem::new("quit_and_save".to_string(), "Quit and Save")
         .accelerator("CmdOrControl+Q");
     let quit_no_save = CustomMenuItem::new("quit_no_save".to_string(), "Quit without saving");
-    // let save = CustomMenuItem::new("save".to_string(),
-    // "Save").accelerator("CmdOrControl+S");
+    let save_menu = CustomMenuItem::new("save".to_string(), "Save").accelerator("CmdOrControl+S");
     let submenu = Submenu::new(
         "File",
-        Menu::new().add_item(quit_and_save).add_item(quit_no_save), // .add_item(save)
+        Menu::new()
+            .add_item(quit_and_save)
+            .add_item(quit_no_save)
+            .add_item(save_menu),
     );
     let menu = Menu::new().add_submenu(submenu);
 
@@ -93,6 +95,7 @@ fn main() {
             }
             _ => {}
         })
+        .manage(input)
         .invoke_handler(tauri::generate_handler![
             args,
             logoutput,

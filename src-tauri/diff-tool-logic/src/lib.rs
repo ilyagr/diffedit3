@@ -18,6 +18,48 @@ pub fn scan(root: &Path) -> impl Iterator<Item = (DirEntry, String)> {
         })
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+pub enum Input {
+    FakeData,
+    Dirs {
+        left: PathBuf,
+        right: PathBuf,
+        edit: PathBuf,
+    },
+}
+
+impl Input {
+    pub fn scan(&self) -> EntriesToCompare {
+        match self {
+            Self::FakeData => fake_data(),
+            Self::Dirs { left, right, edit } => scan_several([left, right, edit]),
+        }
+    }
+
+    // TODO: Make more generic
+    pub fn save(&self, result: indexmap::IndexMap<String, String>) {
+        let outdir = match self {
+            Self::FakeData => {
+                // TOOO: Somewhat better error handling :)
+                eprintln!("Can't save fake demo data. Here it is as TOML");
+                eprintln!();
+                eprintln!(
+                    "{}",
+                    toml::to_string(&result)
+                        .unwrap_or_else(|err| format!("Failed to parse TOML: {err}"))
+                );
+                return;
+            }
+            Self::Dirs { edit, .. } => edit,
+        };
+
+        for (relpath, contents) in result.into_iter() {
+            let relpath = PathBuf::from(relpath);
+            std::fs::write(outdir.join(relpath), contents).unwrap(); // TODO!
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Default, serde::Serialize, serde::Deserialize)]
 //struct EntriesToCompare<P, const N: usize>(std::collections::BTreeMap<P,
 // [Option<String>; N]>);
@@ -60,7 +102,7 @@ pub fn fake_data() -> EntriesToCompare {
 // pub fn scan_several<const N: usize>(roots: [&Path; N]) ->
 // EntriesToCompare<PathBuf, N> {
 // TODO: Change &PathBuf to &Path or something
-pub fn scan_several(roots: [&PathBuf; 3]) -> EntriesToCompare {
+fn scan_several(roots: [&PathBuf; 3]) -> EntriesToCompare {
     let mut result = EntriesToCompare::default();
     for (i, root) in roots.iter().enumerate() {
         for (file_entry, contents) in scan(root) {

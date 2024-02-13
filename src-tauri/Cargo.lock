@@ -658,10 +658,12 @@ dependencies = [
 name = "diff-tool-logic"
 version = "0.1.0"
 dependencies = [
+ "indexmap 2.2.3",
  "insta",
  "itertools",
  "maplit",
  "serde",
+ "toml 0.8.10",
  "walkdir",
 ]
 
@@ -3173,6 +3175,7 @@ version = "0.8.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9a9aad4a3066010876e8dcf5a8a06e70a558751117a145c6ce2b82c2e2054290"
 dependencies = [
+ "indexmap 2.2.3",
  "serde",
  "serde_spanned",
  "toml_datetime",
