@@ -190,6 +190,10 @@ class MergeState {
   }
 }
 
+// Tauri interop
+
+import { listen } from '@tauri-apps/api/event';
+import { exit } from '@tauri-apps/api/process';
 async function command_line_args(): Promise<string[]> {
   return await invoke("args");
 }
@@ -199,6 +203,11 @@ async function logoutput(result: InvokeArgs) {
   await invoke("logoutput", { result: result });
 }
 
+async function save(result: InvokeArgs) {
+  console.log(result);
+  await invoke("save", { result: result });
+}
+
 async function get_merge_data() {
   let data = await invoke("get_merge_data")
   for (let k in data) {
@@ -206,6 +215,7 @@ async function get_merge_data() {
   }
   return data;
 }
+
 
 window.addEventListener("DOMContentLoaded", async () => {
   // https://github.com/tauri-apps/tauri/discussions/6119
@@ -233,6 +243,16 @@ window.addEventListener("DOMContentLoaded", async () => {
   lit_html_render(html``, loading_elt);
   document.getElementById("button_show")!.onclick = () =>
     logoutput(merge_views.values());
+  
+  // Tauri-specific
+  // Not sure whether I need to "unlisten"
+  const unlisten1 = await listen('quit_and_save', async (event) => {
+    await save(merge_views.values());
+    await exit(0);
+  });
+  const unlisten2 = await listen('save', async (event) => {
+    await save(merge_views.values());
+  });
 });
 
 window.addEventListener("DOMContentLoaded", async () => {

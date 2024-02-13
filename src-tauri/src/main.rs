@@ -5,6 +5,7 @@ use std::path::PathBuf;
 
 use clap::Parser;
 use indexmap::IndexMap;
+use tauri::{CustomMenuItem, Menu, Submenu};
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -27,6 +28,16 @@ fn logoutput(result: IndexMap<String, String>) {
         println!("{name}: {len} bytes");
     }
     println!();
+}
+
+#[tauri::command]
+fn save(result: IndexMap<String, String>) {
+    println!("Can't actually save yet :(");
+    println!();
+    for (name, contents) in result {
+        let len = contents.len();
+        println!("{name}: {len} bytes");
+    }
 }
 
 #[tauri::command]
@@ -57,8 +68,37 @@ fn main() {
         todo!("ERROR");
     };
 
+    let quit_and_save = CustomMenuItem::new("quit_and_save".to_string(), "Quit and Save")
+        .accelerator("CmdOrControl+Q");
+    let quit_no_save = CustomMenuItem::new("quit_no_save".to_string(), "Quit without saving");
+    // let save = CustomMenuItem::new("save".to_string(),
+    // "Save").accelerator("CmdOrControl+S");
+    let submenu = Submenu::new(
+        "File",
+        Menu::new().add_item(quit_and_save).add_item(quit_no_save), // .add_item(save)
+    );
+    let menu = Menu::new().add_submenu(submenu);
+
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![args, logoutput, get_merge_data])
+        .menu(menu)
+        .on_menu_event(|event| match event.menu_item_id() {
+            "quit_and_save" => {
+                event.window().emit("quit_and_save", ()).unwrap();
+            }
+            "quit_no_save" => {
+                std::process::exit(1);
+            }
+            "save" => {
+                event.window().emit("save", ()).unwrap();
+            }
+            _ => {}
+        })
+        .invoke_handler(tauri::generate_handler![
+            args,
+            logoutput,
+            get_merge_data,
+            save
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

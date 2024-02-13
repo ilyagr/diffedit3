@@ -16,6 +16,11 @@
       "shell": {
         "all": false,
         "open": true
+      },
+      "process": {
+        "all": false,
+        "exit": true,
+        "relaunch": true
       }
     },
     "windows": [
