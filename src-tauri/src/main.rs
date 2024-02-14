@@ -34,13 +34,8 @@ fn logoutput(result: IndexMap<String, String>) {
 fn save(
     result: IndexMap<String, String>,
     state: tauri::State<diff_tool_logic::Input>,
-) -> Result<(), String> {
-    if let diff_tool_logic::Input::FakeData = state.inner() {
-        // Safe to comment out, for now
-        return Err("Saving fake data is not allowed".to_string());
-    }
-    state.save(result);
-    Ok(())
+) -> Result<(), diff_tool_logic::DataSaveError> {
+    state.save(result)
 }
 
 #[tauri::command]

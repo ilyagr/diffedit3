@@ -8,6 +8,7 @@ indexmap = { version = "2.2.3", features = ["serde"] }
 itertools = "0.12.1"
 maplit = "1.0.2"
 serde = { version = "1.0.196", features = ["serde_derive"] }
+thiserror = "1.0.57"
 toml = { version = "0.8.10", features = ["indexmap"] }
 walkdir = "2.4.0"
 

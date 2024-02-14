@@ -1,7 +1,9 @@
 use std::path::{Path, PathBuf};
 
+use thiserror::Error;
 use walkdir::{DirEntry, WalkDir};
 
+// TODO: Error
 pub fn scan(root: &Path) -> impl Iterator<Item = (DirEntry, String)> {
     // As an alternative to WalkDir, see
     // https://github.com/martinvonz/jj/blob/af8eb3fd74956effee00acf00011ff0413607213/lib/src/local_working_copy.rs#L849
@@ -16,6 +18,40 @@ pub fn scan(root: &Path) -> impl Iterator<Item = (DirEntry, String)> {
                     .unwrap_or_else(|_| panic!("FIXME on {:?}", e.path())),
             )
         })
+}
+
+// TODO: Serialize, Deserialize
+#[derive(Error, Debug)]
+pub enum DataSaveError {
+    // TODO: Collect the list of what files couldn't be saved
+    #[error("IO Error: {0}")]
+    IOError(#[from] std::io::Error),
+    #[error("Cannot save the demo fake data")]
+    CannotSaveFakeData,
+}
+
+#[derive(Error, Debug)]
+pub enum DataReadError {
+    #[error("IO Error: {0}")]
+    IOError(#[from] std::io::Error),
+}
+
+impl serde::Serialize for DataSaveError {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.to_string().as_ref())
+    }
+}
+
+impl serde::Serialize for DataReadError {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.to_string().as_ref())
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
@@ -36,8 +72,8 @@ impl Input {
         }
     }
 
-    // TODO: Make more generic
-    pub fn save(&self, result: indexmap::IndexMap<String, String>) {
+    // TODO: Make more generic than IndexMap
+    pub fn save(&self, result: indexmap::IndexMap<String, String>) -> Result<(), DataSaveError> {
         let outdir = match self {
             Self::FakeData => {
                 // TOOO: Somewhat better error handling :)
@@ -48,15 +84,16 @@ impl Input {
                     toml::to_string(&result)
                         .unwrap_or_else(|err| format!("Failed to parse TOML: {err}"))
                 );
-                return;
+                return Err(DataSaveError::CannotSaveFakeData);
             }
             Self::Dirs { edit, .. } => edit,
         };
 
         for (relpath, contents) in result.into_iter() {
             let relpath = PathBuf::from(relpath);
-            std::fs::write(outdir.join(relpath), contents).unwrap(); // TODO!
+            std::fs::write(outdir.join(relpath), contents)?;
         }
+        Ok(())
     }
 }
 
