@@ -18,6 +18,13 @@
   </head>
 
   <body>
+    <!-- If the dialog is not modal, CodeMirror obscures it -->
+    <dialog id="modal_dialog_with_message">
+      <div id="message_of_modal_dialog_with_message"></div>
+      <form method="dialog">
+        <button>OK</button>
+      </form>
+    </dialog>
     <button id="button_show">Log output</button>
     <div id="args"></div>
     <div id="loading_message">
@@ -26,4 +33,8 @@
     </div>
     <div id="lit"></div>
   </body>
+
+  <script type="module" defer>
+    dialog.showModal();
+  </script>
 </html>

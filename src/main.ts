@@ -219,6 +219,31 @@ async function get_merge_data() {
   return data;
 }
 
+// Error handling
+function show_error_to_user(e: any) {
+  console.log("Caught error, showing to user:", e);
+  let dialogElt = <HTMLDialogElement>(
+    document.getElementById("modal_dialog_with_message")!
+  );
+  let dialogContentsElt = document.getElementById(
+    "message_of_modal_dialog_with_message"
+  )!;
+  lit_html_render(`${String(e)}`, dialogContentsElt);
+  dialogElt.showModal();
+  console.log("Done showing error to user.");
+}
+
+async function run_and_show_any_errors_to_user<T>(f: {
+  (): Promise<T>;
+  (): any;
+}): Promise<T | undefined> {
+  try {
+    return await f();
+  } catch (e) {
+    show_error_to_user(e);
+  }
+}
+
 window.addEventListener("DOMContentLoaded", async () => {
   // https://github.com/tauri-apps/tauri/discussions/6119
   if ("__TAURI__" in globalThis) {
@@ -228,6 +253,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   }
 
   let loading_elt = document.getElementById("loading_message")!;
+  // TODO: Try the until directive?
   loading_elt.innerHTML = "";
   lit_html_render(
     html`
@@ -236,8 +262,15 @@ window.addEventListener("DOMContentLoaded", async () => {
     `,
     loading_elt
   );
-  // TODO: Try the until directive?
-  let input = await get_merge_data();
+
+  let input;
+  try {
+    input = await get_merge_data();
+  } catch (e) {
+    show_error_to_user(e);
+    await exit(2);
+  }
+
   lit_html_render(
     html`
       <h2>Loading...</h2>
@@ -248,19 +281,28 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   let merge_views = render_input("lit", input);
 
-  lit_html_render(html` <dialog open>Haha</dialog> `, loading_elt);
+  lit_html_render(html``, loading_elt);
   document.getElementById("button_show")!.onclick = () =>
     logoutput(merge_views.values());
 
   // Tauri-specific
   // Not sure whether I need to "unlisten"
   /* const _unlisten1 = */ await listen("quit_and_save", async (_event) => {
-    await save(merge_views.values());
+    try {
+      await save(merge_views.values());
+    } catch (e) {
+      show_error_to_user(e);
+      return;
+    }
     await exit(0); // Could be window.close(), but also need to return error code sometimes
   });
-  /* const unlisten2 = */ await listen("save", async (_event) => {
-    await save(merge_views.values());
-  });
+  /* const unlisten2 = */ await listen(
+    "save",
+    async (_event) =>
+      await run_and_show_any_errors_to_user(async () => {
+        await save(merge_views.values());
+      })
+  );
   let args: string[] = await command_line_args();
   let one_arg_tmpl = (arg: string) => html`<code>${arg}</code>`;
   lit_html_render(

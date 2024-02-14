@@ -31,8 +31,16 @@ fn logoutput(result: IndexMap<String, String>) {
 }
 
 #[tauri::command]
-fn save(result: IndexMap<String, String>, state: tauri::State<diff_tool_logic::Input>) {
+fn save(
+    result: IndexMap<String, String>,
+    state: tauri::State<diff_tool_logic::Input>,
+) -> Result<(), String> {
+    if let diff_tool_logic::Input::FakeData = state.inner() {
+        // Safe to comment out, for now
+        return Err("Saving fake data is not allowed".to_string());
+    }
     state.save(result);
+    Ok(())
 }
 
 #[tauri::command]
@@ -88,7 +96,7 @@ fn main() {
                 event.window().emit("quit_and_save", ()).unwrap();
             }
             "quit_no_save" => {
-                std::process::exit(1);
+                std::process::exit(1); // Does not return error code ?!
             }
             "save" => {
                 event.window().emit("save", ()).unwrap();
