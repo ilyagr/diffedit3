@@ -161,25 +161,21 @@ mod tests {
 
     #[test]
     fn it_works() {
-        insta::assert_json_snapshot!(Input::FakeData.scan().unwrap(), 
+        insta::assert_yaml_snapshot!(Input::FakeData.scan().unwrap(), 
         @r###"
-        {
-          "added file": [
-            null,
-            "added",
-            "added"
-          ],
-          "deleted_file": [
-            "deleted",
-            null,
-            null
-          ],
-          "edited_file": [
-            "First\nThird\nFourth\nFourthAndAHalf\n\nFifth\nSixth\n----\none two",
-            "First\nSecond\nThird\nFifth\nSixth\n----\none\n",
-            "First\nSecond\nThird\nFifth\nSixth\n----\none\n"
-          ]
-        }
+        ---
+        added file:
+          - ~
+          - added
+          - added
+        deleted_file:
+          - deleted
+          - ~
+          - ~
+        edited_file:
+          - "First\nThird\nFourth\nFourthAndAHalf\n\nFifth\nSixth\n----\none two"
+          - "First\nSecond\nThird\nFifth\nSixth\n----\none\n"
+          - "First\nSecond\nThird\nFifth\nSixth\n----\none\n"
         "###);
     }
 }

@@ -1430,7 +1430,6 @@ dependencies = [
  "pest_derive",
  "serde",
  "similar",
- "toml 0.5.11",
  "yaml-rust",
 ]
 
