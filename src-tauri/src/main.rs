@@ -41,7 +41,7 @@ fn save(
 #[tauri::command]
 fn get_merge_data(
     state: tauri::State<diff_tool_logic::Input>,
-) -> diff_tool_logic::EntriesToCompare {
+) -> Result<diff_tool_logic::EntriesToCompare, diff_tool_logic::DataReadError> {
     state.scan()
 }
 
