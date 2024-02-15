@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "dev": "cd webapp && vite",
+    "build": "cd webapp && tsc && vite build",
+    "preview": "cd webapp && vite preview",
+    "tauri": "cd webapp && tauri"
+  },
+  "workspaces": [
+    "./webapp"
+  ]
+}
+
