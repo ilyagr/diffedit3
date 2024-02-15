@@ -29,6 +29,11 @@ class MergeState {
   }
 }
 
+// TODO: Split off drawing one editor. Only draw a single div in a loop.
+// Or not? Is it reasonable to render lit-html in an element that was just rendered in lit-html?
+// If not, could have two functions.
+// Or just don't use `lit` for creating the divs in a loop; leave a comment instead.
+//
 /// Renders the input inside the HTML element with id `unique_id`.
 function render_input(unique_id: string, merge_input: MergeInput) {
   let templates = [];
@@ -68,12 +73,11 @@ function render_input(unique_id: string, merge_input: MergeInput) {
 
   let merge_views: Record<string, MergeView> = {};
   for (let k in merge_input) {
-    let cmEl = document.getElementById(`cm_${k_uid(k)}`)!;
-    cmEl.innerHTML = "";
     let collapseButtonEl = document.getElementById(`collapse_${k_uid(k)}`)!;
     let linewrapButtonEl = document.getElementById(`linewrap_${k_uid(k)}`)!;
     let prevChangeButtonEl = document.getElementById(`prevChange_${k_uid(k)}`)!;
     let nextChangeButtonEl = document.getElementById(`nextChange_${k_uid(k)}`)!;
+    let cmEl = document.getElementById(`cm_${k_uid(k)}`)!;
 
     let config = {
       value: merge_input[k].edit ?? "",
