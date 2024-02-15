@@ -4,21 +4,14 @@ import CodeMirror, { Editor } from "codemirror";
 import { MergeView } from "codemirror/addon/merge/merge";
 
 import {
+  MergeInput,
   get_merge_data,
-  logoutput,
   save,
   command_line_args,
   exit_fatal_error,
   exit_success,
   TAURI_BACKEND,
 } from "./backend_interactions";
-
-type SingleMerge = {
-  left: string | null;
-  right: string | null;
-  edit: string | null;
-};
-type MergeInput = Record<string, SingleMerge>;
 
 class MergeState {
   merge_views: Record<string, MergeView>;
@@ -189,6 +182,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   } catch (e) {
     show_error_to_user(e);
     await exit_fatal_error();
+    throw new Error("Internal error: this statement should be unreachable");
   }
 
   lit_html_render(
@@ -202,27 +196,30 @@ window.addEventListener("DOMContentLoaded", async () => {
   let merge_views = render_input("lit", input);
 
   lit_html_render(html``, loading_elt);
-  document.getElementById("button_show")!.onclick = () =>
-    logoutput(merge_views.values());
-
-  if (TAURI_BACKEND) {
-    // App menu
-    // Not sure whether I need to "unlisten"
-    /* const _unlisten1 = */ await listen("quit_and_save", async (_event) => {
-      try {
-        await save(merge_views.values());
-      } catch (e) {
-        show_error_to_user(e);
-        return;
-      }
-      await exit_success(); // Could be window.close(), but also need to return error code sometimes
+  let save_or_tell_user = async () =>
+    await run_and_show_any_errors_to_user(async () => {
+      await save(merge_views.values());
     });
-    /* const unlisten2 = */ await listen(
-      "save",
-      async (_event) =>
-        await run_and_show_any_errors_to_user(async () => {
-          await save(merge_views.values());
-        })
+  let save_and_quit_or_tell_user = async () => {
+    try {
+      await save(merge_views.values());
+    } catch (e) {
+      show_error_to_user(e);
+      return;
+    }
+    await exit_success(); // Could be window.close(), but also need to return error code sometimes
+  };
+  document.getElementById("button_save")!.onclick = save_or_tell_user;
+  document.getElementById("button_save_and_quit")!.onclick =
+    save_and_quit_or_tell_user;
+  if (TAURI_BACKEND) {
+    // Events from the app menu
+    // Not sure whether I need to "unlisten"
+    /* const _unlisten1 = */ await listen("quit_and_save", async (_event) =>
+      save_and_quit_or_tell_user()
+    );
+    /* const unlisten2 = */ await listen("save", async (_event) =>
+      save_or_tell_user()
     );
   }
 

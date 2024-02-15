@@ -1,6 +1,13 @@
 import { InvokeArgs, invoke } from "@tauri-apps/api/tauri";
 import { exit } from "@tauri-apps/api/process";
 
+type SingleFileMergeInput = {
+  left: string | null;
+  right: string | null;
+  edit: string | null;
+};
+export type MergeInput = Record<string, SingleFileMergeInput>;
+
 // Tauri interop
 
 // https://github.com/tauri-apps/tauri/discussions/6119
@@ -36,7 +43,7 @@ export async function save(result: InvokeArgs) {
   await invoke("save", { result: result });
 }
 
-export async function get_merge_data() {
+export async function get_merge_data(): Promise<MergeInput> {
   let data: any;
   if (TAURI_BACKEND) {
     data = await invoke("get_merge_data");
