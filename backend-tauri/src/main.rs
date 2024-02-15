@@ -82,6 +82,11 @@ fn main() {
             .add_item(quit_no_save)
             .add_item(save_menu),
     );
+    // TODO: It'd be nice to keep Tauri's default menu and add a few items to it
+    // instead of starting with a blank menu. Apparently, this is possible with
+    // Tauri 2.0 (currently in beta), though the docs mention that only Submenus
+    // can be added to the menu. See
+    // https://github.com/tauri-apps/tauri/discussions/8853#discussioncomment-8483258
     let menu = Menu::new().add_submenu(submenu);
 
     tauri::Builder::default()
