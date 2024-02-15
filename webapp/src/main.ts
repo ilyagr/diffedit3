@@ -1,38 +1,17 @@
-import { InvokeArgs, invoke } from "@tauri-apps/api/tauri";
+import { html, render as lit_html_render } from "lit-html";
 
 import CodeMirror, { Editor } from "codemirror";
-// import "codemirror/mode/htmlmixed/htmlmixed.js";
-import "codemirror/lib/codemirror.css";
-import "codemirror/addon/merge/merge.css";
-import "codemirror/addon/merge/merge";
 import { MergeView } from "codemirror/addon/merge/merge";
 
-// diff_match_patch needs to be in the global scope for merge addon to work
-// Conceivably, it could be imported from the HTML, but I have not found a way to convince
-// Vite/TS/Rollup to do that. If using Webpack instead of Rollup, it's possible that this
-// can be done as disucussed in
-// https://discuss.codemirror.net/t/issues-on-using-merge-addon-and-diff-match-patch-solved/4371/4.
 import {
-  diff_match_patch,
-  DIFF_ADD,
-  DIFF_EQUAL,
-  DIFF_INSERT,
-  DIFF_DELETE,
-} from "diff_match_patch";
-
-declare global {
-  // Make Typescript happier about this
-  var diff_match_patch: any,
-    DIFF_ADD: any,
-    DIFF_EQUAL: any,
-    DIFF_INSERT: any,
-    DIFF_DELETE: any;
-}
-globalThis.diff_match_patch = diff_match_patch;
-globalThis.DIFF_ADD = DIFF_ADD;
-globalThis.DIFF_EQUAL = DIFF_EQUAL;
-globalThis.DIFF_INSERT = DIFF_INSERT;
-globalThis.DIFF_DELETE = DIFF_DELETE;
+  get_merge_data,
+  logoutput,
+  save,
+  command_line_args,
+  exit_fatal_error,
+  exit_success,
+  TAURI_BACKEND,
+} from "./backend_interactions";
 
 type SingleMerge = {
   left: string | null;
@@ -41,34 +20,23 @@ type SingleMerge = {
 };
 type MergeInput = Record<string, SingleMerge>;
 
-/*
-let thirds = Array(29).join("Third\n");
-let INPUT: MergeInput = {
-  edited_file: {
-    left:
-      "First\n" +
-      thirds +
-      "Fourth\nFourthAndAHalf\n\nFifth\nSixth\n----\none two",
-    edit: "First\nSecond\n" + thirds + "\nFifth\nSixth\n----\none\n",
-    right: "",
-  },
-  added_file: {
-    left: null,
-    edit: "Added",
-    right: "",
-  },
-  removed_file: {
-    left: "Deleted",
-    edit: null,
-    right: null,
-  },
-};
-for (let x in INPUT) {
-  INPUT[x].right = INPUT[x].edit;
-}
-*/
+class MergeState {
+  merge_views: Record<string, MergeView>;
 
-import { html, render as lit_html_render } from "lit-html";
+  constructor(merge_views: Record<string, MergeView>) {
+    this.merge_views = merge_views;
+  }
+
+  values(): Record<string, string> {
+    let result: Record<string, string> = {};
+    for (let k in this.merge_views) {
+      result[k] = this.merge_views[k].editor().getValue();
+    }
+    return result;
+  }
+}
+
+/// Renders the input inside the HTML element with id `unique_id`.
 function render_input(unique_id: string, merge_input: MergeInput) {
   let templates = [];
   let k_uid = (k: string) => `${k}_${unique_id}`;
@@ -177,67 +145,6 @@ function cm_prevChange(cm: Editor) {
   cm.scrollIntoView(null, 50);
 }
 
-class MergeState {
-  merge_views: Record<string, MergeView>;
-
-  constructor(merge_views: Record<string, MergeView>) {
-    this.merge_views = merge_views;
-  }
-
-  values(): Record<string, string> {
-    let result: Record<string, string> = {};
-    for (let k in this.merge_views) {
-      result[k] = this.merge_views[k].editor().getValue();
-    }
-    return result;
-  }
-}
-
-// Tauri interop
-
-// https://github.com/tauri-apps/tauri/discussions/6119
-const TAURI_BACKEND = "__TAURI__" in globalThis;
-import { listen } from "@tauri-apps/api/event";
-import { exit } from "@tauri-apps/api/process";
-
-async function command_line_args(): Promise<string[]> {
-  if (TAURI_BACKEND) {
-    return await invoke("args");
-  } else {
-    return await ["unavailable"];
-  }
-}
-
-async function logoutput(result: InvokeArgs) {
-  console.log(result);
-  await invoke("logoutput", { result: result });
-}
-
-async function save(result: InvokeArgs) {
-  console.log(result);
-  await invoke("save", { result: result });
-}
-
-async function get_merge_data() {
-  let data: any;
-  if (TAURI_BACKEND) {
-    data = await invoke("get_merge_data");
-  } else {
-    let response = await fetch("/api/inputdata.json");
-    console.log(
-      response.status,
-      response.statusText,
-      ". Am I OK?",
-      response.ok
-    );
-    data = await response.json();
-  }
-  for (let k in data) {
-    data[k] = { left: data[k][0], right: data[k][1], edit: data[k][2] };
-  }
-  return data;
-}
-
 // Error handling
 function show_error_to_user(e: any) {
   console.log("Caught error, showing to user:", e);
@@ -263,6 +170,7 @@ async function run_and_show_any_errors_to_user<T>(f: {
   }
 }
 
+import { listen } from "@tauri-apps/api/event";
 window.addEventListener("DOMContentLoaded", async () => {
   let loading_elt = document.getElementById("loading_message")!;
   // TODO: Try the until directive?
@@ -280,7 +188,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     input = await get_merge_data();
   } catch (e) {
     show_error_to_user(e);
-    await exit(2);
+    await exit_fatal_error();
   }
 
   lit_html_render(
@@ -297,24 +205,27 @@ window.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("button_show")!.onclick = () =>
     logoutput(merge_views.values());
 
-  // Tauri-specific
-  // Not sure whether I need to "unlisten"
-  /* const _unlisten1 = */ await listen("quit_and_save", async (_event) => {
-    try {
-      await save(merge_views.values());
-    } catch (e) {
-      show_error_to_user(e);
-      return;
-    }
-    await exit(0); // Could be window.close(), but also need to return error code sometimes
-  });
-  /* const unlisten2 = */ await listen(
-    "save",
-    async (_event) =>
-      await run_and_show_any_errors_to_user(async () => {
+  if (TAURI_BACKEND) {
+    // App menu
+    // Not sure whether I need to "unlisten"
+    /* const _unlisten1 = */ await listen("quit_and_save", async (_event) => {
+      try {
         await save(merge_views.values());
-      })
-  );
+      } catch (e) {
+        show_error_to_user(e);
+        return;
+      }
+      await exit_success(); // Could be window.close(), but also need to return error code sometimes
+    });
+    /* const unlisten2 = */ await listen(
+      "save",
+      async (_event) =>
+        await run_and_show_any_errors_to_user(async () => {
+          await save(merge_views.values());
+        })
+    );
+  }
+
   let args: string[] = await command_line_args();
   let one_arg_tmpl = (arg: string) => html`<code>${arg}</code>`;
   lit_html_render(
