@@ -11,11 +11,13 @@ struct StaticFiles;
 #[tokio::main]
 async fn main() {
     let static_files = warp_embed::embed(&StaticFiles {});
+    // TODO: Handle rejection
+    // https://github.com/seanmonstar/warp/blob/master/examples/rejections.rs
     let server = warp::get().and(
         static_files.with(warp::log("http")).or(warp::path("api")
-            .and(warp::path("test.json"))
+            .and(warp::path("inputdata.json"))
             .and(warp::path::end())
-            .map(|| "Test\n")),
+            .map(|| warp::reply::json(&diff_tool_logic::Input::FakeData.scan().unwrap()))),
     );
     let listen_to = "127.0.0.1:8080";
     eprintln!("Trying to listen at http://{listen_to}...");

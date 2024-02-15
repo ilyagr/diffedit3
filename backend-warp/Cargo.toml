@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+diff-tool-logic = { version = "0.1.0", path = "../diff-tool-logic" }
 log = "0.4.20"
 pretty_env_logger = "0.5.0"
 rust-embed = { version = "8.2.0" }
