@@ -1,0 +1,2 @@
+[workspace]
+members = ["diff-tool-logic", "backend-tauri"]

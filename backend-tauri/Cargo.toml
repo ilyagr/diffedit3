@@ -1,6 +1,3 @@
-[workspace]
-members = ["diff-tool-logic"]
-
 [package]
 name = "tauri-app"
 version = "0.0.0"

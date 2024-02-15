@@ -19,7 +19,7 @@ export default defineConfig({
     port: 1420,
     strictPort: true,
     watch: {
-      // 3. tell vite to ignore watching `src-tauri`
+      // 3. tell vite to ignore watching `src-tauri` (ilyagr note: likely no longer relevant)
       ignored: ["**/src-tauri/**"],
     },
   },
