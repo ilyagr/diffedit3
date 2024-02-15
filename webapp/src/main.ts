@@ -195,10 +195,17 @@ class MergeState {
 
 // Tauri interop
 
+// https://github.com/tauri-apps/tauri/discussions/6119
+const TAURI_BACKEND = "__TAURI__" in globalThis;
 import { listen } from "@tauri-apps/api/event";
 import { exit } from "@tauri-apps/api/process";
+
 async function command_line_args(): Promise<string[]> {
-  return await invoke("args");
+  if (TAURI_BACKEND) {
+    return await invoke("args");
+  } else {
+    return await ["unavailable"];
+  }
 }
 
 async function logoutput(result: InvokeArgs) {
@@ -212,7 +219,19 @@ async function save(result: InvokeArgs) {
 }
 
 async function get_merge_data() {
-  let data: any = await invoke("get_merge_data");
+  let data: any;
+  if (TAURI_BACKEND) {
+    data = await invoke("get_merge_data");
+  } else {
+    let response = await fetch("/api/inputdata.json");
+    console.log(
+      response.status,
+      response.statusText,
+      ". Am I OK?",
+      response.ok
+    );
+    data = await response.json();
+  }
   for (let k in data) {
     data[k] = { left: data[k][0], right: data[k][1], edit: data[k][2] };
   }
@@ -245,13 +264,6 @@ async function run_and_show_any_errors_to_user<T>(f: {
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
-  // https://github.com/tauri-apps/tauri/discussions/6119
-  if ("__TAURI__" in globalThis) {
-    console.log("In Tauri");
-  } else {
-    console.log("Not in Tauri");
-  }
-
   let loading_elt = document.getElementById("loading_message")!;
   // TODO: Try the until directive?
   loading_elt.innerHTML = "";
