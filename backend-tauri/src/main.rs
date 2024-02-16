@@ -1,20 +1,9 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::path::PathBuf;
-
 use clap::Parser;
 use indexmap::IndexMap;
 use tauri::{CustomMenuItem, Menu, Submenu};
-
-#[derive(Parser)]
-#[command(version, about, long_about = None)]
-struct Cli {
-    dirs: Vec<PathBuf>,
-    /// Use demo fake data
-    #[arg(long)]
-    demo: bool,
-}
 
 #[tauri::command]
 fn args() -> Vec<String> {
@@ -52,24 +41,10 @@ fn get_merge_data(
 // So far, the most promising approach is to change the `font-size` root
 // CSS property
 fn main() {
-    let cli = Cli::parse();
-    let input = if cli.demo {
-        diff_tool_logic::Input::FakeData
-    } else {
-        match cli.dirs.as_slice() {
-            [left, right, output] => diff_tool_logic::Input::Dirs {
-                left: left.to_path_buf(),
-                right: right.to_path_buf(),
-                edit: output.to_path_buf(),
-            },
-            [left, right] => diff_tool_logic::Input::Dirs {
-                left: left.to_path_buf(),
-                right: right.to_path_buf(),
-                edit: right.to_path_buf(),
-            },
-            _ => todo!("ERROR: wrong number of argumetns. TODO: proper clap error"),
-        }
-    };
+    let cli = diff_tool_logic::Cli::parse();
+    let input: diff_tool_logic::Input = cli
+        .try_into()
+        .unwrap_or_else(|err| panic!("{err}\nTODO: proper error instead of panic"));
 
     let abandon_changes_and_quit = CustomMenuItem::new(
         "abandon_changes_and_quit".to_string(),

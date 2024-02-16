@@ -1,5 +1,6 @@
 use std::net::ToSocketAddrs;
 
+use clap::Parser;
 use log::info;
 use serde::Serialize;
 use warp::http::StatusCode;
@@ -21,8 +22,13 @@ fn result_to_warp_reply<T: Serialize, Err: Serialize>(result: Result<T, Err>) ->
 
 #[tokio::main]
 async fn main() {
+    let cli = diff_tool_logic::Cli::parse();
+    let input: diff_tool_logic::Input = cli
+        .try_into()
+        .unwrap_or_else(|err| panic!("{err}\nTODO: proper error instead of panic"));
+
     let static_files = warp_embed::embed(&StaticFiles {});
-    let api_paths = warp::path("get_merge_data").map(|| diff_tool_logic::Input::FakeData.scan());
+    let api_paths = warp::path("get_merge_data").map(move || input.clone().scan());
     let api_paths = api_paths.and(warp::path::end()).map(result_to_warp_reply);
     let server = warp::path("api")
         .and(api_paths)

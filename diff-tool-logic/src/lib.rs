@@ -89,6 +89,42 @@ impl Input {
     }
 }
 
+use clap::Parser;
+#[derive(Parser)]
+#[command(version, about, long_about = None)]
+pub struct Cli {
+    dirs: Vec<PathBuf>,
+    /// Use demo fake data
+    #[arg(long)]
+    demo: bool,
+}
+
+impl TryInto<Input> for Cli {
+    type Error = String;
+    fn try_into(self) -> Result<Input, Self::Error> {
+        if self.demo {
+            Ok(Input::FakeData)
+        } else {
+            match self.dirs.as_slice() {
+                [left, right, output] => Ok(Input::Dirs {
+                    left: left.to_path_buf(),
+                    right: right.to_path_buf(),
+                    edit: output.to_path_buf(),
+                }),
+                [left, right] => Ok(Input::Dirs {
+                    left: left.to_path_buf(),
+                    right: right.to_path_buf(),
+                    edit: right.to_path_buf(),
+                }),
+                _ => Err(format!(
+                    "Must have 2 or 3 dirs to compare, got {} dirs instead",
+                    self.dirs.len()
+                )),
+            }
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Default, serde::Serialize, serde::Deserialize)]
 //struct EntriesToCompare<P, const N: usize>(std::collections::BTreeMap<P,
 // [Option<String>; N]>);
