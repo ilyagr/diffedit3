@@ -16,16 +16,18 @@ Either way, changes to `webapp/` will be visible immediately. With the Tauri
 backend, it will recompile the Rust code on changes as well. With the Warp
 backend, you have to do that manually.
 
-## Warp backend
+## Local Server backend
 
-Run `npm run watch` and then `cargo run -p backend-warp -- --demo` or `cd
-backend-warp; cargo run -- --demo`.
+Run `npm run watch` and then `cargo run -p backend-local-server -- --demo` or
+`cd backend-local-server; cargo run -- --demo`.
 
 ## Tauri Backend
 
 - Run `cargo tauri dev -- -- --demo` **from the root dir**.
 
-# Why Codemirror 5 and other possibilities (TODO: Links, flesh out)
+# Tech choices
+
+## Why Codemirror 5 and other possibilities (TODO: Links, flesh out)
 
 - Codemirror 6 has a merge plugin, but only two-way
 - mismerge. TODO: File FRs. Delete one side. Do not collapse missing lines.
@@ -36,6 +38,19 @@ backend-warp; cargo run -- --demo`.
 - No dark theme support
 - Hard to tell blank lines from missing lines.
 - Who knows how soon it'll be abandoned and unsupported.
+
+## `poem` backend
+
+I first tried `warp`, but once the error messages passed a mile mark, decided to
+switch.
+
+`poem` was the next framework that I could immediately find relevant examples
+(embedding a website into a binary with `rust_embed` and error handling) that
+seemed straightforward, seems to avoid making everything a macro, and claims to
+try to keep things to have types with names of finite length.
+
+If that doesn't work out, I'd try `axum` next and the `arctix` based on blogs
+and Reddit.
 
 # TODOs
 
