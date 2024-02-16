@@ -19,6 +19,22 @@
   </head>
 
   <body>
+    <div class="main-menu">
+      <button id="button_save">Save</button>
+      <button id="button_save_and_quit">Save and Quit</button>
+      <button id="button_revert">Revert to Last Save</button>
+      <button id="button_abandon_and_quit">Abandon Changes and Quit</button>
+      <button
+        class="main-menu-toggle"
+        id="button_collapse_uncollapse_menu"
+        alt="Show/Hide Menu"
+        title="Show/Hide Menu"
+      >
+        <div class="if-menu-shown">×</div>
+        <div class="if-menu-hidden">≡</div>
+      </button>
+      <!-- TODO: Button to show/hide menu-->
+    </div>
     <!-- If the dialog is not modal, CodeMirror obscures it -->
     <dialog id="modal_dialog_with_message">
       <div id="message_of_modal_dialog_with_message"></div>
@@ -26,13 +42,19 @@
         <button>OK</button>
       </form>
     </dialog>
-    <button id="button_save">Save</button>
-    <button id="button_save_and_quit">Save and quit</button>
     <div id="args"></div>
     <div id="loading_message">
       <h2>Loading...</h2>
       <p>If this message persists, Javascript is not working.</p>
     </div>
     <div id="lit"></div>
+
+    <script type="module">
+      button_collapse_uncollapse_menu.onclick = function (elt) {
+        console.log(elt);
+        console.log(this.closest(".main-menu"));
+        this.closest(".main-menu").classList.toggle("collapsed");
+      };
+    </script>
   </body>
 </html>

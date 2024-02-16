@@ -11,6 +11,7 @@ import {
   exit_fatal_error,
   exit_success,
   TAURI_BACKEND,
+  exit_user_abandoned_merge,
 } from "./backend_interactions";
 
 class MergeState {
@@ -213,9 +214,17 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
     await exit_success(); // Could be window.close(), but also need to return error code sometimes
   };
+  let revert = () => {
+    window.location.reload();
+    return false;
+  };
   document.getElementById("button_save")!.onclick = save_or_tell_user;
   document.getElementById("button_save_and_quit")!.onclick =
     save_and_quit_or_tell_user;
+  document.getElementById("button_abandon_and_quit")!.onclick =
+    exit_user_abandoned_merge;
+  document.getElementById("button_revert")!.onclick = revert;
+  exit_user_abandoned_merge;
   if (TAURI_BACKEND) {
     // Events from the app menu
     // Not sure whether I need to "unlisten"

@@ -99,8 +99,65 @@ button {
   margin-right: 1em;
 }
 
-#greet-input {
-  margin-right: 5px;
+dialog {
+  max-width: 60%;
+}
+
+.main-menu {
+  position: sticky;
+  top: 0px;
+  right: 0px;
+  z-index: 100;
+  background-color: #f6f6f6;
+  border: solid thin white;
+  border-radius: 5px;
+  padding: 10px;
+  height: fit-content;
+  /* width:fit-content; */
+  /* box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2); */
+}
+
+.main-menu button.main-menu-toggle {
+  border: thin solid transparent;
+  font-size: 0.8em;
+  position:fixed;
+  right: 15px;
+  top: 15px;
+  height: 25px;
+  width: 25px;
+  margin: auto;
+  padding: 3px;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.6);
+}
+
+.main-menu.collapsed button:not(.main-menu-toggle) {
+  display:none;
+}
+.main-menu.collapsed {
+  width:fit-content;
+  height:fit-content;
+  /* TODO: Fix annoyance where doc contents jumps up/down when toggling the menu
+   * See maybe https://stackoverflow.com/questions/28864210/sticky-navigation-element-jumps-during-scroll
+   * This happens somewhat even if we kept `position: sticky` here.
+   */
+  position: fixed; 
+    /* TODO: Fix bug; this border is drawn in the wrong place if visible */
+  border: none;
+}
+button.main-menu-toggle .if-menu-hidden {
+  display:none;
+}
+.collapsed button.main-menu-toggle .if-menu-hidden {
+  display:block;
+}
+.collapsed button.main-menu-toggle .if-menu-shown {
+  display: none;
+}
+
+
+  
+.main-menu .collapsed button {
+  font-size: 0.8em;
 }
 
 /* TODO: CodeMirror themes do not style the merge addons correctly */
