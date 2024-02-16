@@ -26,11 +26,10 @@ async fn main() {
         .and(warp::path::end())
         .map(|| diff_tool_logic::Input::FakeData.scan())
         .map(result_to_warp_reply);
-    let server = warp::get().and(
-        static_files
-            .with(warp::log("http"))
-            .or(warp::path("api").and(api_paths)),
-    );
+    let server = warp::path("api")
+        .and(api_paths)
+        .or(static_files.and(warp::get()))
+        .with(warp::log("http"));
     let listen_to = "127.0.0.1:8080";
     eprintln!("Trying to listen at http://{listen_to}...");
     let listen = listen_to.to_string().to_socket_addrs().unwrap();

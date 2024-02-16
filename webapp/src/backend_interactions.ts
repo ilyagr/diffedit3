@@ -47,20 +47,26 @@ async function http_backend_request(
   method: string,
   content?: Object | undefined
 ) {
-  let body = null;
+  let body = null,
+    headers: Record<string, string> = {};
   if (content != null) {
     body = JSON.stringify(content);
+    headers["Content-Type"] = "application/json";
   }
   let response = await fetch(`/api/${command_name}`, {
     method: method,
     body: body,
+    headers: headers,
   });
-  let data = await response.json();
   if (response.ok) {
-    return data;
+    return await response.json();
   } else {
+    let text = "";
+    if (response.status < 500) {
+      text = `Likely bug in the webapp: got response "${response.status} ${response.statusText}" for "${command_name}" request. Additional details, if any, follow. `;
+    }
     // TODO: Modify message for 4xx or 3xx error codes
-    throw data;
+    throw text + (await response.text());
   }
 }
 
