@@ -6,8 +6,8 @@ use walkdir::{DirEntry, WalkDir};
 #[derive(Error, Debug)]
 pub enum DataSaveError {
     // TODO: Collect the list of what files couldn't be saved
-    #[error("IO Error while saving: {0}")]
-    IOError(#[from] std::io::Error),
+    #[error("IO Error while saving {0}: {1}")]
+    IOError(PathBuf, std::io::Error),
     #[error("Cannot save the demo fake data")]
     CannotSaveFakeData,
 }
@@ -82,8 +82,10 @@ impl Input {
         };
 
         for (relpath, contents) in result.into_iter() {
-            let relpath = PathBuf::from(relpath);
-            std::fs::write(outdir.join(relpath), contents)?;
+            let relpath = dbg!(PathBuf::from(relpath));
+            let path = outdir.join(relpath);
+            std::fs::write(path.clone(), contents)
+                .map_err(|io_err| DataSaveError::IOError(path, io_err))?;
         }
         Ok(())
     }

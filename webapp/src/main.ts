@@ -218,6 +218,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     window.location.reload();
     return false;
   };
+  // TODO: Bind Ctrl- Or Cmd-S to save and Ctrl- Or Cmd-Q to to quit
   document.getElementById("button_save")!.onclick = save_or_tell_user;
   document.getElementById("button_save_and_quit")!.onclick =
     save_and_quit_or_tell_user;
