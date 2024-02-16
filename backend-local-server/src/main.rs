@@ -59,15 +59,17 @@ fn save(
 }
 #[handler]
 fn exit(Json(code): Json<i32>) -> Result<Json<()>> {
+    eprintln!("Exiting the diff tool with error code {code}");
     std::process::exit(code);
 }
 
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error> {
     let cli = diff_tool_logic::Cli::parse();
-    let input: diff_tool_logic::Input = cli
-        .try_into()
-        .unwrap_or_else(|err| panic!("{err}\nTODO: proper error instead of panic"));
+    let input: diff_tool_logic::Input = cli.try_into().unwrap_or_else(|err| {
+        eprintln!("Error: {err}");
+        std::process::exit(2)
+    });
 
     /* Taken from the example. What's this for?
 

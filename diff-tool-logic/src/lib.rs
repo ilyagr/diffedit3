@@ -91,13 +91,19 @@ impl Input {
     }
 }
 
+// TODO: Maybe try https://docs.rs/clap/latest/clap/_derive/index.html#adding-hand-implemented-subcommands-to-a-derived-application
+// to make alternative parsers for demo and not demo. More likely, it's not
+// worth the time. Just use a subcommand?
 use clap::Parser;
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
 pub struct Cli {
+    /// Two or three directories: `LEFT RIGHT` or `LEFT RIGHT OUTPUT`
+    ///
+    /// If OUTPUT is not specified, the output goes to RIGHT.
     dirs: Vec<PathBuf>,
     /// Use demo fake data
-    #[arg(long)]
+    #[arg(long, conflicts_with("dirs"))]
     demo: bool,
 }
 
