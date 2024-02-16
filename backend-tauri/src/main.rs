@@ -71,16 +71,21 @@ fn main() {
         }
     };
 
-    let quit_and_save = CustomMenuItem::new("quit_and_save".to_string(), "Quit and Save")
-        .accelerator("CmdOrControl+Q");
-    let quit_no_save = CustomMenuItem::new("quit_no_save".to_string(), "Quit without saving");
+    let abandon_changes_and_quit = CustomMenuItem::new(
+        "abandon_changes_and_quit".to_string(),
+        "Abandon Changes and Quit",
+    );
+    let revert = CustomMenuItem::new("revert".to_string(), "Revert to Last Save");
     let save_menu = CustomMenuItem::new("save".to_string(), "Save").accelerator("CmdOrControl+S");
+    let save_and_quit = CustomMenuItem::new("save_and_quit".to_string(), "Save and Quit")
+        .accelerator("CmdOrControl+Q");
     let submenu = Submenu::new(
         "File",
         Menu::new()
-            .add_item(quit_and_save)
-            .add_item(quit_no_save)
-            .add_item(save_menu),
+            .add_item(save_menu)
+            .add_item(save_and_quit)
+            .add_item(revert)
+            .add_item(abandon_changes_and_quit),
     );
     // TODO: It'd be nice to keep Tauri's default menu and add a few items to it
     // instead of starting with a blank menu. Apparently, this is possible with
@@ -91,18 +96,7 @@ fn main() {
 
     tauri::Builder::default()
         .menu(menu)
-        .on_menu_event(|event| match event.menu_item_id() {
-            "quit_and_save" => {
-                event.window().emit("quit_and_save", ()).unwrap();
-            }
-            "quit_no_save" => {
-                std::process::exit(1); // Does not return error code ?!
-            }
-            "save" => {
-                event.window().emit("save", ()).unwrap();
-            }
-            _ => {}
-        })
+        .on_menu_event(|event| event.window().emit(event.menu_item_id(), ()).unwrap())
         .manage(input)
         .invoke_handler(tauri::generate_handler![
             args,

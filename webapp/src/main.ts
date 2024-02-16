@@ -7,7 +7,7 @@ import {
   MergeInput,
   get_merge_data,
   save,
-  command_line_args,
+  // command_line_args,
   exit_fatal_error,
   exit_success,
   TAURI_BACKEND,
@@ -221,25 +221,30 @@ window.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("button_save")!.onclick = save_or_tell_user;
   document.getElementById("button_save_and_quit")!.onclick =
     save_and_quit_or_tell_user;
-  document.getElementById("button_abandon_and_quit")!.onclick =
+  document.getElementById("button_abandon_changes_and_quit")!.onclick =
     exit_user_abandoned_merge;
   document.getElementById("button_revert")!.onclick = revert;
-  exit_user_abandoned_merge;
   if (TAURI_BACKEND) {
     // Events from the app menu
     // Not sure whether I need to "unlisten"
-    /* const _unlisten1 = */ await listen("quit_and_save", async (_event) =>
+    /* const unlisten = */ await listen("save", async (_event) =>
+      save_or_tell_user()
+    );
+    await listen("save_and_quit", async (_event) =>
       save_and_quit_or_tell_user()
     );
-    /* const unlisten2 = */ await listen("save", async (_event) =>
-      save_or_tell_user()
+    await listen("revert", async (_event) => revert());
+    await listen("abandon_changes_and_quit", async (_event) =>
+      exit_user_abandoned_merge()
     );
   }
 
-  let args: string[] = await command_line_args();
-  let one_arg_tmpl = (arg: string) => html`<code>${arg}</code>`;
-  lit_html_render(
-    html`<p>Args: ${args.map(one_arg_tmpl)}</p>`,
-    document.getElementById("args")!
-  );
+  // TODO: Some sort of the description of what we are comparing
+  // The following is test code that's obsolete but does this, not prettily
+  // let args: string[] = await command_line_args();
+  // let one_arg_tmpl = (arg: string) => html`<code>${arg}</code>`;
+  // lit_html_render(
+  //   html`<p>Args: ${args.map(one_arg_tmpl)}</p>`,
+  //   document.getElementById("args")!
+  // );
 });
