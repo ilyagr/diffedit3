@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use clap::Parser;
 use poem::endpoint::EmbeddedFilesEndpoint;
 use poem::error::ResponseError;
@@ -7,6 +9,8 @@ use poem::middleware::AddData;
 use poem::web::{Data, Json};
 use poem::{handler, EndpointExt, Result, Route, Server};
 use thiserror::Error;
+use tokio::sync::oneshot;
+use tokio::sync::oneshot::error::TryRecvError;
 // use serde::Serialize;
 
 #[derive(rust_embed::RustEmbed)]
@@ -81,7 +85,33 @@ async fn main() -> Result<(), std::io::Error> {
     let app = Route::new()
         .nest("/", EmbeddedFilesEndpoint::<StaticFiles>::new())
         .nest("/api", apis);
+
+    let (server_dead_send, mut server_dead_recv) = oneshot::channel();
+
     let listen_to = "127.0.0.1:8080";
-    eprintln!("Trying to listen at http://{listen_to}...");
-    Server::new(TcpListener::bind(listen_to)).run(app).await
+    let http_address = format!("http://{listen_to}");
+    let http_address_clone = http_address.clone();
+    tokio::task::spawn_blocking(move || {
+        // Try to avoid starting the browser if the server failed to start.
+        std::thread::sleep(Duration::from_millis(200));
+        match server_dead_recv.try_recv() {
+            Ok(()) => { /* Server quit already */ }
+            Err(TryRecvError::Empty) => {
+                // TODO: Find a way to check whether the server started. Currently, if server
+                // startup takes more than 200ms, the browser will launch.
+                eprint!("Trying to launch a browser at {http_address_clone}...");
+                match open::that(http_address_clone) {
+                    Ok(_) => eprintln!(" Success!"),
+                    Err(err) => eprintln!("\nFailed to launch a browser: {err}"),
+                }
+            }
+            Err(TryRecvError::Closed) => { /* Should never happen */ }
+        };
+    });
+
+    eprintln!("Trying to listen at {http_address}...");
+    Server::new(TcpListener::bind(listen_to)).run(app).await?;
+    let _ = server_dead_send.send(()); // No need to start the web browser. Don't care if the message failed to send,
+                                       // though.
+    Ok(())
 }
