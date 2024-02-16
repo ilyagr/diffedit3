@@ -148,6 +148,7 @@ dependencies = [
  "log",
  "pretty_env_logger",
  "rust-embed",
+ "serde",
  "tokio",
  "warp",
  "warp-embed",
