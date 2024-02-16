@@ -22,12 +22,14 @@ fn result_to_warp_reply<T: Serialize, Err: Serialize>(result: Result<T, Err>) ->
 #[tokio::main]
 async fn main() {
     let static_files = warp_embed::embed(&StaticFiles {});
+    let api_paths = warp::path("get_merge_data")
+        .and(warp::path::end())
+        .map(|| diff_tool_logic::Input::FakeData.scan())
+        .map(result_to_warp_reply);
     let server = warp::get().and(
-        static_files.with(warp::log("http")).or(warp::path("api")
-            .and(warp::path("get_merge_data"))
-            .and(warp::path::end())
-            .map(|| diff_tool_logic::Input::FakeData.scan())
-            .map(result_to_warp_reply)),
+        static_files
+            .with(warp::log("http"))
+            .or(warp::path("api").and(api_paths)),
     );
     let listen_to = "127.0.0.1:8080";
     eprintln!("Trying to listen at http://{listen_to}...");
