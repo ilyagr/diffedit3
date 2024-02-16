@@ -15,7 +15,7 @@ async fn main() {
     // https://github.com/seanmonstar/warp/blob/master/examples/rejections.rs
     let server = warp::get().and(
         static_files.with(warp::log("http")).or(warp::path("api")
-            .and(warp::path("inputdata.json"))
+            .and(warp::path("get_merge_data"))
             .and(warp::path::end())
             .map(|| warp::reply::json(&diff_tool_logic::Input::FakeData.scan().unwrap()))),
     );
