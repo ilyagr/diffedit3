@@ -205,6 +205,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     await run_and_show_any_errors_to_user(async () => {
       await save(merge_views.values());
     });
+  // TODO: Saving animation (disabled?) on the button. Inside `save_or_tell_user?`
+  // Should also affect "Save and Quit" and the menu items with Tauri
   let save_and_quit_or_tell_user = async () => {
     try {
       await save(merge_views.values());
@@ -238,6 +240,18 @@ window.addEventListener("DOMContentLoaded", async () => {
     await listen("abandon_changes_and_quit", async (_event) =>
       exit_user_abandoned_merge()
     );
+  } else {
+    // Tauri takes care of this via the menu.
+    document.addEventListener("keydown", async (e) => {
+      // TODO: Only check for Meta on Mac, don't check for Meta elsewhere
+      let CtrlOrCmd = e.metaKey || e.ctrlKey;
+      if (e.key == "s" && CtrlOrCmd) {
+        await save_or_tell_user();
+        e.preventDefault();
+        return false;
+      }
+      return true;
+    });
   }
 
   // TODO: Some sort of the description of what we are comparing
