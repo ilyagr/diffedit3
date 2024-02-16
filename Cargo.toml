@@ -2,7 +2,6 @@
 members = [
     "diff-tool-logic",
     "backend-tauri",
-    "backend-warp",
     "backend-local-server",
 ]
 resolver = "2"
