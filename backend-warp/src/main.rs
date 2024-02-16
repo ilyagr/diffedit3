@@ -22,10 +22,8 @@ fn result_to_warp_reply<T: Serialize, Err: Serialize>(result: Result<T, Err>) ->
 #[tokio::main]
 async fn main() {
     let static_files = warp_embed::embed(&StaticFiles {});
-    let api_paths = warp::path("get_merge_data")
-        .and(warp::path::end())
-        .map(|| diff_tool_logic::Input::FakeData.scan())
-        .map(result_to_warp_reply);
+    let api_paths = warp::path("get_merge_data").map(|| diff_tool_logic::Input::FakeData.scan());
+    let api_paths = api_paths.and(warp::path::end()).map(result_to_warp_reply);
     let server = warp::path("api")
         .and(api_paths)
         .or(static_files.and(warp::get()))
