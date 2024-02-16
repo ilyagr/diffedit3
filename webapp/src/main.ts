@@ -205,27 +205,47 @@ window.addEventListener("DOMContentLoaded", async () => {
     await run_and_show_any_errors_to_user(async () => {
       await save(merge_views.values());
     });
+
+  let save_button = <HTMLButtonElement>document.getElementById("button_save")!;
+  let save_and_quit_button = <HTMLButtonElement>(
+    document.getElementById("button_save_and_quit")!
+  );
   // TODO: Saving animation (disabled?) on the button. Inside `save_or_tell_user?`
   // Should also affect "Save and Quit" and the menu items with Tauri
-  let save_and_quit_or_tell_user = async () => {
-    try {
+  let save_and_quit_or_tell_user = async () =>
+    await run_and_show_any_errors_to_user(async () => {
       await save(merge_views.values());
-    } catch (e) {
-      show_error_to_user(e);
-      return;
-    }
-    await exit_success(); // Could be window.close(), but also need to return error code sometimes
-  };
+      // It's too late for the user to press the save buttons,
+      // the server will be dead in a moment.
+      save_button.disabled = true;
+      save_and_quit_button.disabled = true;
+      exit_success(); // Do not wait for the result
+      // Make sure the exit command has time to get sent. For local server backend,
+      // we still need to close the window manually.
+      await new Promise((r) => setTimeout(r, 200));
+      window.close();
+    });
+  let abandon_changes_and_quit = async () =>
+    await run_and_show_any_errors_to_user(async () => {
+      // It's too late for the user to press the save buttons,
+      // the server will be dead in a moment.
+      save_button.disabled = true;
+      save_and_quit_button.disabled = true;
+      exit_user_abandoned_merge(); // Do not wait for the result
+      // Make sure the exit command has time to get sent. For local server backend,
+      // we still need to close the window manually.
+      await new Promise((r) => setTimeout(r, 200));
+      window.close();
+    });
   let revert = () => {
     window.location.reload();
     return false;
   };
   // TODO: Bind Ctrl- Or Cmd-S to save and Ctrl- Or Cmd-Q to to quit
-  document.getElementById("button_save")!.onclick = save_or_tell_user;
-  document.getElementById("button_save_and_quit")!.onclick =
-    save_and_quit_or_tell_user;
+  save_button.onclick = save_or_tell_user;
+  save_and_quit_button.onclick = save_and_quit_or_tell_user;
   document.getElementById("button_abandon_changes_and_quit")!.onclick =
-    exit_user_abandoned_merge;
+    abandon_changes_and_quit;
   document.getElementById("button_revert")!.onclick = revert;
   if (TAURI_BACKEND) {
     // Events from the app menu

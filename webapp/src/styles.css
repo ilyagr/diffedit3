@@ -80,9 +80,10 @@ button:active {
   background-color: #e8e8e8;
 }
 
-input,
-button {
-  outline: none;
+button:disabled,
+button[disabled]
+{
+  color: grey;
 }
 
 /* https://discuss.codemirror.net/t/how-to-always-display-cursor/227/12 */

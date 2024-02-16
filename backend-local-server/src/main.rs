@@ -53,6 +53,10 @@ fn save(
     input.save(data).map_err(ServerError::from)?;
     Ok(Json(()))
 }
+#[handler]
+fn exit(Json(code): Json<i32>) -> Result<Json<()>> {
+    std::process::exit(code);
+}
 
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error> {
@@ -72,6 +76,7 @@ async fn main() -> Result<(), std::io::Error> {
     let apis = Route::new()
         .at("/get_merge_data", poem::get(get_merge_data))
         .at("/save", poem::put(save))
+        .at("/exit", poem::post(exit))
         .with(AddData::new(input));
     let app = Route::new()
         .nest("/", EmbeddedFilesEndpoint::<StaticFiles>::new())
