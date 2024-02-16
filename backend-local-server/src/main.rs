@@ -1,15 +1,12 @@
-use std::net::ToSocketAddrs;
-
 use clap::Parser;
 use poem::endpoint::EmbeddedFilesEndpoint;
 use poem::error::ResponseError;
 use poem::http::StatusCode;
 use poem::listener::TcpListener;
-use poem::web::Json;
-use poem::{handler, Result, Route, Server};
-use serde::Serialize;
+use poem::middleware::AddData;
+use poem::web::{Data, Json};
+use poem::{handler, EndpointExt, Result, Route, Server};
 use thiserror::Error;
-use tokio::runtime::EnterGuard;
 // use serde::Serialize;
 
 #[derive(rust_embed::RustEmbed)]
@@ -43,25 +40,24 @@ impl ResponseError for ServerError {
 }
 
 #[handler]
-fn get_merge_data() -> Result<Json<diff_tool_logic::EntriesToCompare>> {
-    Ok(Json(
-        diff_tool_logic::Input::FakeData
-            .scan()
-            .map_err(ServerError::from)?,
-    ))
+fn get_merge_data(
+    input: Data<&diff_tool_logic::Input>,
+) -> Result<Json<diff_tool_logic::EntriesToCompare>> {
+    Ok(Json(input.scan().map_err(ServerError::from)?))
 }
 #[handler]
-fn save(Json(data): Json<indexmap::IndexMap<String, String>>) -> Result<()> {
-    diff_tool_logic::Input::FakeData
-        .save(data)
-        .map_err(ServerError::from)?;
-    Ok(())
+fn save(
+    input: Data<&diff_tool_logic::Input>,
+    Json(data): Json<indexmap::IndexMap<String, String>>,
+) -> Result<Json<()>> {
+    input.save(data).map_err(ServerError::from)?;
+    Ok(Json(()))
 }
 
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error> {
     let cli = diff_tool_logic::Cli::parse();
-    let _input: diff_tool_logic::Input = cli
+    let input: diff_tool_logic::Input = cli
         .try_into()
         .unwrap_or_else(|err| panic!("{err}\nTODO: proper error instead of panic"));
 
@@ -75,33 +71,12 @@ async fn main() -> Result<(), std::io::Error> {
 
     let apis = Route::new()
         .at("/get_merge_data", poem::get(get_merge_data))
-        .at("/save", poem::put(save));
+        .at("/save", poem::put(save))
+        .with(AddData::new(input));
     let app = Route::new()
         .nest("/", EmbeddedFilesEndpoint::<StaticFiles>::new())
         .nest("/api", apis);
-    // .nest("/assets", EmbeddedFilesEndpoint::<StaticFiles>::new());
     let listen_to = "127.0.0.1:8080";
     eprintln!("Trying to listen at http://{listen_to}...");
     Server::new(TcpListener::bind(listen_to)).run(app).await
-
-    /*
-    let static_files = warp_embed::embed(&StaticFiles {});
-    let api_paths = warp::path("get_merge_data").map(move || input.clone().scan());
-    let api_paths = api_paths.and(warp::path::end()).map(result_to_warp_reply);
-    let server = warp::path("api")
-        .and(api_paths)
-        .or(static_files.and(warp::get()))
-        .with(warp::log("http"));
-    let listen = listen_to.to_string().to_socket_addrs().unwrap();
-    let binded: Vec<_> = listen
-        .map(|x| {
-            let binded = warp::serve(server.clone()).bind(x);
-            info!("binded: {}", x);
-            tokio::spawn(binded)
-        })
-        .collect();
-    for one in binded {
-        one.await.unwrap();
-    }
-    */
 }
