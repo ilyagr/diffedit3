@@ -62,7 +62,10 @@ function render_input(unique_id: string, merge_input: MergeInput) {
           >
             ⇩ Next Change
           </button>
-          <button id="linewrap_${k_uid(k)}">(Un)Wrap Lines</button>
+          <button id="linewrap_${k_uid(k)}" hidden>
+            <!--Buggy with collapseIdentical, see comment below -->
+            (Un)Wrap Lines
+          </button>
         </summary>
         <div id="cm_${k_uid(k)}"></div>
       </details>
@@ -89,7 +92,10 @@ function render_input(unique_id: string, merge_input: MergeInput) {
       origLeft: merge_input[k].left ?? "", // Set to null for 2 panes
       orig: merge_input[k].right ?? "",
       lineNumbers: true,
-      lineWrapping: true,
+      /* TODO: Toggling line wrapping breaks `collapseIdentical`. Need a
+      settings system where the user can decide whether they want line wrapping,
+      save, and reload. */
+      lineWrapping: false,
       mode: "text/plain",
       connect: "align",
       collapseIdentical: true,
