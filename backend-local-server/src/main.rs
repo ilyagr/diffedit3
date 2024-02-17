@@ -11,7 +11,6 @@ use poem::{handler, EndpointExt, Result, Route, Server};
 use thiserror::Error;
 use tokio::sync::oneshot;
 use tokio::sync::oneshot::error::TryRecvError;
-// use serde::Serialize;
 
 #[derive(rust_embed::RustEmbed)]
 #[folder = "../webapp/dist"]

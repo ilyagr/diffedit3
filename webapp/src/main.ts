@@ -42,6 +42,8 @@ function render_input(unique_id: string, merge_input: MergeInput) {
   for (let k in merge_input) {
     templates.push(html`
       <details open>
+        <!-- TODO: Starting with closed details breaks CodeMirror, especially
+          on larger files -->
         <summary>
           <code>${k}</code>
           <button id="collapse_${k_uid(k)}" hidden>
