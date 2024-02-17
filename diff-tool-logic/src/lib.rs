@@ -82,7 +82,7 @@ impl Input {
         };
 
         for (relpath, contents) in result.into_iter() {
-            let relpath = dbg!(PathBuf::from(relpath));
+            let relpath = PathBuf::from(relpath);
             let path = outdir.join(relpath);
             std::fs::write(path.clone(), contents)
                 .map_err(|io_err| DataSaveError::IOError(path, io_err))?;

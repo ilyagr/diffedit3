@@ -72,3 +72,10 @@ the user when the last successful save happened.
 Simple part: don't overwrite unchanged files
 
 Harder: separate save buttons per file and maybe an overall save button.
+
+
+## Make it work with git?
+
+Might be hard, see https://stackoverflow.com/questions/9023928/git-add-patch-with-difftool
+
+Maybe `git-edit-staging-area`?

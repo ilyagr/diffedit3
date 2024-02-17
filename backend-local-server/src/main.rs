@@ -16,19 +16,6 @@ use tokio::sync::oneshot::error::TryRecvError;
 #[folder = "../webapp/dist"]
 struct StaticFiles;
 
-// https://github.com/pyrossh/rust-embed/blob/master/examples/poem.rs
-// TODO: https://github.com/poem-web/poem/blob/master/examples/poem/embed-files/src/main.rs
-// TODO: https://github.com/poem-web/poem/blob/master/examples/poem/custom-error/src/main.rs
-
-// fn result_to_warp_reply<T: Serialize, Err: Serialize>(result: Result<T, Err>)
-// -> impl warp::Reply {     match result {
-//         Ok(data) => warp::reply::with_status(warp::reply::json(&data),
-// StatusCode::OK),         Err(err) => {
-//             warp::reply::with_status(warp::reply::json(&err),
-// StatusCode::INTERNAL_SERVER_ERROR)         }
-//     }
-// }
-
 #[derive(Debug, Error)]
 enum ServerError {
     #[error("{0}")]
@@ -58,7 +45,7 @@ fn save(
 }
 #[handler]
 fn exit(Json(code): Json<i32>) -> Result<Json<()>> {
-    eprintln!("Exiting the diff tool with error code {code}");
+    eprintln!("Stopping the local server and exiting the diff editor with error code {code}.");
     std::process::exit(code);
 }
 
@@ -100,6 +87,10 @@ async fn main() -> Result<(), std::io::Error> {
             Err(TryRecvError::Empty) => {
                 // TODO: Find a way to check whether the server started. Currently, if server
                 // startup takes more than 200ms, the browser will launch.
+                // https://github.com/poem-web/poem/discussions/751
+                // Could also switch from `poem` to `axum` for this; https://github.com/tokio-rs/axum/discussions/1701#discussioncomment-4701278
+                // https://docs.rs/hyper/0.14.23/hyper/server/struct.Builder.html#method.serve might work.
+                // https://github.com/tokio-rs/axum/blob/d703e6f97a0156177466b6741be0beac0c83d8c7/examples/testing/src/main.rs#L131
                 eprint!("Trying to launch a browser at {http_address_clone}...");
                 match open::that(http_address_clone) {
                     Ok(_) => eprintln!(" Success!"),
