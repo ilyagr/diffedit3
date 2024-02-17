@@ -237,7 +237,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       exit_success(); // Do not wait for the result
       // Make sure the exit command has time to get sent. For local server backend,
       // we still need to close the window manually.
-      await new Promise((r) => setTimeout(r, 200));
+      await new Promise((r) => setTimeout(r, 100));
       window.close();
     });
   let abandon_changes_and_quit = async () =>
@@ -249,7 +249,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       exit_user_abandoned_merge(); // Do not wait for the result
       // Make sure the exit command has time to get sent. For local server backend,
       // we still need to close the window manually.
-      await new Promise((r) => setTimeout(r, 200));
+      await new Promise((r) => setTimeout(r, 100));
       window.close();
     });
   let revert = () => {
