@@ -41,9 +41,8 @@ function render_input(unique_id: string, merge_input: MergeInput) {
   let k_uid = (k: string) => `${k}_${unique_id}`;
   for (let k in merge_input) {
     templates.push(html`
-      <details open>
-        <!-- TODO: Starting with closed details breaks CodeMirror, especially
-          on larger files -->
+      <details open id="details_${k_uid(k)}">
+        <!-- We will close this with javascript shortly. See below. -->
         <summary>
           <code>${k}</code>
           <button id="collapse_${k_uid(k)}" hidden>
@@ -80,6 +79,9 @@ function render_input(unique_id: string, merge_input: MergeInput) {
     let linewrapButtonEl = document.getElementById(`linewrap_${k_uid(k)}`)!;
     let prevChangeButtonEl = document.getElementById(`prevChange_${k_uid(k)}`)!;
     let nextChangeButtonEl = document.getElementById(`nextChange_${k_uid(k)}`)!;
+    let detailsButtonEl = <HTMLDetailsElement>(
+      document.getElementById(`details_${k_uid(k)}`)!
+    );
     let cmEl = document.getElementById(`cm_${k_uid(k)}`)!;
 
     let config = {
@@ -106,6 +108,11 @@ function render_input(unique_id: string, merge_input: MergeInput) {
     linewrapButtonEl.onclick = () => cm_toggleLineWrapping(merge_view.editor());
     prevChangeButtonEl.onclick = () => cm_prevChange(merge_view.editor());
     nextChangeButtonEl.onclick = () => cm_nextChange(merge_view.editor());
+    // Starting with details closed breaks CodeMirror, especially line numbers
+    // in left and right merge view.
+    detailsButtonEl.open = false;
+    detailsButtonEl.ontoggle = () => merge_view.editor().refresh();
+    console.log(detailsButtonEl);
 
     // TODO: Resizing. See https://codemirror.net/5/demo/merge.html
     merge_views[k] = merge_view;

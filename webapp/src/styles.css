@@ -86,6 +86,17 @@ button[disabled]
   color: grey;
 }
 
+details > summary {
+  height: 3.2em;
+  line-height: 3.2em;
+  vertical-align: middle;
+  justify-content:center;
+}
+
+details:not([open]) > summary > button {
+  display: none;
+}
+
 /* https://discuss.codemirror.net/t/how-to-always-display-cursor/227/12 */
 .CodeMirror-merge-editor .CodeMirror:not(.CodeMirror-focused) .CodeMirror-cursors {
   visibility: visible !important;
