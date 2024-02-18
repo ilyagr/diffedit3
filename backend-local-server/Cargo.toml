@@ -1,6 +1,6 @@
 [package]
-name = "backend-local-server"
-version = "0.1.0"
+name = "diffedit3-web"
+version = "0.0.1"
 edition = "2021"
 
 [dependencies]
