@@ -104,7 +104,8 @@ jobs:
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        # with:
+        with:
+          includeDebug: true # Maybe will avoid "No artifacts found" error
         # Will publish a release manually
         # tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
         # releaseName: "App v__VERSION__"
