@@ -70,7 +70,7 @@ button {
 
 button {
   cursor: pointer;
-  user-select:none;
+  user-select: none;
   -webkit-user-select: none;
 }
 
@@ -83,18 +83,19 @@ button:active {
 }
 
 button:disabled,
-button[disabled], button:disabled:active, button[disabled]:active
-{
+button[disabled],
+button:disabled:active,
+button[disabled]:active {
   color: grey;
   /* Do not change color on click */
-  background-color: inherit; 
+  background-color: inherit;
 }
 
 details > summary {
   height: 3.2em;
   line-height: 3.2em;
   vertical-align: middle;
-  justify-content:center;
+  justify-content: center;
 }
 
 details:not([open]) > summary > button {
@@ -102,10 +103,14 @@ details:not([open]) > summary > button {
 }
 
 /* https://discuss.codemirror.net/t/how-to-always-display-cursor/227/12 */
-.CodeMirror-merge-editor .CodeMirror:not(.CodeMirror-focused) .CodeMirror-cursors {
+.CodeMirror-merge-editor
+  .CodeMirror:not(.CodeMirror-focused)
+  .CodeMirror-cursors {
   visibility: visible !important;
 }
-.CodeMirror-merge-editor .CodeMirror:not(.CodeMirror-focused) .CodeMirror-cursor {
+.CodeMirror-merge-editor
+  .CodeMirror:not(.CodeMirror-focused)
+  .CodeMirror-cursor {
   border-left: 1ex solid;
   opacity: 0.3;
 }
@@ -136,7 +141,7 @@ dialog {
 .main-menu button.main-menu-toggle {
   border: thin solid transparent;
   font-size: 0.8em;
-  position:fixed;
+  position: fixed;
   right: 15px;
   top: 15px;
   height: 25px;
@@ -147,31 +152,29 @@ dialog {
 }
 
 .main-menu.collapsed button:not(.main-menu-toggle) {
-  display:none;
+  display: none;
 }
 .main-menu.collapsed {
-  width:fit-content;
-  height:fit-content;
+  width: fit-content;
+  height: fit-content;
   /* TODO: Fix annoyance where doc contents jumps up/down when toggling the menu
    * See maybe https://stackoverflow.com/questions/28864210/sticky-navigation-element-jumps-during-scroll
    * This happens somewhat even if we kept `position: sticky` here.
    */
-  position: fixed; 
-    /* TODO: Fix bug; this border is drawn in the wrong place if visible */
+  position: fixed;
+  /* TODO: Fix bug; this border is drawn in the wrong place if visible */
   border: none;
 }
 button.main-menu-toggle .if-menu-hidden {
-  display:none;
+  display: none;
 }
 .collapsed button.main-menu-toggle .if-menu-hidden {
-  display:block;
+  display: block;
 }
 .collapsed button.main-menu-toggle .if-menu-shown {
   display: none;
 }
 
-
-  
 .main-menu .collapsed button {
   font-size: 0.8em;
 }
