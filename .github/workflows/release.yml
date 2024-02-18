@@ -10,7 +10,7 @@ env:
   CARGO_INCREMENTAL: 0
 
 jobs:
-  build-release:
+  publish-web:
     name: build-release
     permissions:
       contents: write
@@ -56,10 +56,10 @@ jobs:
           cd "$outdir"
           ls # Debug
           if [ "${{ matrix.os }}" = "windows-2022" ]; then
-            7z a "../../$name.zip" diffedit3-web.exe
+            7z a "../../../$name.zip" diffedit3-web.exe
             echo "ASSET=$name.zip" >> $GITHUB_ENV
           else
-            tar czf "../../$name.tar.gz"  diffedit3-web
+            tar czf "../../../$name.tar.gz"  diffedit3-web
             echo "ASSET=$name.tar.gz" >> $GITHUB_ENV
           fi
       - name: Upload release archive
@@ -122,10 +122,10 @@ jobs:
           cd "$outdir"
           ls # Debug
           if [ "${{ matrix.os }}" = "windows-2022" ]; then
-            7z a "../../$name.zip" diffedit3-gui.exe
+            7z a "../../../$name.zip" diffedit3-gui.exe
             echo "ASSET=$name.zip" >> $GITHUB_ENV
           else
-            tar czf "../../$name.tar.gz"  diffedit3-gui
+            tar czf "../../../$name.tar.gz"  diffedit3-gui
             echo "ASSET=$name.tar.gz" >> $GITHUB_ENV
           fi
       - name: Upload release archive
