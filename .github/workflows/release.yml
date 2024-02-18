@@ -101,17 +101,16 @@ jobs:
       - name: install frontend dependencies
         run: npm install
 
-      - uses: tauri-apps/tauri-action@v0
+      - uses: ilyagr/tauri-action@patch-1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          includeDebug: true # Maybe will avoid "No artifacts found" error
         # Will publish a release manually
-        # tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
-        # releaseName: "App v__VERSION__"
-        # releaseBody: "See the assets to download this version and install."
-        # releaseDraft: true
-        # prerelease: false
+        # with:
+        #   tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
+        #   releaseName: "App v__VERSION__"
+        #   releaseBody: "See the assets to download this version and install."
+        #   releaseDraft: true
+        #   prerelease: false
 
       - name: Build archive
         shell: bash
