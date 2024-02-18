@@ -78,7 +78,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # TODO: Make this more consistent with the other binary
         platform: [macos-latest, ubuntu-20.04, windows-latest]
+        include:
+          - platform: macos-latest
+            os: darwin
+          - platform: ubuntu-20.04
+            os: linux # TODO: musl?
+          - platform: windows-latest
+            os: windows-2022
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -116,17 +124,19 @@ jobs:
         shell: bash
         run: |
           # TODO: Create a third action to combine both in one archive
-          outdir="target/${{ matrix.target }}/release"
-          name="diffedit3-gui-${{ github.event.release.tag_name }}-${{ matrix.target }}"
+          outdir="target/release"
+          name="diffedit3-gui-${{ github.event.release.tag_name }}-${{ matrix.os }}"
           cd "$outdir"
           ls # Debug
           if [ "${{ matrix.os }}" = "windows-2022" ]; then
-            7z a "../../../$name.zip" diffedit3-gui.exe
+            7z a "../../$name.zip" diffedit3-gui.exe
             echo "ASSET=$name.zip" >> $GITHUB_ENV
           else
-            tar czf "../../../$name.tar.gz"  diffedit3-gui
+            tar czf "../../$name.tar.gz"  diffedit3-gui
             echo "ASSET=$name.tar.gz" >> $GITHUB_ENV
           fi
+          cd ../..
+          ls
       - name: Upload release archive
         uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
         env:
