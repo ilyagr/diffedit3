@@ -91,10 +91,12 @@ impl Input {
     }
 }
 
+use clap::Parser;
 // TODO: Maybe try https://docs.rs/clap/latest/clap/_derive/index.html#adding-hand-implemented-subcommands-to-a-derived-application
 // to make alternative parsers for demo and not demo. More likely, it's not
 // worth the time. Just use a subcommand?
-use clap::Parser;
+// TODO: Move the docstring to `backend_tauri`
+/// Compare three directories, allowing the user to edit one of them
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
 pub struct Cli {
@@ -102,7 +104,7 @@ pub struct Cli {
     ///
     /// If OUTPUT is not specified, the output goes to RIGHT.
     dirs: Vec<PathBuf>,
-    /// Use demo fake data
+    /// Use fake data for a demo. No need to specify any DIRs
     #[arg(long, conflicts_with("dirs"))]
     demo: bool,
 }

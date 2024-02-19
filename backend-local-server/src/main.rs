@@ -16,6 +16,24 @@ use tokio::sync::oneshot::error::TryRecvError;
 #[folder = "../webapp/dist"]
 struct StaticFiles;
 
+/// Compare three directories in a browser and allow editing one of them
+#[derive(Parser)]
+#[command(version, about)]
+pub struct LocalServerCli {
+    #[command(flatten)]
+    lib_cli: diff_tool_logic::Cli,
+    /// Port to use for `http://127.0.0.1`
+    #[arg(long, short, default_value = "8080")]
+    port: usize,
+    /// Do not try to open the browser automatically
+    ///
+    /// See https://crates.io/crates/open for a brief description of how the
+    /// default browser is chosen. The `BROWSER` environment variable may be
+    /// considered by `xdg-open` and similar commands.
+    #[arg(long, short = 'N')]
+    no_browser: bool,
+}
+
 #[derive(Debug, Error)]
 enum ServerError {
     #[error("{0}")]
@@ -51,8 +69,8 @@ fn exit(Json(code): Json<i32>) -> Result<Json<()>> {
 
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error> {
-    let cli = diff_tool_logic::Cli::parse();
-    let input: diff_tool_logic::Input = cli.try_into().unwrap_or_else(|err| {
+    let cli = LocalServerCli::parse();
+    let input: diff_tool_logic::Input = cli.lib_cli.try_into().unwrap_or_else(|err| {
         eprintln!("Error: {err}");
         std::process::exit(2)
     });
@@ -76,30 +94,33 @@ async fn main() -> Result<(), std::io::Error> {
 
     let (server_dead_send, mut server_dead_recv) = oneshot::channel();
 
-    let listen_to = "127.0.0.1:8080";
+    let listen_to = format!("127.0.0.1:{}", cli.port);
     let http_address = format!("http://{listen_to}");
-    let http_address_clone = http_address.clone();
-    tokio::task::spawn_blocking(move || {
-        // Try to avoid starting the browser if the server failed to start.
-        std::thread::sleep(Duration::from_millis(200));
-        match server_dead_recv.try_recv() {
-            Ok(()) => { /* Server quit already */ }
-            Err(TryRecvError::Empty) => {
-                // TODO: Find a way to check whether the server started. Currently, if server
-                // startup takes more than 200ms, the browser will launch.
-                // https://github.com/poem-web/poem/discussions/751
-                // Could also switch from `poem` to `axum` for this; https://github.com/tokio-rs/axum/discussions/1701#discussioncomment-4701278
-                // https://docs.rs/hyper/0.14.23/hyper/server/struct.Builder.html#method.serve might work.
-                // https://github.com/tokio-rs/axum/blob/d703e6f97a0156177466b6741be0beac0c83d8c7/examples/testing/src/main.rs#L131
-                eprint!("Trying to launch a browser at {http_address_clone}...");
-                match open::that(http_address_clone) {
-                    Ok(_) => eprintln!(" Success!"),
-                    Err(err) => eprintln!("\nFailed to launch a browser: {err}"),
+
+    if !cli.no_browser {
+        let http_address_clone = http_address.clone();
+        tokio::task::spawn_blocking(move || {
+            // Try to avoid starting the browser if the server failed to start.
+            std::thread::sleep(Duration::from_millis(200));
+            match server_dead_recv.try_recv() {
+                Ok(()) => { /* Server quit already */ }
+                Err(TryRecvError::Empty) => {
+                    // TODO: Find a way to check whether the server started. Currently, if server
+                    // startup takes more than 200ms, the browser will launch.
+                    // https://github.com/poem-web/poem/discussions/751
+                    // Could also switch from `poem` to `axum` for this; https://github.com/tokio-rs/axum/discussions/1701#discussioncomment-4701278
+                    // https://docs.rs/hyper/0.14.23/hyper/server/struct.Builder.html#method.serve might work.
+                    // https://github.com/tokio-rs/axum/blob/d703e6f97a0156177466b6741be0beac0c83d8c7/examples/testing/src/main.rs#L131
+                    eprint!("Trying to launch a browser at {http_address_clone}...");
+                    match open::that(http_address_clone) {
+                        Ok(_) => eprintln!(" Success!"),
+                        Err(err) => eprintln!("\nFailed to launch a browser: {err}"),
+                    }
                 }
-            }
-            Err(TryRecvError::Closed) => { /* Should never happen */ }
-        };
-    });
+                Err(TryRecvError::Closed) => { /* Should never happen */ }
+            };
+        });
+    }
 
     eprintln!("Trying to listen at {http_address}...");
     Server::new(TcpListener::bind(listen_to)).run(app).await?;

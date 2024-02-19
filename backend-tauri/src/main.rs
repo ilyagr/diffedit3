@@ -44,9 +44,10 @@ fn get_merge_data(
 // CSS property
 fn main() {
     let cli = diff_tool_logic::Cli::parse();
-    let input: diff_tool_logic::Input = cli
-        .try_into()
-        .unwrap_or_else(|err| panic!("{err}\nTODO: proper error instead of panic"));
+    let input: diff_tool_logic::Input = cli.try_into().unwrap_or_else(|err| {
+        eprintln!("Error: {err}");
+        std::process::exit(2)
+    });
 
     let abandon_changes_and_quit = CustomMenuItem::new(
         "abandon_changes_and_quit".to_string(),
