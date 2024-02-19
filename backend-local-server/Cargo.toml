@@ -1,0 +1,15 @@
+[package]
+name = "diffedit3-web"
+version = { workspace = true }
+edition = { workspace = true }
+
+[dependencies]
+clap = { version = "4.5.0", features = ["derive"] }
+diff-tool-logic = { path = "../diff-tool-logic" }
+indexmap = { version = "2.2.3", features = ["serde"] }
+open = "5.0.1"
+poem = { version = "2.0.0", features = ["embed"] }
+rust-embed = { version = "8.2.0" }
+serde = { version = "1.0.196", features = ["serde_derive"] }
+thiserror = "1.0.57"
+tokio = { version = "1.36.0", features = ["macros", "rt-multi-thread"] }

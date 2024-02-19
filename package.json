@@ -1,0 +1,14 @@
+{
+  "name": "diffedit3",
+  "scripts": {
+    "dev": "cd webapp && vite",
+    "build": "cd webapp && tsc && vite build",
+    "preview": "cd webapp && vite preview",
+    "watch": "cd webapp && vite build --watch",
+    "tauri": "cd webapp && tauri"
+  },
+  "workspaces": [
+    "webapp"
+  ]
+}
+

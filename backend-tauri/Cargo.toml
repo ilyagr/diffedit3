@@ -1,0 +1,20 @@
+[package]
+name = "diffedit3-gui"
+version = { workspace = true }
+edition = { workspace = true }
+
+[build-dependencies]
+tauri-build = { version = "1.5", features = [] }
+
+[dependencies]
+tauri = { version = "1.5", features = ["process-exit", "process-relaunch"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+indexmap = { version = "2.2.3", features = ["serde"] }
+clap = { version = "4.5.0", features = ["derive"] }
+diff-tool-logic = { path = "../diff-tool-logic" }
+
+[features]
+# this feature is used for production builds or when `devPath` points to the filesystem
+# DO NOT REMOVE!!
+custom-protocol = ["tauri/custom-protocol"]

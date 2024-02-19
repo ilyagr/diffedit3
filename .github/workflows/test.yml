@@ -1,0 +1,67 @@
+name: build
+
+on:
+  push:
+    branches:
+      - main
+      - release
+      - release-candidate
+      - ci
+  pull_request:
+
+permissions: read-all
+
+env:
+  CARGO_INCREMENTAL: 0
+  CARGO_PROFILE_DEV_DEBUG: 0
+
+jobs:
+  check-dist-up-to-date:
+    name: Check that webapp was compiled
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 21
+
+      - name: install frontend dependencies
+        run: npm install
+
+      - name: build
+        run: npm run build
+
+      - name: Check for uncommitted changes
+        shell: bash
+        # This check might be a bit flaky. If it becomes a problem,
+        # we could maybe check modification dates instead.
+        run: |
+          git add -N . # `git diff` ignores added files without this
+          # git diff
+          if git diff --stat --exit-code; then
+              echo "OK, building the webapp did not cause any changes."
+          else
+              echo
+              echo 'Updates to the webapp were not bundled to webapp/dist/.'
+              echo 'Please run:'
+              echo '   rm -r node_modules package-lock.json && npm install && npm run build'
+              exit 1
+          fi
+  clippy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@1482605bfc5719782e1267fd0c0cc350fe7646b8
+        with:
+          toolchain: 1.76
+          components: clippy
+      - name: install dependencies (ubuntu + Tauri only)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev librsvg2-dev patchelf
+      - name: Clippy
+        run: cargo clippy --workspace --all-targets --verbose

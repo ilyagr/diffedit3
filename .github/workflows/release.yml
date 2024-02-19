@@ -1,0 +1,148 @@
+name: Release
+
+on:
+  release:
+    types: [created]
+
+permissions: read-all
+
+env:
+  CARGO_INCREMENTAL: 0
+
+jobs:
+  publish-web:
+    name: build-release
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        build: [linux-musl, macos-x86_64, macos-aarch64, win-msvc]
+        include:
+          - build: linux-musl
+            os: ubuntu-20.04
+            target: x86_64-unknown-linux-musl
+          - build: macos-x86_64
+            os: macos-11
+            target: x86_64-apple-darwin
+          - build: macos-aarch64
+            os: macos-14
+            target: aarch64-apple-darwin
+          - build: win-msvc
+            os: windows-2022
+            target: x86_64-pc-windows-msvc
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+      # - name: Install packages (Ubuntu)
+      #   if: matrix.os == 'ubuntu-20.04'
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y --no-install-recommends xz-utils liblz4-tool musl-tools
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@1482605bfc5719782e1267fd0c0cc350fe7646b8
+        with:
+          toolchain: stable
+          target: ${{ matrix.target }}
+      - name: Build release binary
+        run: cargo build --target ${{ matrix.target }} --verbose --release -p diffedit3-web
+      - name: Build archive
+        shell: bash
+        run: |
+          # TODO: Create a third action to combine both in one archive
+          outdir="target/${{ matrix.target }}/release"
+          name="diffedit3-web-${{ github.event.release.tag_name }}-${{ matrix.target }}"
+          cd "$outdir"
+          ls # Debug
+          if [ "${{ matrix.os }}" = "windows-2022" ]; then
+            7z a "../../../$name.zip" diffedit3-web.exe
+            echo "ASSET=$name.zip" >> $GITHUB_ENV
+          else
+            tar czf "../../../$name.tar.gz"  diffedit3-web
+            echo "ASSET=$name.tar.gz" >> $GITHUB_ENV
+          fi
+      - name: Upload release archive
+        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ${{ env.ASSET }}
+          asset_name: ${{ env.ASSET }}
+          asset_content_type: application/octet-stream
+
+  publish-tauri:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        # TODO: Make this more consistent with the other binary
+        platform: [macos-latest, ubuntu-20.04, windows-latest]
+        include:
+          - platform: macos-latest
+            os: darwin
+          - platform: ubuntu-20.04
+            os: linux # TODO: musl?
+          - platform: windows-latest
+            os: windows-2022
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 21
+
+      - name: install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: install dependencies (ubuntu only)
+        if: matrix.platform == 'ubuntu-20.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev librsvg2-dev patchelf
+
+      - name: install frontend dependencies
+        run: npm install
+
+      - uses: ilyagr/tauri-action@patch-1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Will publish a release manually
+        # with:
+        #   tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
+        #   releaseName: "App v__VERSION__"
+        #   releaseBody: "See the assets to download this version and install."
+        #   releaseDraft: true
+        #   prerelease: false
+
+      - name: Build archive
+        shell: bash
+        run: |
+          # TODO: Create a third action to combine both in one archive
+          outdir="target/release"
+          name="diffedit3-gui-${{ github.event.release.tag_name }}-${{ matrix.os }}"
+          cd "$outdir"
+          ls # Debug
+          if [ "${{ matrix.os }}" = "windows-2022" ]; then
+            7z a "../../$name.zip" diffedit3-gui.exe
+            echo "ASSET=$name.zip" >> $GITHUB_ENV
+          else
+            tar czf "../../$name.tar.gz"  diffedit3-gui
+            echo "ASSET=$name.tar.gz" >> $GITHUB_ENV
+          fi
+          cd ../..
+          ls
+      - name: Upload release archive
+        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ${{ env.ASSET }}
+          asset_name: ${{ env.ASSET }}
+          asset_content_type: application/octet-stream

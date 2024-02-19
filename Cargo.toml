@@ -1,0 +1,13 @@
+[workspace.package]
+version = "0.0.1" # Also update package.json and tauri.conf.json
+edition = "2021"
+
+[workspace]
+members = ["diff-tool-logic", "backend-tauri", "backend-local-server"]
+default-members = [
+    "diff-tool-logic",
+    "backend-local-server",
+    # `cargo build` should ignore the Tauri binary.
+    # `cargo tauri build` must be used for that.
+]
+resolver = "2"
