@@ -1,4 +1,6 @@
 {
+  "name": "diffedit3",
+  "private": true,
   "scripts": {
     "dev": "cd webapp && vite",
     "build": "cd webapp && tsc && vite build",

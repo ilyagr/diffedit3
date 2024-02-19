@@ -1,11 +1,11 @@
 [package]
 name = "diffedit3-web"
-version = "0.0.1"
-edition = "2021"
+version = { workspace = true }
+edition = { workspace = true }
 
 [dependencies]
 clap = { version = "4.5.0", features = ["derive"] }
-diff-tool-logic = { version = "0.1.0", path = "../diff-tool-logic" }
+diff-tool-logic = { path = "../diff-tool-logic" }
 indexmap = { version = "2.2.3", features = ["serde"] }
 open = "5.0.1"
 poem = { version = "2.0.0", features = ["embed"] }
