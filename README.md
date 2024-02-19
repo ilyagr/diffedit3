@@ -57,7 +57,12 @@ Then, the tool will be used for `jj split` and many other commands.
 
 `diffedit3` presents the user with a three-way comparison between two or three
 directories. The user can then edit the middle pane, creating any intermediate
-version of the data they like. If you are not familiar with the various `jj` operations where this is useful, the most obvious use-cases are:
+version of the data they like. This interface is not novel, Meld can be
+configured in the same way. However, I believe it should be better known and
+used more.
+
+If you are not familiar with the various `jj` operations where this is useful,
+the most obvious use-cases are:
 
 - splitting commits, as I [explained in detail in a feature
 request](https://forum.scootersoftware.com/forum/beyond-compare-discussion/general-aa/92039-text-merge-potential-improvements-options-for-vcs-purposes?p=92054#post92054).
