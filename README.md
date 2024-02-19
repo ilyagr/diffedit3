@@ -112,6 +112,7 @@ Some alternatives to CodeMirror 5 we could consider:
 - No dark theme support
 - Hard to tell blank lines from missing lines.
 - Who knows how soon it'll be abandoned and unsupported.
+- It's difficult to get it to work with modern web frameworks.
 
 
 
@@ -184,6 +185,19 @@ In both cases, the binary will be produced in the `target/release` dir.
 
 ## Development
 
+### A note on branches
+
+The commit history of the `dev` branch is messy. The branch may be force-pushed
+at any time. 
+
+The `release` branch is not meant to be force-pushed.
+
+Branches with names like `v0.0.1-ish` belong to the `dev` branch and may be
+force-pushed or disappear. However, they should roughly correspond to the
+corresponding commit of the `release` branch.
+
+A `main` branch with a more readable history may or may not eventually appear.
+
 ### Prerequisites
 
 
@@ -207,13 +221,14 @@ In both cases, the binary will be produced in the `target/release` dir.
 
 ### Keep track on which file tabs were opened on reload
 
-Would need to send data to the server regularly. Could be combined with the
-following item.
+Would need to send data to the server regularly.
 
-### Regularly check whether the local server is alive, and whether it's the same server that started the webapp
+### Regularly check whether the local server is alive
 
-This mainly requires a UI. The server can have a `/api/ping` route that returns
-a randomly generated session id.
+This mainly requires a UI. The server can have a `/api/ping` route. We could
+verify if it's the same server that started the webapp at the same time, though
+it's probably better to make a more general check of whether the on-disk
+directory state is as expected (see the next item).
 
 ### Warning for unsaved changes, fancier save button
 
