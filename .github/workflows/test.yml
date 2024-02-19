@@ -35,6 +35,8 @@ jobs:
 
       - name: Check for uncommitted changes
         shell: bash
+        # This check might be a bit flaky. If it becomes a problem,
+        # we could maybe check modification dates instead.
         run: |
           git add -N . # `git diff` ignores added files without this
           # git diff
