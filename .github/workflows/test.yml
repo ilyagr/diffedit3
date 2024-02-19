@@ -6,6 +6,7 @@ on:
       - main
       - release
       - release-candidate
+      - ci
   pull_request:
 
 permissions: read-all
@@ -24,7 +25,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 21
 
       - name: install frontend dependencies
         run: npm install
@@ -36,13 +37,14 @@ jobs:
         shell: bash
         run: |
           git add -N . # `git diff` ignores added files without this
-          if git diff --summary --exit-code; then
+          # git diff
+          if git diff --stat --exit-code; then
               echo "OK, building the webapp did not cause any changes."
           else
               echo
               echo 'Updates to the webapp were not bundled to webapp/dist/.'
-              echo 'Please run `npm install && npm run build`.'
-              echo 'Hint: use `npm run watch` while developing the webapp.'
+              echo 'Please run:'
+              echo '   rm -r node_modules .package-lock.json && npm install && npm run build'
               exit 1
           fi
   clippy:
