@@ -46,7 +46,7 @@ jobs:
               echo
               echo 'Updates to the webapp were not bundled to webapp/dist/.'
               echo 'Please run:'
-              echo '   rm -r node_modules .package-lock.json && npm install && npm run build'
+              echo '   rm -r node_modules package-lock.json && npm install && npm run build'
               exit 1
           fi
   clippy:
