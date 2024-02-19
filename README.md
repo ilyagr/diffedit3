@@ -7,7 +7,9 @@ it will hopefully become a part of `jj`.
 See [below](#potential-uses-outside-jj) for the explanation of the purpose of
 `diffedit3` for people less familiar with `jj`.
 
-TODO: image
+![Screenshot of v. 0.0.1](diffedit3-0.0.1-screenshot.png)
+
+The name `diffedit3` may change in the near future.
 
 The interface of `diffedit3` is quite similar to that of
 [Meld](https://meldmerge.org/), when used in the [experimental 3-pane diff
@@ -71,11 +73,11 @@ request](https://forum.scootersoftware.com/forum/beyond-compare-discussion/gener
     the HEAD commit, until you explicitly commit the staged changes or restore the
     working copy from the staged changes.
 
-The second of these could be implemented by some sort of a script that would get
-Git to first materialize the three versions of the repo in three dirs on dist
-(perhaps limiting them to the modified files). After `diffedit3` is done, the
-script would have to the output and tell git to make that output the new
-contents of the staging area. This is along the lines of a [StackOverflow
+The "interactive `git add -p`"  could be implemented by some sort of a script
+that would get Git to first materialize the three versions of the repo in three
+dirs on disk (perhaps limiting them to the modified files). After `diffedit3` is
+done, the script would have to the output and tell git to make that output the
+new contents of the staging area. This is along the lines of a [StackOverflow
 question](https://stackoverflow.com/questions/9023928/git-add-patch-with-difftool).
 
 Alternatively, it might be easier to make a dedicated tool using something like
@@ -141,7 +143,7 @@ A UI that shows the base of the conflict, the two sides of the conflict, and an
 output pane for the user to resolve the conflicts in would be a desirable
 addition to `diffedit3`. It is likely laborious to add. I am not aware of a
 preexisting JS library that implements such a UI. On the other hand, there are
-many existing alternatives.
+many existing alternative programs of varying levels of polish that can do this.
 
 As an alternative for use with `jj`, I recommend setting up either
 [`kdiff3`](https://apps.kde.org/kdiff3/)
@@ -201,7 +203,7 @@ In both cases, the binary will be produced in the `target/release` dir.
    automatically refresh the app to use the latest version of the webapp from
    `webapp/` (as opposed to `webapp/dist) in dev mode. 
 
-## More minor TODOs
+## Shorter-term TODOs
 
 ### Keep track on which file tabs were opened on reload
 
