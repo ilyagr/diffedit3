@@ -107,7 +107,7 @@ jobs:
           sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev librsvg2-dev patchelf
 
       - name: install frontend dependencies
-        run: npm install
+        run: npm clean-install
 
       - uses: ilyagr/tauri-action@patch-1
         env:

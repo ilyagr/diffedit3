@@ -28,25 +28,22 @@ jobs:
           node-version: 21
 
       - name: install frontend dependencies
-        run: npm install
+        run: npm clean-install
 
       - name: build
         run: npm run build
 
       - name: Check for uncommitted changes
         shell: bash
-        # This check might be a bit flaky. If it becomes a problem,
-        # we could maybe check modification dates instead.
         run: |
           git add -N . # `git diff` ignores added files without this
-          # git diff
           if git diff --stat --exit-code; then
               echo "OK, building the webapp did not cause any changes."
           else
               echo
               echo 'Updates to the webapp were not bundled to webapp/dist/.'
               echo 'Please run:'
-              echo '   rm -r node_modules package-lock.json && npm install && npm run build'
+              echo '   npm clean-install && npm run build'
               exit 1
           fi
   clippy:
