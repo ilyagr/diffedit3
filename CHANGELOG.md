@@ -13,8 +13,10 @@ None
 
 ### New features
 
-None
-
+* diffedit3-web: new --port-range option allows trying a different port if the
+  first port we try is already in use (e.g. another instance of diffedit3-web is
+  running)
+  
 ### Fixed bugs
 
 Who's counting? Not me.

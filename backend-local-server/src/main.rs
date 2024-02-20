@@ -1,16 +1,14 @@
-use std::time::Duration;
+use std::io;
 
 use clap::Parser;
 use poem::endpoint::EmbeddedFilesEndpoint;
 use poem::error::ResponseError;
 use poem::http::StatusCode;
-use poem::listener::TcpListener;
+use poem::listener::{Acceptor, Listener, TcpListener};
 use poem::middleware::AddData;
 use poem::web::{Data, Json};
 use poem::{handler, EndpointExt, Result, Route, Server};
 use thiserror::Error;
-use tokio::sync::oneshot;
-use tokio::sync::oneshot::error::TryRecvError;
 
 #[derive(rust_embed::RustEmbed)]
 #[folder = "../webapp/dist"]
@@ -25,6 +23,13 @@ pub struct LocalServerCli {
     /// Port to use for `http://127.0.0.1`
     #[arg(long, short, default_value = "8080")]
     port: usize,
+    // TODO: Change syntax from `--port-range 8080 8085` to `--port 8080-8085`?
+    /// Minimum and maximum port numbers to try for `http://127.0.0.1`.
+    ///
+    /// First, the minimum port is tried. If that is busy, the next port is
+    /// tried, and so on.
+    #[arg(long, num_args(2), conflicts_with = "port")]
+    port_range: Option<Vec<usize>>,
     /// Do not try to open the browser automatically
     ///
     /// See https://crates.io/crates/open for a brief description of how the
@@ -67,6 +72,27 @@ fn exit(Json(code): Json<i32>) -> Result<Json<()>> {
     std::process::exit(code);
 }
 
+fn acceptor_to_socket_address(
+    acceptor: &poem::listener::TcpAcceptor,
+) -> Result<std::net::SocketAddr, io::Error> {
+    match acceptor
+        .local_addr()
+        .into_iter()
+        .filter_map(|addr| addr.as_socket_addr().cloned())
+        .next()
+    {
+        Some(addr) => Ok(addr),
+        None => Err(io::Error::new(
+            io::ErrorKind::Unsupported,
+            format!(
+                "Error: Unexpectedly listening at something other than a socket address or at no \
+                 address: {:?}",
+                &acceptor.local_addr()
+            ),
+        )),
+    }
+}
+
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error> {
     let cli = LocalServerCli::parse();
@@ -92,39 +118,48 @@ async fn main() -> Result<(), std::io::Error> {
         .nest("/", EmbeddedFilesEndpoint::<StaticFiles>::new())
         .nest("/api", apis);
 
-    let (server_dead_send, mut server_dead_recv) = oneshot::channel();
+    let (min_port, max_port) = match cli.port_range {
+        Some(v) => (v[0], v[1]), // Clap guarantees exactly two values
+        None => (cli.port, cli.port),
+    };
+    if min_port > max_port {
+        eprintln!(
+            "Error: the minimum port {min_port} cannot be greater than the maximum port \
+             {max_port}."
+        );
+        std::process::exit(2)
+    };
+    let mut port = min_port;
+    let mut error = None;
+    let acceptor = loop {
+        if port > max_port {
+            return Err(error.unwrap());
+        }
+        let listener = TcpListener::bind(format!("127.0.0.1:{}", port));
+        match listener.into_acceptor().await {
+            Ok(a) => break a,
+            Err(err) => {
+                eprintln!("Couldn't bind to port {port}.");
+                error = Some(err)
+            }
+        };
+        port += 1;
+    };
 
-    let listen_to = format!("127.0.0.1:{}", cli.port);
-    let http_address = format!("http://{listen_to}");
-
+    // Get the actual address we bound to. The primary reason to do this instead of
+    // using `port` is to find out what port number the OS picked if `cli.port==0`.
+    let socket_addr = acceptor_to_socket_address(&acceptor)?;
+    // Now that the acceptor exists, the browser should be able to connect IIUC.
+    let http_address = format!("http://{socket_addr}");
+    eprintln!("Listening at {http_address}.");
     if !cli.no_browser {
-        let http_address_clone = http_address.clone();
-        tokio::task::spawn_blocking(move || {
-            // Try to avoid starting the browser if the server failed to start.
-            std::thread::sleep(Duration::from_millis(200));
-            match server_dead_recv.try_recv() {
-                Ok(()) => { /* Server quit already */ }
-                Err(TryRecvError::Empty) => {
-                    // TODO: Find a way to check whether the server started. Currently, if server
-                    // startup takes more than 200ms, the browser will launch.
-                    // https://github.com/poem-web/poem/discussions/751
-                    // Could also switch from `poem` to `axum` for this; https://github.com/tokio-rs/axum/discussions/1701#discussioncomment-4701278
-                    // https://docs.rs/hyper/0.14.23/hyper/server/struct.Builder.html#method.serve might work.
-                    // https://github.com/tokio-rs/axum/blob/d703e6f97a0156177466b6741be0beac0c83d8c7/examples/testing/src/main.rs#L131
-                    eprint!("Trying to launch a browser at {http_address_clone}...");
-                    match open::that(http_address_clone) {
-                        Ok(_) => eprintln!(" Success!"),
-                        Err(err) => eprintln!("\nFailed to launch a browser: {err}"),
-                    }
-                }
-                Err(TryRecvError::Closed) => { /* Should never happen */ }
-            };
-        });
+        eprint!("Trying to launch a browser at {http_address}...");
+        match open::that(&http_address) {
+            Ok(_) => eprintln!(" Success!"),
+            Err(err) => eprintln!("\nFailed to launch a browser: {err}"),
+        }
     }
 
-    eprintln!("Trying to listen at {http_address}...");
-    Server::new(TcpListener::bind(listen_to)).run(app).await?;
-    let _ = server_dead_send.send(()); // No need to start the web browser. Don't care if the message failed to send,
-                                       // though.
+    Server::new_with_acceptor(acceptor).run(app).await?;
     Ok(())
 }
