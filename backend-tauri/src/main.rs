@@ -4,6 +4,7 @@
 // #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use clap::Parser;
+use diff_tool_logic::DataInterface;
 use indexmap::IndexMap;
 use tauri::{CustomMenuItem, Menu, Submenu};
 

@@ -1,7 +1,9 @@
 use std::io;
+use std::sync::Arc;
 use std::time::Duration;
 
 use clap::Parser;
+use diff_tool_logic::DataInterface;
 use poem::endpoint::EmbeddedFilesEndpoint;
 use poem::error::ResponseError;
 use poem::http::StatusCode;
@@ -64,13 +66,13 @@ impl ResponseError for ServerHTTPError {
 
 #[handler]
 fn get_merge_data(
-    input: Data<&diff_tool_logic::Input>,
+    input: Data<&Arc<Box<dyn DataInterface>>>,
 ) -> Result<Json<diff_tool_logic::EntriesToCompare>> {
     Ok(Json(input.scan().map_err(ServerHTTPError::from)?))
 }
 #[handler]
 fn save(
-    input: Data<&diff_tool_logic::Input>,
+    input: Data<&Arc<Box<dyn DataInterface>>>,
     Json(data): Json<indexmap::IndexMap<String, String>>,
 ) -> Result<Json<()>> {
     input.save(data).map_err(ServerHTTPError::from)?;
@@ -176,12 +178,13 @@ async fn main() -> Result<(), MergeToolError> {
 }
 
 async fn run_server(
-    input: diff_tool_logic::Input,
+    input: impl diff_tool_logic::DataInterface,
     min_port: usize,
     max_port: usize,
     open_browser: bool,
 ) -> Result<(), MergeToolError> {
     let (terminate_channel, mut terminate_rx): (ExitCodeSender, _) = tokio::sync::mpsc::channel(10);
+    let input: Arc<Box<dyn DataInterface>> = Arc::new(Box::new(input));
     let apis = Route::new()
         .at("/get_merge_data", poem::get(get_merge_data))
         .at("/save", poem::put(save))

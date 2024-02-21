@@ -46,6 +46,12 @@ pub fn scan(root: &Path) -> impl Iterator<Item = Result<(DirEntry, String), Data
         .map(|e| Ok((e.clone(), std::fs::read_to_string(e.path())?)))
 }
 
+pub trait DataInterface: Send + Sync + 'static {
+    fn scan(&self) -> Result<EntriesToCompare, DataReadError>;
+    // TODO: Make `save` more generic than IndexMap
+    fn save(&self, result: indexmap::IndexMap<String, String>) -> Result<(), DataSaveError>;
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum Input {
     FakeData,
@@ -56,16 +62,15 @@ pub enum Input {
     },
 }
 
-impl Input {
-    pub fn scan(&self) -> Result<EntriesToCompare, DataReadError> {
+impl DataInterface for Input {
+    fn scan(&self) -> Result<EntriesToCompare, DataReadError> {
         match self {
             Self::FakeData => Ok(fake_data()),
             Self::Dirs { left, right, edit } => scan_several([left, right, edit]),
         }
     }
 
-    // TODO: Make more generic than IndexMap
-    pub fn save(&self, result: indexmap::IndexMap<String, String>) -> Result<(), DataSaveError> {
+    fn save(&self, result: indexmap::IndexMap<String, String>) -> Result<(), DataSaveError> {
         let outdir = match self {
             Self::FakeData => {
                 // TOOO: Somewhat better error handling :)
