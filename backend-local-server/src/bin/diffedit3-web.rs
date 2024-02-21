@@ -1,12 +1,12 @@
 use clap::Parser;
-use diffedit3_web::local_server::{run_server, MergeToolError};
+use diffedit3::local_server::{run_server, MergeToolError};
 
 /// Compare three directories in a browser and allow editing one of them
 #[derive(Parser)]
 #[command(version, about)]
 pub struct LocalServerCli {
     #[command(flatten)]
-    lib_cli: diffedit3_web::fs::Cli,
+    lib_cli: diffedit3::fs::Cli,
     /// Port to use for `http://127.0.0.1`
     #[arg(long, short, default_value = "8080")]
     port: usize,
@@ -37,7 +37,7 @@ fn exit_with_cli_error(s: String) -> ! {
 #[tokio::main]
 async fn main() -> Result<(), MergeToolError> {
     let cli = LocalServerCli::parse();
-    let input: diffedit3_web::fs::ThreeDirInput = match cli.lib_cli.try_into() {
+    let input: diffedit3::fs::ThreeDirInput = match cli.lib_cli.try_into() {
         Ok(i) => i,
         Err(err) => {
             exit_with_cli_error(err.to_string());

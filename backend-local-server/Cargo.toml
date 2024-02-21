@@ -1,5 +1,5 @@
 [package]
-name = "diffedit3-web"
+name = "diffedit3"
 version = { workspace = true }
 edition = { workspace = true }
 

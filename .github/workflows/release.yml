@@ -46,7 +46,7 @@ jobs:
           toolchain: stable
           target: ${{ matrix.target }}
       - name: Build release binary
-        run: cargo build --target ${{ matrix.target }} --verbose --release -p diffedit3-web
+        run: cargo build --target ${{ matrix.target }} --verbose --release -p diffedit3
       - name: Build archive
         shell: bash
         run: |

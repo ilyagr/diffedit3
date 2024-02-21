@@ -4,7 +4,7 @@
 // #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use clap::Parser;
-use diffedit3_web::DataInterface;
+use diffedit3::DataInterface;
 use indexmap::IndexMap;
 use tauri::{CustomMenuItem, Menu, Submenu};
 
@@ -25,15 +25,15 @@ fn logoutput(result: IndexMap<String, String>) {
 #[tauri::command]
 fn save(
     result: IndexMap<String, String>,
-    state: tauri::State<diffedit3_web::fs::ThreeDirInput>,
-) -> Result<(), diffedit3_web::DataSaveError> {
+    state: tauri::State<diffedit3::fs::ThreeDirInput>,
+) -> Result<(), diffedit3::DataSaveError> {
     state.save(result)
 }
 
 #[tauri::command]
 fn get_merge_data(
-    state: tauri::State<diffedit3_web::fs::ThreeDirInput>,
-) -> Result<diffedit3_web::EntriesToCompare, diffedit3_web::DataReadError> {
+    state: tauri::State<diffedit3::fs::ThreeDirInput>,
+) -> Result<diffedit3::EntriesToCompare, diffedit3::DataReadError> {
     state.scan()
 }
 
@@ -44,8 +44,8 @@ fn get_merge_data(
 // So far, the most promising approach is to change the `font-size` root
 // CSS property
 fn main() {
-    let cli = diffedit3_web::Cli::parse();
-    let input: diffedit3_web::ThreeDirInput = cli.try_into().unwrap_or_else(|err| {
+    let cli = diffedit3::Cli::parse();
+    let input: diffedit3::ThreeDirInput = cli.try_into().unwrap_or_else(|err| {
         eprintln!("Error: {err}");
         std::process::exit(2)
     });
