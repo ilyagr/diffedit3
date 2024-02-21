@@ -27,6 +27,10 @@ jobs:
         with:
           node-version: 21
 
+      - name: Remove old version of comiled and bundled JS
+        shell: bash
+        run: rm -rv webapp/dist
+
       - name: install frontend dependencies
         run: npm clean-install
 
