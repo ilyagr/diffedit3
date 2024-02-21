@@ -45,7 +45,7 @@ type ExitCodeSender = tokio::sync::mpsc::Sender<ExitCode>;
 
 /// Errors that transform into error responses to HTTP requests
 #[derive(Debug, Error)]
-enum ServerError {
+enum ServerHTTPError {
     #[error("{0}")]
     DataReadError(#[from] diff_tool_logic::DataReadError),
     #[error("{0}")]
@@ -53,7 +53,7 @@ enum ServerError {
     #[error("{0}")]
     FailedToSendExitSignal(tokio::sync::mpsc::error::SendError<ExitCode>),
 }
-impl ResponseError for ServerError {
+impl ResponseError for ServerHTTPError {
     fn status(&self) -> StatusCode {
         StatusCode::INTERNAL_SERVER_ERROR
     }
@@ -63,14 +63,14 @@ impl ResponseError for ServerError {
 fn get_merge_data(
     input: Data<&diff_tool_logic::Input>,
 ) -> Result<Json<diff_tool_logic::EntriesToCompare>> {
-    Ok(Json(input.scan().map_err(ServerError::from)?))
+    Ok(Json(input.scan().map_err(ServerHTTPError::from)?))
 }
 #[handler]
 fn save(
     input: Data<&diff_tool_logic::Input>,
     Json(data): Json<indexmap::IndexMap<String, String>>,
 ) -> Result<Json<()>> {
-    input.save(data).map_err(ServerError::from)?;
+    input.save(data).map_err(ServerHTTPError::from)?;
     Ok(Json(()))
 }
 #[handler]
@@ -82,7 +82,7 @@ async fn exit(
     terminate_channel
         .send(code)
         .await
-        .map_err(ServerError::FailedToSendExitSignal)?;
+        .map_err(ServerHTTPError::FailedToSendExitSignal)?;
     Ok(Json(()))
 }
 
