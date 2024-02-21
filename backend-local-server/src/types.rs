@@ -40,6 +40,7 @@ impl serde::Serialize for DataReadError {
     }
 }
 
+// TODO: What does 'static mean here? Can it be loosened?
 pub trait DataInterface: Send + Sync + 'static {
     fn scan(&self) -> Result<EntriesToCompare, DataReadError>;
     // TODO: Make `save` more generic than IndexMap
