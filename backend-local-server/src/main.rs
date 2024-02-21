@@ -112,13 +112,16 @@ enum MergeToolError {
     #[error("{0}")]
     IOError(#[from] std::io::Error),
     #[error("{0}")]
-    CLIError(String),
+    FailedToOpenPort(std::io::Error),
+    #[error("Client requested error with error code {0}")]
+    RequestedExitWithCode(ExitCode),
+    #[error("Ctrl-C pressed")]
+    CtrlC,
 }
 
-// TODO: Implement Termination
-
-fn cli_error(s: String) -> MergeToolError {
-    MergeToolError::CLIError(s)
+fn exit_with_cli_error(s: String) -> ! {
+    eprintln!("{s}");
+    std::process::exit(2)
 }
 
 #[tokio::main]
@@ -127,7 +130,7 @@ async fn main() -> Result<(), MergeToolError> {
     let input: diff_tool_logic::Input = match cli.lib_cli.try_into() {
         Ok(i) => i,
         Err(err) => {
-            return Err(cli_error(err.to_string()));
+            exit_with_cli_error(err.to_string());
         }
     };
 
@@ -139,6 +142,41 @@ async fn main() -> Result<(), MergeToolError> {
     tracing_subscriber::fmt::init();
     */
 
+    let (min_port, max_port) = match cli.port_range {
+        Some(v) => (v[0], v[1]), // Clap guarantees exactly two values
+        None => (cli.port, cli.port),
+    };
+    if min_port > max_port {
+        exit_with_cli_error(format!(
+            "Error: the minimum port {min_port} cannot be greater than the maximum port \
+             {max_port}."
+        ));
+    };
+    if let Err(err) = run_server(input, min_port, max_port, !cli.no_browser).await {
+        std::process::exit(match err {
+            MergeToolError::IOError(err) => {
+                eprintln!("{err}");
+                3
+            }
+            MergeToolError::FailedToOpenPort(_) => {
+                eprintln!("Failed to open HTTP port: {err}");
+                3
+            }
+            MergeToolError::RequestedExitWithCode(code) => code,
+            // TODO: Find somewhere to import the CtrlC exit code from.
+            // Also, this may not be the correct thing to do on Windows.
+            MergeToolError::CtrlC => 130,
+        });
+    };
+    Ok(())
+}
+
+async fn run_server(
+    input: diff_tool_logic::Input,
+    min_port: usize,
+    max_port: usize,
+    open_browser: bool,
+) -> Result<(), MergeToolError> {
     let (terminate_channel, mut terminate_rx): (ExitCodeSender, _) = tokio::sync::mpsc::channel(10);
     let apis = Route::new()
         .at("/get_merge_data", poem::get(get_merge_data))
@@ -150,21 +188,11 @@ async fn main() -> Result<(), MergeToolError> {
         .nest("/", EmbeddedFilesEndpoint::<StaticFiles>::new())
         .nest("/api", apis);
 
-    let (min_port, max_port) = match cli.port_range {
-        Some(v) => (v[0], v[1]), // Clap guarantees exactly two values
-        None => (cli.port, cli.port),
-    };
-    if min_port > max_port {
-        return Err(cli_error(format!(
-            "Error: the minimum port {min_port} cannot be greater than the maximum port \
-             {max_port}."
-        )));
-    };
     let mut port = min_port;
     let mut error = None;
     let acceptor = loop {
         if port > max_port {
-            return Err(MergeToolError::IOError(error.unwrap()));
+            return Err(MergeToolError::FailedToOpenPort(error.unwrap()));
         }
         let listener = TcpListener::bind(format!("127.0.0.1:{}", port));
         match listener.into_acceptor().await {
@@ -183,7 +211,7 @@ async fn main() -> Result<(), MergeToolError> {
     // Now that the acceptor exists, the browser should be able to connect IIUC.
     let http_address = format!("http://{socket_addr}");
     eprintln!("Listening at {http_address}.");
-    if !cli.no_browser {
+    if open_browser {
         eprint!("Trying to launch a browser at {http_address}...");
         match open::that(&http_address) {
             Ok(_) => eprintln!(" Success!"),
@@ -191,22 +219,22 @@ async fn main() -> Result<(), MergeToolError> {
         }
     }
 
-    let mut exit_code = 0;
+    let mut result = Ok(());
     Server::new_with_acceptor(acceptor)
         .run_with_graceful_shutdown(
             app,
             async {
-                tokio::select! {
+                result = tokio::select! {
                     _ = tokio::signal::ctrl_c() => {
-                        // TODO: Find somewhere to import this from.
-                        // Also, this may not be the correct thing to do on Windows.
-                        exit_code = 130
+                        Err(MergeToolError::CtrlC)
                     },
-                    Some(code) = terminate_rx.recv() => { exit_code = code }
+                    Some(code) = terminate_rx.recv() => {
+                        Err(MergeToolError::RequestedExitWithCode(code))
+                    }
                 }
             },
             Some(Duration::from_secs(5)),
         )
         .await?;
-    std::process::exit(exit_code)
+    result
 }
