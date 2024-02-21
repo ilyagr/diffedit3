@@ -25,14 +25,14 @@ fn logoutput(result: IndexMap<String, String>) {
 #[tauri::command]
 fn save(
     result: IndexMap<String, String>,
-    state: tauri::State<diff_tool_logic::Input>,
+    state: tauri::State<diff_tool_logic::ThreeDirInput>,
 ) -> Result<(), diff_tool_logic::DataSaveError> {
     state.save(result)
 }
 
 #[tauri::command]
 fn get_merge_data(
-    state: tauri::State<diff_tool_logic::Input>,
+    state: tauri::State<diff_tool_logic::ThreeDirInput>,
 ) -> Result<diff_tool_logic::EntriesToCompare, diff_tool_logic::DataReadError> {
     state.scan()
 }
@@ -45,7 +45,7 @@ fn get_merge_data(
 // CSS property
 fn main() {
     let cli = diff_tool_logic::Cli::parse();
-    let input: diff_tool_logic::Input = cli.try_into().unwrap_or_else(|err| {
+    let input: diff_tool_logic::ThreeDirInput = cli.try_into().unwrap_or_else(|err| {
         eprintln!("Error: {err}");
         std::process::exit(2)
     });

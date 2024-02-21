@@ -53,7 +53,8 @@ pub trait DataInterface: Send + Sync + 'static {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
-pub enum Input {
+pub enum ThreeDirInput {
+    // TODO: Separate FakeData
     FakeData,
     Dirs {
         left: PathBuf,
@@ -62,7 +63,7 @@ pub enum Input {
     },
 }
 
-impl DataInterface for Input {
+impl DataInterface for ThreeDirInput {
     fn scan(&self) -> Result<EntriesToCompare, DataReadError> {
         match self {
             Self::FakeData => Ok(fake_data()),
@@ -114,19 +115,19 @@ pub struct Cli {
     demo: bool,
 }
 
-impl TryInto<Input> for Cli {
+impl TryInto<ThreeDirInput> for Cli {
     type Error = String;
-    fn try_into(self) -> Result<Input, Self::Error> {
+    fn try_into(self) -> Result<ThreeDirInput, Self::Error> {
         if self.demo {
-            Ok(Input::FakeData)
+            Ok(ThreeDirInput::FakeData)
         } else {
             match self.dirs.as_slice() {
-                [left, right, output] => Ok(Input::Dirs {
+                [left, right, output] => Ok(ThreeDirInput::Dirs {
                     left: left.to_path_buf(),
                     right: right.to_path_buf(),
                     edit: output.to_path_buf(),
                 }),
-                [left, right] => Ok(Input::Dirs {
+                [left, right] => Ok(ThreeDirInput::Dirs {
                     left: left.to_path_buf(),
                     right: right.to_path_buf(),
                     edit: right.to_path_buf(),
@@ -212,7 +213,7 @@ mod tests {
 
     #[test]
     fn it_works() {
-        insta::assert_yaml_snapshot!(Input::FakeData.scan().unwrap(), 
+        insta::assert_yaml_snapshot!(ThreeDirInput::FakeData.scan().unwrap(), 
         @r###"
         ---
         added file:
