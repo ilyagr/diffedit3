@@ -705,6 +705,7 @@ dependencies = [
  "serde",
  "thiserror",
  "tokio",
+ "tracing-subscriber",
 ]
 
 [[package]]

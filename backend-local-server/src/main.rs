@@ -38,6 +38,9 @@ pub struct LocalServerCli {
     /// considered by `xdg-open` and similar commands.
     #[arg(long, short = 'N')]
     no_browser: bool,
+    /// Make the server print debugging information
+    #[arg(long, short)]
+    verbose: bool,
 }
 
 type ExitCode = i32;
@@ -134,13 +137,14 @@ async fn main() -> Result<(), MergeToolError> {
         }
     };
 
-    /* Taken from the example. What's this for?
-
-    if std::env::var_os("RUST_LOG").is_none() {
-        std::env::set_var("RUST_LOG", "poem=debug");
+    if cli.verbose {
+        // TODO: We may consider deleting this or finding a way to get poem
+        // to log each connection.
+        if std::env::var_os("RUST_LOG").is_none() {
+            std::env::set_var("RUST_LOG", "poem=debug");
+        }
+        tracing_subscriber::fmt::init();
     }
-    tracing_subscriber::fmt::init();
-    */
 
     let (min_port, max_port) = match cli.port_range {
         Some(v) => (v[0], v[1]), // Clap guarantees exactly two values
