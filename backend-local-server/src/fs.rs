@@ -26,6 +26,8 @@ pub enum ThreeDirInput {
 }
 
 impl DataInterface for ThreeDirInput {
+    // TODO: A more efficient `get_valid_entries` implementation
+
     fn scan(&self) -> Result<EntriesToCompare, DataReadError> {
         match self {
             Self::FakeData => Ok(fake_data()),
@@ -33,10 +35,12 @@ impl DataInterface for ThreeDirInput {
         }
     }
 
-    fn save(&self, result: indexmap::IndexMap<String, String>) -> Result<(), DataSaveError> {
+    fn save_unchecked(
+        &self,
+        result: indexmap::IndexMap<String, String>,
+    ) -> Result<(), DataSaveError> {
         let outdir = match self {
             Self::FakeData => {
-                // TOOO: Somewhat better error handling :)
                 eprintln!("Can't save fake demo data. Here it is as TOML");
                 eprintln!();
                 eprintln!(

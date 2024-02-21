@@ -20,6 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   first port we try is already in use (e.g. another instance of diffedit3-web is
   running)
 
+* diffedit3-web: a simple security check is added so that the tool will not
+  overwrite files it wasn't meant to compare.
+
 ### Fixed bugs
 
 Who's counting? Not me.
