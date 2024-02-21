@@ -2,7 +2,6 @@ use std::io;
 use std::sync::Arc;
 use std::time::Duration;
 
-use diff_tool_logic::DataInterface;
 use poem::endpoint::EmbeddedFilesEndpoint;
 use poem::error::ResponseError;
 use poem::http::StatusCode;
@@ -11,6 +10,8 @@ use poem::middleware::AddData;
 use poem::web::{Data, Json};
 use poem::{handler, EndpointExt, Result, Route, Server};
 use thiserror::Error;
+
+use crate::DataInterface;
 
 #[derive(rust_embed::RustEmbed)]
 #[folder = "../webapp/dist"]
@@ -33,9 +34,9 @@ pub enum MergeToolError {
 #[derive(Debug, Error)]
 enum ServerHTTPError {
     #[error("{0}")]
-    DataReadError(#[from] diff_tool_logic::DataReadError),
+    DataReadError(#[from] crate::DataReadError),
     #[error("{0}")]
-    DataSaveError(#[from] diff_tool_logic::DataSaveError),
+    DataSaveError(#[from] crate::DataSaveError),
     #[error("{0}")]
     FailedToSendExitSignal(tokio::sync::mpsc::error::SendError<ExitCode>),
 }
@@ -50,7 +51,7 @@ type ExitCodeSender = tokio::sync::mpsc::Sender<ExitCode>;
 #[handler]
 fn get_merge_data(
     input: Data<&Arc<Box<dyn DataInterface>>>,
-) -> Result<Json<diff_tool_logic::EntriesToCompare>> {
+) -> Result<Json<crate::EntriesToCompare>> {
     // TODO: We can consider wrapping this IO in `tokio::spawn_blocking`, but it
     // doesn't seem crucial since there shouldn't actually be that much concurrency.
     // The could also be weird side effects.
@@ -104,7 +105,7 @@ fn acceptor_to_socket_address(
 }
 
 pub async fn run_server(
-    input: impl diff_tool_logic::DataInterface,
+    input: impl crate::DataInterface,
     min_port: usize,
     max_port: usize,
     open_browser: bool,
