@@ -151,7 +151,7 @@ pub async fn run_server(
             // browsers. TODO: find out if it blocks when running a fresh instance of
             // `firefox` on Linux.)
             eprintln!("Trying to launch a browser at {http_address}...");
-            match open::that(&http_address) {
+            match webbrowser::open(&http_address) {
                 Ok(_) => eprintln!("Successfully launched browser."),
                 Err(err) => eprintln!("Failed to launch a browser: {err}"),
             }
