@@ -20,8 +20,13 @@ pub struct LocalServerCli {
     /// Do not try to open the browser automatically
     ///
     /// See https://crates.io/crates/open for a brief description of how the
-    /// default browser is chosen. The `BROWSER` environment variable may be
-    /// considered by `xdg-open` and similar commands.
+    /// default browser is chosen. The `BROWSER` environment variable is not
+    /// respected, unfortunately.
+    // TODO(ilyagr): One way to respect the BROWSER environment variable might
+    // be to use the `webbrowser` crate to get the browser command. It'd be
+    // better to use something else to actually launch the browser, as
+    // `webbrowser::open` has limited error handlind, like
+    // `open::that_detached`.
     #[arg(long, short = 'N')]
     no_browser: bool,
     /// Make the server print debugging information
