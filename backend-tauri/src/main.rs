@@ -4,23 +4,29 @@
 // #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use clap::Parser;
-use diffedit3::DataInterface;
+use diffedit3::{DataInterface, ThreeDirInput};
 use indexmap::IndexMap;
+// Using parking_lot::Mutex for a timeout. We could alternatively use
+// tokio::sync::Mutex, but the docs suggest only using it if absolutely
+// neccessary.
+use parking_lot::Mutex;
 use tauri::{CustomMenuItem, Menu, Submenu};
+
+type DataMutex = Mutex<ThreeDirInput>;
 
 #[tauri::command]
 fn save(
     result: IndexMap<String, String>,
-    state: tauri::State<diffedit3::fs::ThreeDirInput>,
+    state: tauri::State<DataMutex>,
 ) -> Result<(), diffedit3::DataSaveError> {
-    state.save(result)
+    state.lock().save(result)
 }
 
 #[tauri::command]
 fn get_merge_data(
-    state: tauri::State<diffedit3::fs::ThreeDirInput>,
+    state: tauri::State<DataMutex>,
 ) -> Result<diffedit3::EntriesToCompare, diffedit3::DataReadError> {
-    state.scan()
+    state.lock().scan()
 }
 
 // TODO: Zoom. The `zoom` CSS property does not work with CodeMirror.
@@ -35,6 +41,7 @@ fn main() {
         eprintln!("Error: {err}");
         std::process::exit(2)
     });
+    let input_mutex: DataMutex = Mutex::new(input);
 
     let abandon_changes_and_quit = CustomMenuItem::new(
         "abandon_changes_and_quit".to_string(),
@@ -62,7 +69,7 @@ fn main() {
     tauri::Builder::default()
         .menu(menu)
         .on_menu_event(|event| event.window().emit(event.menu_item_id(), ()).unwrap())
-        .manage(input)
+        .manage(input_mutex)
         .invoke_handler(tauri::generate_handler![get_merge_data, save])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

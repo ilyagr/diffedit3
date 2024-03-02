@@ -2,6 +2,9 @@ use std::io;
 use std::sync::Arc;
 use std::time::Duration;
 
+// Using parking_lot::Mutex for a timeout. We could alternatively use tokio::sync::Mutex, but
+// the docs suggest only using it if absolutely neccessary.
+use parking_lot::Mutex;
 use poem::endpoint::EmbeddedFilesEndpoint;
 use poem::error::ResponseError;
 use poem::http::StatusCode;
@@ -12,6 +15,7 @@ use poem::{handler, EndpointExt, Result, Route, Server};
 use thiserror::Error;
 
 use crate::DataInterface;
+type DataInterfacePointer = Arc<Mutex<dyn DataInterface>>;
 
 #[derive(rust_embed::RustEmbed)]
 #[folder = "../webapp/dist"]
@@ -50,23 +54,23 @@ type ExitCodeSender = tokio::sync::mpsc::Sender<ExitCode>;
 
 #[handler]
 fn get_merge_data(
-    input: Data<&Arc<Box<dyn DataInterface>>>,
+    input: Data<&Arc<Mutex<dyn DataInterface>>>,
 ) -> Result<Json<crate::EntriesToCompare>> {
     // TODO: We can consider wrapping this IO in `tokio::spawn_blocking`, but it
     // doesn't seem crucial since there shouldn't actually be that much concurrency.
     // The could also be weird side effects.
-    Ok(Json(input.scan().map_err(ServerHTTPError::from)?))
+    Ok(Json(input.lock().scan().map_err(ServerHTTPError::from)?))
 }
 
 #[handler]
 fn save(
-    input: Data<&Arc<Box<dyn DataInterface>>>,
+    input: Data<&DataInterfacePointer>,
     Json(data): Json<indexmap::IndexMap<String, String>>,
 ) -> Result<Json<()>> {
     // TODO: We can consider wrapping this IO in `tokio::spawn_blocking`, but it
     // doesn't seem crucial since there shouldn't actually be that much concurrency.
     // The could also be weird side effects.
-    input.save(data).map_err(ServerHTTPError::from)?;
+    input.lock().save(data).map_err(ServerHTTPError::from)?;
     Ok(Json(()))
 }
 
@@ -111,7 +115,7 @@ pub async fn run_server(
     open_browser: bool,
 ) -> Result<(), MergeToolError> {
     let (terminate_channel, mut terminate_rx): (ExitCodeSender, _) = tokio::sync::mpsc::channel(10);
-    let input: Arc<Box<dyn DataInterface>> = Arc::new(Box::new(input));
+    let input: DataInterfacePointer = Arc::new(Mutex::new(input));
     let apis = Route::new()
         .at("/get_merge_data", poem::get(get_merge_data))
         .at("/save", poem::put(save))
