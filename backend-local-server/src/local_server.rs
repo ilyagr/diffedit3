@@ -158,6 +158,9 @@ pub async fn run_server(
         });
     }
 
+    // TODO: Delete this. Will it break everything??
+    tokio::time::sleep(tokio::time::Duration::from_secs(5)).await;
+
     let mut result = Ok(());
     Server::new_with_acceptor(acceptor)
         .run_with_graceful_shutdown(
