@@ -36,7 +36,7 @@ impl DataInterface for ThreeDirInput {
     }
 
     fn save_unchecked(
-        &self,
+        &mut self,
         result: indexmap::IndexMap<String, String>,
     ) -> Result<(), DataSaveError> {
         let outdir = match self {

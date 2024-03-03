@@ -56,18 +56,17 @@ pub trait DataInterface: Send + Sync + 'static {
     /// A `scan()` after a successful `save()` should return the saved results.
     fn scan(&self) -> Result<EntriesToCompare, DataReadError>;
     // TODO: Make `save` more generic than IndexMap
-    // TODO: Use `&mut self` in save
     /// Do not use this method directly, as it does not check whether the
     /// requested paths are safe to save to.
     fn save_unchecked(
-        &self,
+        &mut self,
         result: indexmap::IndexMap<String, String>,
     ) -> Result<(), DataSaveError>;
 
     /// Get a list of all the files we were originally asked to merge.
     ///
     /// The default implementation may be very inefficient.
-    fn get_valid_entries(&self) -> Result<std::collections::HashSet<PathBuf>, DataReadError> {
+    fn get_valid_entries(&mut self) -> Result<std::collections::HashSet<PathBuf>, DataReadError> {
         let entries = self.scan()?;
         Ok(entries.0.keys().cloned().collect())
     }
@@ -81,7 +80,7 @@ pub trait DataInterface: Send + Sync + 'static {
     ///   was started with.
     /// - A malicious frontend could try making the diff editor save to
     ///   `../../../../home/$USER/.bashrc`.
-    fn save(&self, result: indexmap::IndexMap<String, String>) -> Result<(), DataSaveError> {
+    fn save(&mut self, result: indexmap::IndexMap<String, String>) -> Result<(), DataSaveError> {
         let valid_entries = self.get_valid_entries()?;
         if let Some(unsafe_path) = result
             .keys()

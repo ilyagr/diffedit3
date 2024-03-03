@@ -53,9 +53,7 @@ impl ResponseError for ServerHTTPError {
 type ExitCodeSender = tokio::sync::mpsc::Sender<ExitCode>;
 
 #[handler]
-fn get_merge_data(
-    input: Data<&Arc<Mutex<dyn DataInterface>>>,
-) -> Result<Json<crate::EntriesToCompare>> {
+fn get_merge_data(input: Data<&DataInterfacePointer>) -> Result<Json<crate::EntriesToCompare>> {
     // TODO: We can consider wrapping this IO in `tokio::spawn_blocking`, but it
     // doesn't seem crucial since there shouldn't actually be that much concurrency.
     // The could also be weird side effects.
