@@ -41,11 +41,24 @@ enum ServerHTTPError {
     DataReadError(#[from] crate::DataReadError),
     #[error("{0}")]
     DataSaveError(#[from] crate::DataSaveError),
+    // TODO: Move these to DataReadError/DataSaveError
+    // TODO: Add duration to the error message
+    #[error(
+        "Could not obtain lock to read data. It is likely already being saved or read.\nReloading \
+         the page may help."
+    )]
+    FailedToObtainLockForReading,
+    #[error(
+        "Could not obtain lock to write data. It is likely already being saved or read.\nTry \
+         again later."
+    )]
+    FailedToObtainLockForWriting,
     #[error("{0}")]
     FailedToSendExitSignal(tokio::sync::mpsc::error::SendError<ExitCode>),
 }
 impl ResponseError for ServerHTTPError {
     fn status(&self) -> StatusCode {
+        // TODO: FailedToObtainLock could have a different error code
         StatusCode::INTERNAL_SERVER_ERROR
     }
 }
@@ -53,22 +66,32 @@ impl ResponseError for ServerHTTPError {
 type ExitCodeSender = tokio::sync::mpsc::Sender<ExitCode>;
 
 #[handler]
-fn get_merge_data(input: Data<&DataInterfacePointer>) -> Result<Json<crate::EntriesToCompare>> {
+fn get_merge_data(
+    Data(input): Data<&DataInterfacePointer>,
+) -> Result<Json<crate::EntriesToCompare>> {
     // TODO: We can consider wrapping this IO in `tokio::spawn_blocking`, but it
     // doesn't seem crucial since there shouldn't actually be that much concurrency.
-    // The could also be weird side effects.
-    Ok(Json(input.lock().scan().map_err(ServerHTTPError::from)?))
+    // TODO: Is there some notion of a separate "lock for reading" that would allow
+    // simulataneous reads?
+    let timeout = Duration::from_millis(200);
+    let input = input
+        .try_lock_for(timeout)
+        .ok_or(ServerHTTPError::FailedToObtainLockForReading)?;
+    Ok(Json(input.scan().map_err(ServerHTTPError::from)?))
 }
 
 #[handler]
 fn save(
-    input: Data<&DataInterfacePointer>,
+    Data(input): Data<&DataInterfacePointer>,
     Json(data): Json<indexmap::IndexMap<String, String>>,
 ) -> Result<Json<()>> {
     // TODO: We can consider wrapping this IO in `tokio::spawn_blocking`, but it
     // doesn't seem crucial since there shouldn't actually be that much concurrency.
-    // The could also be weird side effects.
-    input.lock().save(data).map_err(ServerHTTPError::from)?;
+    let timeout = Duration::from_secs(3);
+    let mut input = input
+        .try_lock_for(timeout)
+        .ok_or(ServerHTTPError::FailedToObtainLockForWriting)?;
+    input.save(data).map_err(ServerHTTPError::from)?;
     Ok(Json(()))
 }
 

@@ -19,6 +19,7 @@ fn save(
     result: IndexMap<String, String>,
     state: tauri::State<DataMutex>,
 ) -> Result<(), diffedit3::DataSaveError> {
+    // TODO: Add timeout like in diffedit3-web
     state.lock().save(result)
 }
 
@@ -26,6 +27,7 @@ fn save(
 fn get_merge_data(
     state: tauri::State<DataMutex>,
 ) -> Result<diffedit3::EntriesToCompare, diffedit3::DataReadError> {
+    // TODO: Add timeout like in diffedit3-web
     state.lock().scan()
 }
 
