@@ -2,6 +2,8 @@ use std::path::PathBuf;
 
 use thiserror::Error;
 
+/// TODO: Clean this up to make things more readable
+const OUTPUT_INDEX: usize = 2;
 #[derive(Debug, Clone, PartialEq, Eq, Default, serde::Serialize, serde::Deserialize)]
 //struct EntriesToCompare<P, const N: usize>(std::collections::BTreeMap<P,
 // [Option<String>; N]>);
@@ -92,5 +94,28 @@ pub trait DataInterface: Send + Sync + 'static {
             return Err(DataSaveError::ValidationFailError(unsafe_path.to_string()));
         }
         self.save_unchecked(result)
+    }
+}
+
+// Dummy implementation for in-memory storage
+// TODO: Make FakeData use this
+// TODO: Create a separate type for the DataInterface, allow for callbacks
+// and/or output to a Writer on scan or save.
+impl DataInterface for EntriesToCompare {
+    fn scan(&self) -> Result<EntriesToCompare, DataReadError> {
+        Ok(self.clone())
+    }
+
+    fn save_unchecked(
+        &mut self,
+        result: indexmap::IndexMap<String, String>,
+    ) -> Result<(), DataSaveError> {
+        for (path, new_value) in result.into_iter() {
+            self.0
+                .get_mut(&PathBuf::from(path))
+                .expect("At this point, `save()` should have verified that the path is valid")
+                [OUTPUT_INDEX] = Some(new_value);
+        }
+        Ok(())
     }
 }
