@@ -77,14 +77,41 @@ impl Cli {
     }
 }
 
-fn scan(root: &Path) -> impl Iterator<Item = Result<(DirEntry, String), DataReadError>> {
+// TODO: Make configurable, figure out a reasonable default value. See jj's
+// implementation of max_snapshot_size.
+const MAX_FILE_LENGTH: usize = 200_000;
+
+fn scan(root: &Path) -> impl Iterator<Item = (DirEntry, FileEntry)> {
     // As an alternative to WalkDir, see
     // https://github.com/martinvonz/jj/blob/af8eb3fd74956effee00acf00011ff0413607213/lib/src/local_working_copy.rs#L849
     WalkDir::new(root)
         .into_iter()
         .filter_map(|e| e.ok())
+        // TODO: We currently treat symlinks or dirs as missing
+        // files. This is not great when a file on one side
+        // corresponds to a dir or a symlink on the other,
+        // which should be a more prominent error.
         .filter(|e| e.file_type().is_file())
-        .map(|e| Ok((e.clone(), std::fs::read_to_string(e.path())?)))
+        .map(|e| -> (DirEntry, FileEntry) {
+            (
+                e.clone(),
+                match std::fs::read_to_string(e.path()) {
+                    Err(io_error) => FileEntry::Unsupported(format!("IO Error: {io_error}")),
+                    // TODO: read no more than MAX_FILE_LENGTH
+                    // TODO: Test
+                    // TODO: Check executable byte
+                    Ok(contents) if contents.len() > MAX_FILE_LENGTH => {
+                        FileEntry::Unsupported(format!("File length exceeds {MAX_FILE_LENGTH}"))
+                    }
+
+                    Ok(contents) if contents.contains('\0') => {
+                        FileEntry::Unsupported("A binary file (contains the NUL byte)".to_string())
+                    }
+
+                    Ok(contents) => FileEntry::Text(contents),
+                },
+            )
+        })
 }
 
 // pub fn scan_several<const N: usize>(roots: [&Path; N]) ->
@@ -93,9 +120,7 @@ fn scan(root: &Path) -> impl Iterator<Item = Result<(DirEntry, String), DataRead
 fn scan_several(roots: [&PathBuf; 3]) -> Result<EntriesToCompare, DataReadError> {
     let mut result = EntriesToCompare::default();
     for (i, root) in roots.iter().enumerate() {
-        for result_or_err in scan(root) {
-            // TODO: Collect list of failed files
-            let (file_entry, contents) = result_or_err?;
+        for (file_entry, contents) in scan(root) {
             let value = result
                 .0
                 .entry(PathBuf::from(
@@ -108,7 +133,7 @@ fn scan_several(roots: [&PathBuf; 3]) -> Result<EntriesToCompare, DataReadError>
                 ))
                 .or_insert([FileEntry::Missing, FileEntry::Missing, FileEntry::Missing])
                 .as_mut();
-            value[i] = FileEntry::Text(contents);
+            value[i] = contents;
         }
     }
     Ok(result)

@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * The web server version of diffedit3 can be used as a library
 
+* Binary and files over 200KiB will not be compared.
+
 * diffedit3-web: new --port-range option allows trying a different port if the
   first port we try is already in use (e.g. another instance of diffedit3-web is
   running)
