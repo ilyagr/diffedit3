@@ -11,6 +11,8 @@ import {
   exit_success,
   TAURI_BACKEND,
   exit_user_abandoned_merge,
+  SingleFileMergeInput,
+  to_text,
 } from "./backend_interactions";
 
 class MergeState {
@@ -23,6 +25,8 @@ class MergeState {
   values(): Record<string, string> {
     const result: Record<string, string> = {};
     for (const k in this.merge_views) {
+      // TODO: Treat deleted values properly. Currently, the server guesses
+      // whether an empty string means an empty file or a missing file.
       result[k] = this.merge_views[k].editor().getValue();
     }
     return result;
@@ -36,39 +40,64 @@ class MergeState {
 //
 /// Renders the input inside the HTML element with id `unique_id`.
 function render_input(unique_id: string, merge_input: MergeInput) {
-  const templates = [];
-  const k_uid = (k: string) => `${k}_${unique_id}`;
+  let templates = [];
+  let k_uid = (k: string) => `${k}_${unique_id}`;
+  let to_error = (input: SingleFileMergeInput) => {
+    let unsupported_value = Array.from([
+      { file: input.left, side: "left" },
+      { file: input.right, side: "right" },
+      { file: input.edit, side: "middle" },
+    ]).find((v) => v.file.type == "Unsupported");
+    if (unsupported_value == null) {
+      return null;
+    } else if (unsupported_value.file.type != "Unsupported") {
+      throw new Error("this statement is unreachable; this check exists to make TS happy");
+    }
+    return html`<b>error</b>: ${unsupported_value.file.value} (occurred on the
+      ${unsupported_value.side} side)`;
+  };
+
   for (const k in merge_input) {
-    templates.push(html`
-      <details open id="details_${k_uid(k)}">
-        <!-- We will close this with javascript shortly. See below. -->
-        <summary>
-          <code>${k}</code>
-          <button id="collapse_${k_uid(k)}" hidden>
-            (Un)Collapse (Doesn't work)
-          </button>
-          <button
-            id="prevChange_${k_uid(k)}"
-            alt="Previous Change"
-            title="Previous Change"
-          >
-            ⇧ Previous Change
-          </button>
-          <button
-            id="nextChange_${k_uid(k)}"
-            alt="Next Change"
-            title="Next Change"
-          >
-            ⇩ Next Change
-          </button>
-          <button id="linewrap_${k_uid(k)}" hidden>
-            <!--Buggy with collapseIdentical, see comment below -->
-            (Un)Wrap Lines
-          </button>
-        </summary>
-        <div id="cm_${k_uid(k)}"></div>
-      </details>
-    `);
+    const error = to_error(merge_input[k]);
+    if (error != null) {
+      templates.push(html` <details id="details_${k_uid(k)}">
+        <summary><code>${k}</code>: ${error}</summary>
+        <!-- TODO: Allow inserting error details here, perhaps grey out the triangle
+          -- if there are no details.
+          -->
+      </details>`);
+    } else {
+      templates.push(html`
+        <details open id="details_${k_uid(k)}">
+          <!-- We will close this with javascript shortly. See below. -->
+          <summary>
+            <code>${k}</code>
+            <button id="collapse_${k_uid(k)}" hidden>
+              (Un)Collapse (Doesn't work)
+            </button>
+            <button
+              id="prevChange_${k_uid(k)}"
+              alt="Previous Change"
+              title="Previous Change"
+            >
+              ⇧ Previous Change
+            </button>
+            <button
+              id="nextChange_${k_uid(k)}"
+              alt="Next Change"
+              title="Next Change"
+            >
+              ⇩ Next Change
+            </button>
+            <button id="linewrap_${k_uid(k)}" hidden>
+              <!--Buggy with collapseIdentical, see comment below -->
+              (Un)Wrap Lines
+            </button>
+          </summary>
+          <div id="cm_${k_uid(k)}"></div>
+        </details>
+      `);
+    }
   }
 
   const target_element = document.getElementById(unique_id)!;
@@ -77,6 +106,9 @@ function render_input(unique_id: string, merge_input: MergeInput) {
 
   let merge_views: Record<string, MergeView> = {};
   for (let k in merge_input) {
+    if (to_error(merge_input[k]) != null) {
+      continue;
+    }
     const collapseButtonEl = document.getElementById(`collapse_${k_uid(k)}`)!;
     const linewrapButtonEl = document.getElementById(`linewrap_${k_uid(k)}`)!;
     const prevChangeButtonEl = document.getElementById(`prevChange_${k_uid(k)}`)!;
@@ -87,9 +119,9 @@ function render_input(unique_id: string, merge_input: MergeInput) {
     const cmEl = document.getElementById(`cm_${k_uid(k)}`)!;
 
     const config = {
-      value: merge_input[k].edit ?? "",
-      origLeft: merge_input[k].left ?? "", // Set to null for 2 panes
-      orig: merge_input[k].right ?? "",
+      value: to_text(merge_input[k].edit) ?? "",
+      origLeft: to_text(merge_input[k].left) ?? "", // Set to null for 2 panes
+      orig: to_text(merge_input[k].right) ?? "",
       lineNumbers: true,
       /* TODO: Toggling line wrapping breaks `collapseIdentical`. Need a
       settings system where the user can decide whether they want line wrapping,

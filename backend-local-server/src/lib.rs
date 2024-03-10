@@ -15,17 +15,37 @@ mod tests {
         @r###"
         ---
         added file:
-          - ~
-          - added
-          - added
+          - type: Missing
+          - type: Text
+            value: added
+          - type: Text
+            value: added
         deleted_file:
-          - deleted
-          - ~
-          - ~
+          - type: Text
+            value: deleted
+          - type: Missing
+          - type: Missing
         edited_file:
-          - "First\nThird\nFourth\nFourthAndAHalf\n\nFifth\nSixth\n----\none two"
-          - "First\nSecond\nThird\nFifth\nSixth\n----\none\n"
-          - "First\nSecond\nThird\nFifth\nSixth\n----\none\n"
+          - type: Text
+            value: "First\nThird\nFourth\nFourthAndAHalf\n\nFifth\nSixth\n----\none two"
+          - type: Text
+            value: "First\nSecond\nThird\nFifth\nSixth\n----\none\n"
+          - type: Text
+            value: "First\nSecond\nThird\nFifth\nSixth\n----\none\n"
+        unsupported-left:
+          - type: Unsupported
+            value: demo of an unsupported file
+          - type: Text
+            value: text
+          - type: Text
+            value: text
+        unsupported-right:
+          - type: Text
+            value: text
+          - type: Unsupported
+            value: demo of an unsupported file
+          - type: Unsupported
+            value: demo of an unsupported file
         "###);
     }
 }

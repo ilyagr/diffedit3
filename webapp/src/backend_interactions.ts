@@ -1,12 +1,24 @@
 import { InvokeArgs, invoke as tauriInvoke } from "@tauri-apps/api/tauri";
 import { exit as tauriExit } from "@tauri-apps/api/process";
 
-type SingleFileMergeInput = {
-  left: string | null;
-  right: string | null;
-  edit: string | null;
+export type FileEntry =
+  | { type: "Missing" }
+  | { type: "Text"; value: string }
+  | { type: "Unsupported"; value: string };
+export type SingleFileMergeInput = {
+  left: FileEntry;
+  right: FileEntry;
+  edit: FileEntry;
 };
 export type MergeInput = Record<string, SingleFileMergeInput>;
+
+export function to_text(file_entry: FileEntry): string | null {
+  if (file_entry.type == "Text") {
+    return file_entry.value;
+  } else {
+    return null;
+  }
+}
 
 // Tauri interop
 

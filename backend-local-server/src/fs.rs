@@ -2,7 +2,7 @@ use std::path::{Path, PathBuf};
 
 use walkdir::{DirEntry, WalkDir};
 
-use crate::{DataInterface, DataReadError, DataSaveError, EntriesToCompare};
+use crate::{DataInterface, DataReadError, DataSaveError, EntriesToCompare, FileEntry};
 
 fn scan(root: &Path) -> impl Iterator<Item = Result<(DirEntry, String), DataReadError>> {
     // As an alternative to WalkDir, see
@@ -120,23 +120,40 @@ pub fn fake_data() -> EntriesToCompare {
         (
             "edited_file",
             [
-                Some("First\nThird\nFourth\nFourthAndAHalf\n\nFifth\nSixth\n----\none two"),
-                Some("First\nSecond\nThird\nFifth\nSixth\n----\none\n"),
+                FileEntry::Text(
+                    "First\nThird\nFourth\nFourthAndAHalf\n\nFifth\nSixth\n----\none two"
+                        .to_string(),
+                ),
+                FileEntry::Text("First\nSecond\nThird\nFifth\nSixth\n----\none\n".to_string()),
             ],
         ),
-        ("deleted_file", [Some("deleted"), None]),
-        ("added file", [None, Some("added")]),
+        (
+            "deleted_file",
+            [FileEntry::Text("deleted".to_string()), FileEntry::Missing],
+        ),
+        (
+            "added file",
+            [FileEntry::Missing, FileEntry::Text("added".to_string())],
+        ),
+        (
+            "unsupported-left",
+            [
+                FileEntry::Unsupported("demo of an unsupported file".to_string()),
+                FileEntry::Text("text".to_string()),
+            ],
+        ),
+        (
+            "unsupported-right",
+            [
+                FileEntry::Text("text".to_string()),
+                FileEntry::Unsupported("demo of an unsupported file".to_string()),
+            ],
+        ),
     ];
-    let optstr = |opt: Option<&str>| opt.map(|s| s.to_string());
     EntriesToCompare(
         two_sides_map
             .into_iter()
-            .map(|(key, [left, right])| {
-                (
-                    PathBuf::from(key),
-                    [optstr(left), optstr(right), optstr(right)],
-                )
-            })
+            .map(|(key, [left, right])| (PathBuf::from(key), [left, right.clone(), right]))
             .collect(),
     )
 }
@@ -160,9 +177,9 @@ fn scan_several(roots: [&PathBuf; 3]) -> Result<EntriesToCompare, DataReadError>
                         )
                     }),
                 ))
-                .or_insert(Default::default())
+                .or_insert([FileEntry::Missing, FileEntry::Missing, FileEntry::Missing])
                 .as_mut();
-            value[i] = Some(contents);
+            value[i] = FileEntry::Text(contents);
         }
     }
     Ok(result)

@@ -2,12 +2,21 @@ use std::path::PathBuf;
 
 use thiserror::Error;
 
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[serde(tag = "type", content = "value")]
+pub enum FileEntry {
+    Missing,
+    // TODO: Track executable bit, other metadata perhaps
+    Text(String),
+    Unsupported(String),
+}
+
 /// TODO: Clean this up to make things more readable
 const OUTPUT_INDEX: usize = 2;
 #[derive(Debug, Clone, PartialEq, Eq, Default, serde::Serialize, serde::Deserialize)]
 //struct EntriesToCompare<P, const N: usize>(std::collections::BTreeMap<P,
 // [Option<String>; N]>);
-pub struct EntriesToCompare(pub std::collections::BTreeMap<PathBuf, [Option<String>; 3]>);
+pub struct EntriesToCompare(pub std::collections::BTreeMap<PathBuf, [FileEntry; 3]>);
 
 #[derive(Error, Debug)]
 pub enum DataSaveError {
@@ -114,7 +123,7 @@ impl DataInterface for EntriesToCompare {
             self.0
                 .get_mut(&PathBuf::from(path))
                 .expect("At this point, `save()` should have verified that the path is valid")
-                [OUTPUT_INDEX] = Some(new_value);
+                [OUTPUT_INDEX] = FileEntry::Text(new_value);
         }
         Ok(())
     }
