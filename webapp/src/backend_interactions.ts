@@ -13,19 +13,6 @@ export type MergeInput = Record<string, SingleFileMergeInput>;
 // https://github.com/tauri-apps/tauri/discussions/6119
 export const TAURI_BACKEND = "__TAURI__" in globalThis;
 
-export async function command_line_args(): Promise<string[]> {
-  if (TAURI_BACKEND) {
-    return await tauriInvoke("args");
-  } else {
-    return await ["unavailable"];
-  }
-}
-
-export async function logoutput(result: InvokeArgs) {
-  console.log(result);
-  await tauriInvoke("logoutput", { result: result });
-}
-
 async function backend_request(
   command_name: string,
   method: string,

@@ -9,20 +9,6 @@ use indexmap::IndexMap;
 use tauri::{CustomMenuItem, Menu, Submenu};
 
 #[tauri::command]
-fn args() -> Vec<String> {
-    std::env::args().collect()
-}
-
-#[tauri::command]
-fn logoutput(result: IndexMap<String, String>) {
-    for (name, contents) in result {
-        let len = contents.len();
-        println!("{name}: {len} bytes");
-    }
-    println!();
-}
-
-#[tauri::command]
 fn save(
     result: IndexMap<String, String>,
     state: tauri::State<diffedit3::fs::ThreeDirInput>,
@@ -77,12 +63,7 @@ fn main() {
         .menu(menu)
         .on_menu_event(|event| event.window().emit(event.menu_item_id(), ()).unwrap())
         .manage(input)
-        .invoke_handler(tauri::generate_handler![
-            args,
-            logoutput,
-            get_merge_data,
-            save
-        ])
+        .invoke_handler(tauri::generate_handler![get_merge_data, save])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

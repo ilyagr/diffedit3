@@ -7,7 +7,6 @@ import {
   MergeInput,
   get_merge_data,
   save,
-  // command_line_args,
   exit_fatal_error,
   exit_success,
   TAURI_BACKEND,
@@ -290,11 +289,4 @@ window.addEventListener("DOMContentLoaded", async () => {
   }
 
   // TODO: Some sort of the description of what we are comparing
-  // The following is test code that's obsolete but does this, not prettily
-  // let args: string[] = await command_line_args();
-  // let one_arg_tmpl = (arg: string) => html`<code>${arg}</code>`;
-  // lit_html_render(
-  //   html`<p>Args: ${args.map(one_arg_tmpl)}</p>`,
-  //   document.getElementById("args")!
-  // );
 });
