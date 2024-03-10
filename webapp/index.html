@@ -4,18 +4,14 @@
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="/src/styles.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tauri App</title>
+    <title>Diffedit3</title>
+    <script type="module">
+      button_collapse_uncollapse_menu.onclick = function () {
+        this.closest(".main-menu").classList.toggle("collapsed");
+      };
+    </script>
     <script type="module" src="/src/load_codemirror5_merge.ts" defer></script>
     <script type="module" src="/src/main.ts" defer></script>
-    <style>
-      .logo.vite:hover {
-        filter: drop-shadow(0 0 2em #747bff);
-      }
-
-      .logo.typescript:hover {
-        filter: drop-shadow(0 0 2em #2d79c7);
-      }
-    </style>
   </head>
 
   <body>
@@ -38,9 +34,10 @@
         <div class="if-menu-shown">×</div>
         <div class="if-menu-hidden">≡</div>
       </button>
-      <!-- TODO: Button to show/hide menu-->
     </div>
-    <!-- If the dialog is not modal, CodeMirror obscures it -->
+    <!-- If the dialog is not modal, CodeMirror obscures it.
+    -- TODO: try fixing this with CSS if we need non-model dialogs
+    -->
     <dialog id="modal_dialog_with_message">
       <div id="message_of_modal_dialog_with_message"></div>
       <form method="dialog">
@@ -53,13 +50,5 @@
       <p>If this message persists, Javascript is not working.</p>
     </div>
     <div id="lit"></div>
-
-    <script type="module">
-      button_collapse_uncollapse_menu.onclick = function (elt) {
-        console.log(elt);
-        console.log(this.closest(".main-menu"));
-        this.closest(".main-menu").classList.toggle("collapsed");
-      };
-    </script>
   </body>
 </html>
