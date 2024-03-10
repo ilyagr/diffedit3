@@ -22,8 +22,8 @@ class MergeState {
   }
 
   values(): Record<string, string> {
-    let result: Record<string, string> = {};
-    for (let k in this.merge_views) {
+    const result: Record<string, string> = {};
+    for (const k in this.merge_views) {
       result[k] = this.merge_views[k].editor().getValue();
     }
     return result;
@@ -37,9 +37,9 @@ class MergeState {
 //
 /// Renders the input inside the HTML element with id `unique_id`.
 function render_input(unique_id: string, merge_input: MergeInput) {
-  let templates = [];
-  let k_uid = (k: string) => `${k}_${unique_id}`;
-  for (let k in merge_input) {
+  const templates = [];
+  const k_uid = (k: string) => `${k}_${unique_id}`;
+  for (const k in merge_input) {
     templates.push(html`
       <details open id="details_${k_uid(k)}">
         <!-- We will close this with javascript shortly. See below. -->
@@ -72,22 +72,22 @@ function render_input(unique_id: string, merge_input: MergeInput) {
     `);
   }
 
-  let target_element = document.getElementById(unique_id)!;
+  const target_element = document.getElementById(unique_id)!;
   target_element.innerHTML = "";
   lit_html_render(html`${templates}`, target_element);
 
   let merge_views: Record<string, MergeView> = {};
   for (let k in merge_input) {
-    let collapseButtonEl = document.getElementById(`collapse_${k_uid(k)}`)!;
-    let linewrapButtonEl = document.getElementById(`linewrap_${k_uid(k)}`)!;
-    let prevChangeButtonEl = document.getElementById(`prevChange_${k_uid(k)}`)!;
-    let nextChangeButtonEl = document.getElementById(`nextChange_${k_uid(k)}`)!;
-    let detailsButtonEl = <HTMLDetailsElement>(
+    const collapseButtonEl = document.getElementById(`collapse_${k_uid(k)}`)!;
+    const linewrapButtonEl = document.getElementById(`linewrap_${k_uid(k)}`)!;
+    const prevChangeButtonEl = document.getElementById(`prevChange_${k_uid(k)}`)!;
+    const nextChangeButtonEl = document.getElementById(`nextChange_${k_uid(k)}`)!;
+    const detailsButtonEl = <HTMLDetailsElement>(
       document.getElementById(`details_${k_uid(k)}`)!
     );
-    let cmEl = document.getElementById(`cm_${k_uid(k)}`)!;
+    const cmEl = document.getElementById(`cm_${k_uid(k)}`)!;
 
-    let config = {
+    const config = {
       value: merge_input[k].edit ?? "",
       origLeft: merge_input[k].left ?? "", // Set to null for 2 panes
       orig: merge_input[k].right ?? "",
@@ -100,7 +100,7 @@ function render_input(unique_id: string, merge_input: MergeInput) {
       connect: "align",
       collapseIdentical: true,
     };
-    let merge_view = CodeMirror.MergeView(cmEl, config);
+    const merge_view = CodeMirror.MergeView(cmEl, config);
     merge_view.editor().setOption("extraKeys", {
       "Alt-Down": cm_nextChange,
       "Option-Down": cm_nextChange,
@@ -161,10 +161,10 @@ function cm_prevChange(cm: Editor) {
 // Error handling
 function show_error_to_user(e: any) {
   console.log("Caught error, showing to user:", e);
-  let dialogElt = <HTMLDialogElement>(
+  const dialogElt = <HTMLDialogElement>(
     document.getElementById("modal_dialog_with_message")!
   );
-  let dialogContentsElt = document.getElementById(
+  const dialogContentsElt = document.getElementById(
     "message_of_modal_dialog_with_message"
   )!;
   lit_html_render(`${String(e)}`, dialogContentsElt);
@@ -185,7 +185,7 @@ async function run_and_show_any_errors_to_user<T>(f: {
 
 import { listen } from "@tauri-apps/api/event";
 window.addEventListener("DOMContentLoaded", async () => {
-  let loading_elt = document.getElementById("loading_message")!;
+  const loading_elt = document.getElementById("loading_message")!;
   // TODO: Try the until directive?
   loading_elt.innerHTML = "";
   lit_html_render(
@@ -213,21 +213,21 @@ window.addEventListener("DOMContentLoaded", async () => {
     loading_elt
   );
 
-  let merge_views = render_input("lit", input);
+  const merge_views = render_input("lit", input);
 
   lit_html_render(html``, loading_elt);
-  let save_or_tell_user = async () =>
+  const save_or_tell_user = async () =>
     await run_and_show_any_errors_to_user(async () => {
       await save(merge_views.values());
     });
 
-  let save_button = <HTMLButtonElement>document.getElementById("button_save")!;
-  let save_and_quit_button = <HTMLButtonElement>(
+  const save_button = <HTMLButtonElement>document.getElementById("button_save")!;
+  const save_and_quit_button = <HTMLButtonElement>(
     document.getElementById("button_save_and_quit")!
   );
   // TODO: Saving animation (disabled?) on the button. Inside `save_or_tell_user?`
   // Should also affect "Save and Quit" and the menu items with Tauri
-  let save_and_quit_or_tell_user = async () =>
+  const save_and_quit_or_tell_user = async () =>
     await run_and_show_any_errors_to_user(async () => {
       await save(merge_views.values());
       // It's too late for the user to press the save buttons,
@@ -240,7 +240,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       await new Promise((r) => setTimeout(r, 100));
       window.close();
     });
-  let abandon_changes_and_quit = async () =>
+  const abandon_changes_and_quit = async () =>
     await run_and_show_any_errors_to_user(async () => {
       // It's too late for the user to press the save buttons,
       // the server will be dead in a moment.
@@ -252,7 +252,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       await new Promise((r) => setTimeout(r, 100));
       window.close();
     });
-  let revert = () => {
+  const revert = () => {
     window.location.reload();
     return false;
   };
@@ -279,7 +279,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     // Tauri takes care of this via the menu.
     document.addEventListener("keydown", async (e) => {
       // TODO: Only check for Meta on Mac, don't check for Meta elsewhere
-      let CtrlOrCmd = e.metaKey || e.ctrlKey;
+      const CtrlOrCmd = e.metaKey || e.ctrlKey;
       if (e.key == "s" && CtrlOrCmd) {
         await save_or_tell_user();
         e.preventDefault();

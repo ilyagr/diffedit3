@@ -53,7 +53,7 @@ async function http_backend_request(
     body = JSON.stringify(content);
     headers["Content-Type"] = "application/json";
   }
-  let response = await fetch(`/api/${command_name}`, {
+  const response = await fetch(`/api/${command_name}`, {
     method: method,
     body: body,
     headers: headers,
@@ -95,8 +95,8 @@ export async function save(result: InvokeArgs) {
 }
 
 export async function get_merge_data(): Promise<MergeInput> {
-  let data: any = await backend_request("get_merge_data", "GET");
-  for (let k in data) {
+  const data: any = await backend_request("get_merge_data", "GET");
+  for (const k in data) {
     data[k] = { left: data[k][0], right: data[k][1], edit: data[k][2] };
   }
   return data;
