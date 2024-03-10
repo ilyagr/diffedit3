@@ -15,7 +15,7 @@ use poem::{handler, EndpointExt, Result, Route, Server};
 use thiserror::Error;
 
 use crate::DataInterface;
-type DataInterfacePointer = Arc<Mutex<dyn DataInterface>>;
+type DataInterfacePointer = Arc<Mutex<Box<dyn DataInterface>>>;
 
 #[derive(rust_embed::RustEmbed)]
 #[folder = "../webapp/dist"]
@@ -130,7 +130,7 @@ fn acceptor_to_socket_address(
 }
 
 pub async fn run_server(
-    input: impl crate::DataInterface,
+    input: Box<dyn crate::DataInterface>,
     min_port: usize,
     max_port: usize,
     open_browser: bool,

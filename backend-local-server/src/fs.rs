@@ -2,57 +2,28 @@ use std::path::{Path, PathBuf};
 
 use walkdir::{DirEntry, WalkDir};
 
-use crate::{DataInterface, DataReadError, DataSaveError, EntriesToCompare, FileEntry};
-
-fn scan(root: &Path) -> impl Iterator<Item = Result<(DirEntry, String), DataReadError>> {
-    // As an alternative to WalkDir, see
-    // https://github.com/martinvonz/jj/blob/af8eb3fd74956effee00acf00011ff0413607213/lib/src/local_working_copy.rs#L849
-    WalkDir::new(root)
-        .into_iter()
-        .filter_map(|e| e.ok())
-        .filter(|e| e.file_type().is_file())
-        .map(|e| Ok((e.clone(), std::fs::read_to_string(e.path())?)))
-}
+use crate::{DataInterface, DataReadError, DataSaveError, EntriesToCompare, FakeData, FileEntry};
 
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
-pub enum ThreeDirInput {
-    // TODO: Separate FakeData
-    FakeData,
-    Dirs {
-        left: PathBuf,
-        right: PathBuf,
-        edit: PathBuf,
-    },
+pub struct ThreeDirInput {
+    pub left: PathBuf,
+    pub right: PathBuf,
+    pub edit: PathBuf,
 }
 
 impl DataInterface for ThreeDirInput {
     // TODO: A more efficient `get_valid_entries` implementation
 
     fn scan(&self) -> Result<EntriesToCompare, DataReadError> {
-        match self {
-            Self::FakeData => Ok(fake_data()),
-            Self::Dirs { left, right, edit } => scan_several([left, right, edit]),
-        }
+        let Self { left, right, edit } = self;
+        scan_several([left, right, edit])
     }
 
     fn save_unchecked(
         &mut self,
         result: indexmap::IndexMap<String, String>,
     ) -> Result<(), DataSaveError> {
-        let outdir = match self {
-            Self::FakeData => {
-                eprintln!("Can't save fake demo data. Here it is as TOML");
-                eprintln!();
-                eprintln!(
-                    "{}",
-                    toml::to_string(&result)
-                        .unwrap_or_else(|err| format!("Failed to parse TOML: {err}"))
-                );
-                return Err(DataSaveError::CannotSaveFakeData);
-            }
-            Self::Dirs { edit, .. } => edit,
-        };
-
+        let Self { edit: outdir, .. } = self;
         for (relpath, contents) in result.into_iter() {
             let relpath = PathBuf::from(relpath);
             let path = outdir.join(relpath);
@@ -81,23 +52,22 @@ pub struct Cli {
     demo: bool,
 }
 
-impl TryInto<ThreeDirInput> for Cli {
-    type Error = String;
-    fn try_into(self) -> Result<ThreeDirInput, Self::Error> {
+impl Cli {
+    pub fn into_data_interface(self) -> Result<Box<dyn DataInterface>, String> {
         if self.demo {
-            Ok(ThreeDirInput::FakeData)
+            Ok(Box::new(FakeData))
         } else {
             match self.dirs.as_slice() {
-                [left, right, output] => Ok(ThreeDirInput::Dirs {
+                [left, right, output] => Ok(Box::new(ThreeDirInput {
                     left: left.to_path_buf(),
                     right: right.to_path_buf(),
                     edit: output.to_path_buf(),
-                }),
-                [left, right] => Ok(ThreeDirInput::Dirs {
+                })),
+                [left, right] => Ok(Box::new(ThreeDirInput {
                     left: left.to_path_buf(),
                     right: right.to_path_buf(),
                     edit: right.to_path_buf(),
-                }),
+                })),
                 _ => Err(format!(
                     "Must have 2 or 3 dirs to compare, got {} dirs instead",
                     self.dirs.len()
@@ -107,55 +77,14 @@ impl TryInto<ThreeDirInput> for Cli {
     }
 }
 
-pub fn fake_data() -> EntriesToCompare {
-    // let mut two_sides_map = btreemap! {
-    //     "edited_file" => [
-    //           Some("First\nThird\nFourth\nFourthAndAHalf\n\nFifth\nSixth\n----\
-    // none two"),           Some("First\nSecond\nThird\nFifth\nSixth\n----\
-    // none\n")     ],
-    //     "deleted_file" => [Some("deleted"), None],
-    //     "added file" => [None, Some("added")]
-    // };
-    let two_sides_map = vec![
-        (
-            "edited_file",
-            [
-                FileEntry::Text(
-                    "First\nThird\nFourth\nFourthAndAHalf\n\nFifth\nSixth\n----\none two"
-                        .to_string(),
-                ),
-                FileEntry::Text("First\nSecond\nThird\nFifth\nSixth\n----\none\n".to_string()),
-            ],
-        ),
-        (
-            "deleted_file",
-            [FileEntry::Text("deleted".to_string()), FileEntry::Missing],
-        ),
-        (
-            "added file",
-            [FileEntry::Missing, FileEntry::Text("added".to_string())],
-        ),
-        (
-            "unsupported-left",
-            [
-                FileEntry::Unsupported("demo of an unsupported file".to_string()),
-                FileEntry::Text("text".to_string()),
-            ],
-        ),
-        (
-            "unsupported-right",
-            [
-                FileEntry::Text("text".to_string()),
-                FileEntry::Unsupported("demo of an unsupported file".to_string()),
-            ],
-        ),
-    ];
-    EntriesToCompare(
-        two_sides_map
-            .into_iter()
-            .map(|(key, [left, right])| (PathBuf::from(key), [left, right.clone(), right]))
-            .collect(),
-    )
+fn scan(root: &Path) -> impl Iterator<Item = Result<(DirEntry, String), DataReadError>> {
+    // As an alternative to WalkDir, see
+    // https://github.com/martinvonz/jj/blob/af8eb3fd74956effee00acf00011ff0413607213/lib/src/local_working_copy.rs#L849
+    WalkDir::new(root)
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .filter(|e| e.file_type().is_file())
+        .map(|e| Ok((e.clone(), std::fs::read_to_string(e.path())?)))
 }
 
 // pub fn scan_several<const N: usize>(roots: [&Path; N]) ->

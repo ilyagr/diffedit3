@@ -42,7 +42,7 @@ fn exit_with_cli_error(s: String) -> ! {
 #[tokio::main]
 async fn main() -> Result<(), MergeToolError> {
     let cli = LocalServerCli::parse();
-    let input: diffedit3::fs::ThreeDirInput = match cli.lib_cli.try_into() {
+    let input: Box<dyn diffedit3::DataInterface> = match cli.lib_cli.into_data_interface() {
         Ok(i) => i,
         Err(err) => {
             exit_with_cli_error(err.to_string());

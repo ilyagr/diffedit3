@@ -4,7 +4,7 @@
 // #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use clap::Parser;
-use diffedit3::{DataInterface, ThreeDirInput};
+use diffedit3::DataInterface;
 use indexmap::IndexMap;
 // Using parking_lot::Mutex for a timeout. We could alternatively use
 // tokio::sync::Mutex, but the docs suggest only using it if absolutely
@@ -12,7 +12,7 @@ use indexmap::IndexMap;
 use parking_lot::Mutex;
 use tauri::{CustomMenuItem, Menu, Submenu};
 
-type DataMutex = Mutex<ThreeDirInput>;
+type DataMutex = Mutex<Box<dyn DataInterface>>;
 
 #[tauri::command]
 fn save(
@@ -39,10 +39,11 @@ fn get_merge_data(
 // CSS property
 fn main() {
     let cli = diffedit3::Cli::parse();
-    let input: diffedit3::ThreeDirInput = cli.try_into().unwrap_or_else(|err| {
-        eprintln!("Error: {err}");
-        std::process::exit(2)
-    });
+    let input: Box<dyn diffedit3::DataInterface> =
+        cli.into_data_interface().unwrap_or_else(|err| {
+            eprintln!("Error: {err}");
+            std::process::exit(2)
+        });
     let input_mutex: DataMutex = Mutex::new(input);
 
     let abandon_changes_and_quit = CustomMenuItem::new(

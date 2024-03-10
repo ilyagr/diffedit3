@@ -128,3 +128,116 @@ impl DataInterface for EntriesToCompare {
         Ok(())
     }
 }
+
+pub struct FakeData;
+
+impl DataInterface for FakeData {
+    fn scan(&self) -> Result<EntriesToCompare, DataReadError> {
+        // let mut two_sides_map = btreemap! {
+        //     "edited_file" => [
+        //           Some("First\nThird\nFourth\nFourthAndAHalf\n\nFifth\nSixth\n----\
+        // none two"),           Some("First\nSecond\nThird\nFifth\nSixth\n----\
+        // none\n")     ],
+        //     "deleted_file" => [Some("deleted"), None],
+        //     "added file" => [None, Some("added")]
+        // };
+        let two_sides_map = vec![
+            (
+                "edited_file",
+                [
+                    FileEntry::Text(
+                        "First\nThird\nFourth\nFourthAndAHalf\n\nFifth\nSixth\n----\none two"
+                            .to_string(),
+                    ),
+                    FileEntry::Text("First\nSecond\nThird\nFifth\nSixth\n----\none\n".to_string()),
+                ],
+            ),
+            (
+                "deleted_file",
+                [FileEntry::Text("deleted".to_string()), FileEntry::Missing],
+            ),
+            (
+                "added file",
+                [FileEntry::Missing, FileEntry::Text("added".to_string())],
+            ),
+            (
+                "unsupported-left",
+                [
+                    FileEntry::Unsupported("demo of an unsupported file".to_string()),
+                    FileEntry::Text("text".to_string()),
+                ],
+            ),
+            (
+                "unsupported-right",
+                [
+                    FileEntry::Text("text".to_string()),
+                    FileEntry::Unsupported("demo of an unsupported file".to_string()),
+                ],
+            ),
+        ];
+        Ok(EntriesToCompare(
+            two_sides_map
+                .into_iter()
+                .map(|(key, [left, right])| (PathBuf::from(key), [left, right.clone(), right]))
+                .collect(),
+        ))
+    }
+
+    fn save_unchecked(
+        &mut self,
+        result: indexmap::IndexMap<String, String>,
+    ) -> Result<(), DataSaveError> {
+        eprintln!("Can't save fake demo data. Here it is as TOML");
+        eprintln!();
+        eprintln!(
+            "{}",
+            toml::to_string(&result).unwrap_or_else(|err| format!("Failed to parse TOML: {err}"))
+        );
+        Err(DataSaveError::CannotSaveFakeData)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_works() {
+        insta::assert_yaml_snapshot!(FakeData.scan().unwrap(), 
+        @r###"
+        ---
+        added file:
+          - type: Missing
+          - type: Text
+            value: added
+          - type: Text
+            value: added
+        deleted_file:
+          - type: Text
+            value: deleted
+          - type: Missing
+          - type: Missing
+        edited_file:
+          - type: Text
+            value: "First\nThird\nFourth\nFourthAndAHalf\n\nFifth\nSixth\n----\none two"
+          - type: Text
+            value: "First\nSecond\nThird\nFifth\nSixth\n----\none\n"
+          - type: Text
+            value: "First\nSecond\nThird\nFifth\nSixth\n----\none\n"
+        unsupported-left:
+          - type: Unsupported
+            value: demo of an unsupported file
+          - type: Text
+            value: text
+          - type: Text
+            value: text
+        unsupported-right:
+          - type: Text
+            value: text
+          - type: Unsupported
+            value: demo of an unsupported file
+          - type: Unsupported
+            value: demo of an unsupported file
+        "###);
+    }
+}
