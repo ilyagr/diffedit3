@@ -141,15 +141,27 @@ impl DataInterface for FakeData {
         //     "deleted_file" => [Some("deleted"), None],
         //     "added file" => [None, Some("added")]
         // };
+        #[rustfmt::skip]
         let two_sides_map = vec![
             (
                 "edited_file",
                 [
                     FileEntry::Text(
-                        "First\nThird\nFourth\nFourthAndAHalf\n\nFifth\nSixth\n----\none two"
+                        "Long line, a long line, a quite long line. Long line, a long line, a \
+                         quite long line. Long line, a long line, a quite long \
+                         line.\nFirst\nThird\nFourth\nFourthAndAHalf\nSame\nSame\nSame\nSame\
+                         \nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\
+                         \nSame\nSame\nSame\nSame\nSame\nFifth\nSixth\n----\none two"
                             .to_string(),
                     ),
-                    FileEntry::Text("First\nSecond\nThird\nFifth\nSixth\n----\none\n".to_string()),
+                    FileEntry::Text(
+                        "Long line, a long line, a quite long line. Long line, a long line, a \
+                         quite long line. Something new. Long line, a long line, a quite long \
+                         line.\nFirst\nSecond\nThird\nSame\nSame\nSame\nSame\nSame\nSame\nSame\
+                         \nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\
+                         \nSame\nSame\nFifth\nSixth\n----\none\n"
+                            .to_string(),
+                    ),
                 ],
             ),
             (
@@ -219,11 +231,11 @@ mod tests {
           - type: Missing
         edited_file:
           - type: Text
-            value: "First\nThird\nFourth\nFourthAndAHalf\n\nFifth\nSixth\n----\none two"
+            value: "Long line, a long line, a quite long line. Long line, a long line, a quite long line. Long line, a long line, a quite long line.\nFirst\nThird\nFourth\nFourthAndAHalf\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nFifth\nSixth\n----\none two"
           - type: Text
-            value: "First\nSecond\nThird\nFifth\nSixth\n----\none\n"
+            value: "Long line, a long line, a quite long line. Long line, a long line, a quite long line. Something new. Long line, a long line, a quite long line.\nFirst\nSecond\nThird\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nFifth\nSixth\n----\none\n"
           - type: Text
-            value: "First\nSecond\nThird\nFifth\nSixth\n----\none\n"
+            value: "Long line, a long line, a quite long line. Long line, a long line, a quite long line. Something new. Long line, a long line, a quite long line.\nFirst\nSecond\nThird\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nSame\nFifth\nSixth\n----\none\n"
         unsupported-left:
           - type: Unsupported
             value: demo of an unsupported file
