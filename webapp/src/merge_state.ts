@@ -49,6 +49,7 @@ class MergeState {
         "collapseIdentical"
       ) /* TODO: Allow integer values? */,
       showRightSide: !!merge_view.rightOriginal(),
+      cursorPosition: editor.getCursor(),
     };
   }
 
@@ -197,21 +198,24 @@ export function render_input(unique_id: string, merge_input: MergeInput) {
               alt="Previous Change"
               title="Previous Change"
             >
-              ⇧ Previous Change
+              ⇑
+              <!-- Previous Change. Alternatives: ⇑⬆⇧ -->
             </button>
             <button
               id="nextChange_${k_uid(k)}"
               alt="Next Change"
               title="Next Change"
             >
-              ⇩ Next Change
+              ⇓
+              <!-- Next Change. Alternatives: ⇓⬇⇩-->
             </button>
             <button
               id="rightside_${k_uid(k)}"
               alt="Toggle visibility of the right pane"
               title="Toggle visibility of the right pane"
             >
-              2 ⬄ 3
+              2 ⇔ 3
+              <!-- ⬄ ⇔ ⟺ ⟷ ↔ -->
             </button>
             <button
               id="linewrap_${k_uid(k)}"
