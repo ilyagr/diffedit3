@@ -103,6 +103,11 @@ class MergeState {
       "Cmd-Up": cm_prevChange,
       Tab: cm_nextChange,
     });
+    if (merge_state.cursorPosition != null) {
+      merge_view.editor().setSelection(merge_state.cursorPosition);
+      merge_view.editor().scrollIntoView(null, 50);
+    }
+
     collapseButtonEl.onclick = () =>
       this.recreateCodeMirrorFlippingOption(filename, "collapseIdentical");
     linewrapButtonEl.onclick = () =>
@@ -250,11 +255,14 @@ export function render_input(unique_id: string, merge_input: MergeInput) {
 
 type SingleMergeState = {
   input: SingleFileMergeInput;
-  // cursorPosition
   wrapLines: boolean;
   collapseIdentical: boolean;
   showRightSide: boolean;
-  // collapse this merge pane?
+  // TODO: Also try to preserve the selection? Viewport position?
+  cursorPosition?: CodeMirror.Position;
+  // TODO: Track whether the entire merge pane is collapsed? This would be
+  // useful if the options can be toggled with the pane closed, which is not the
+  // case as of this writing.
 };
 
 type BooleandMergeStateOption =

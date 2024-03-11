@@ -252,3 +252,12 @@ Harder: separate save buttons per file and maybe an overall save button.
 ## Shorter-term TODOs and known bugs
 
 ### If the file is deleted on the right side, the tool will write an empty file in its place when saving. It should not do that.
+
+### Toggling options like line-wrapping, collapse of similar regions, or the right pane loses the CodeMirror viewport and selection
+
+This is because the editor needs to be recreated to avoid CodeMirror5 bugs. The
+cursor position is preserved.
+
+### A "focused single-file" view would be nice.
+
+It would increase the editor height to the entire window.
