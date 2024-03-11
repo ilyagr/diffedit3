@@ -11,12 +11,15 @@ import {
 
 class MergeState {
   merge_views: Record<string, MergeView>;
+  dom_ids: Record<string, string>;
+  initial_values: Record<string, SingleFileMergeInput>;
 
   constructor() {
     this.merge_views = {};
+    this.dom_ids = {};
+    this.initial_values = {};
   }
 
-  // TODO: This method should be exported, but ideally not others.
   values(): Record<string, string> {
     const result: Record<string, string> = {};
     for (const k in this.merge_views) {
@@ -27,9 +30,28 @@ class MergeState {
     return result;
   }
 
-  // This method is tightly coupled with the DOM constructed in
-  // `render_input`.
-  createCodeMirrorMergeWidget (unique_id: string, filename: string, input: SingleFileMergeInput) {
+  values_for(filename: string): SingleFileMergeInput {
+    return {
+      left: this.initial_values[filename].left,
+      right: this.initial_values[filename].right,
+      edit: {
+        type: "Text",
+        value: this.merge_views[filename].editor().getValue(),
+      },
+    };
+  }
+
+  // TODO: This method should NOT be exported. It should become protected,
+  // e.g. move render_input into the constructor of this class
+  createCodeMirrorMergeWidget(
+    unique_id: string,
+    filename: string,
+    input: SingleFileMergeInput,
+    // TODO: Other options. Is DOM collapsed? Cursor position?
+    wrap_lines?: boolean
+  ) {
+    // This method is tightly coupled with the DOM constructed in
+    // `render_input`.
     const collapseButtonEl = document.getElementById(`collapse_${unique_id}`)!;
     const linewrapButtonEl = document.getElementById(`linewrap_${unique_id}`)!;
     const prevChangeButtonEl = document.getElementById(
@@ -47,14 +69,11 @@ class MergeState {
       value: to_text(input.edit) ?? "",
       origLeft: to_text(input.left) ?? "", // Set to null for 2 panes
       orig: to_text(input.right) ?? "",
+      lineWrapping: wrap_lines ?? true,
+      collapseIdentical: true,
       lineNumbers: true,
-      /* TODO: Toggling line wrapping breaks `collapseIdentical`. Need a
-      settings system where the user can decide whether they want line wrapping,
-      save, and reload. */
-      lineWrapping: false,
       mode: "text/plain",
       connect: "align",
-      collapseIdentical: true,
     };
     const merge_view = CodeMirror.MergeView(cmEl, config);
     merge_view.editor().setOption("extraKeys", {
@@ -67,7 +86,7 @@ class MergeState {
       Tab: cm_nextChange,
     });
     collapseButtonEl.onclick = () => cm_collapseSame(merge_view.editor());
-    linewrapButtonEl.onclick = () => cm_toggleLineWrapping(merge_view.editor());
+    linewrapButtonEl.onclick = () => this.cm_toggleLineWrapping(filename);
     prevChangeButtonEl.onclick = () => cm_prevChange(merge_view.editor());
     nextChangeButtonEl.onclick = () => cm_nextChange(merge_view.editor());
     // Starting with details closed breaks CodeMirror, especially line numbers
@@ -77,7 +96,46 @@ class MergeState {
     console.log(detailsButtonEl);
 
     // TODO: Resizing. See https://codemirror.net/5/demo/merge.html
-    this.merge_views[filename] = merge_view
+    this.merge_views[filename] = merge_view;
+    this.dom_ids[filename] = unique_id;
+    this.initial_values[filename] = input;
+  }
+
+  protected cm_toggleLineWrapping(filename: string) {
+    const old_merge_view = this.merge_views[filename];
+    if (old_merge_view == null) {
+      console.warn(
+        "Trying to toggle line wrapping on a non-existent editor",
+        filename,
+        this
+      );
+      return;
+    }
+    let dom_id = this.dom_ids[filename];
+    const codemirror_dom_id = `cm_${dom_id}`;
+    const desired_line_wrapping = !old_merge_view
+      .editor()
+      .getOption("lineWrapping");
+
+    const new_codemirror_element = document.createElement("div");
+    document
+      .getElementById(codemirror_dom_id)
+      ?.replaceWith(new_codemirror_element);
+    new_codemirror_element.id = codemirror_dom_id;
+
+    this.createCodeMirrorMergeWidget(
+      dom_id,
+      filename,
+      this.values_for(filename),
+      desired_line_wrapping
+    );
+    const detailsButtonEl = <HTMLDetailsElement>(
+      document.getElementById(`details_${dom_id}`)!
+    );
+    // TODO: Perhaps one day we'll want to toggle this option when the details view is closed.
+    detailsButtonEl.open = true;
+    // TODO: Preserve cursor position
+    // cm.scrollIntoView(null, 50); // Always happens automatically
   }
 }
 
@@ -103,7 +161,7 @@ export function render_input(unique_id: string, merge_input: MergeInput) {
     } else {
       templates.push(html`
         <details open id="details_${k_uid(k)}">
-          <!-- We will close this with javascript shortly. See below. -->
+          <!-- We will close this details element with javascript shortly. See below. -->
           <summary>
             <code>${k}</code>
             <button id="collapse_${k_uid(k)}" hidden>
@@ -123,10 +181,14 @@ export function render_input(unique_id: string, merge_input: MergeInput) {
             >
               ⇩ Next Change
             </button>
-            <button id="linewrap_${k_uid(k)}" hidden>
-              <!--Buggy with collapseIdentical, see comment below -->
-              (Un)Wrap Lines
+            <button
+              id="linewrap_${k_uid(k)}"
+              alt="Toggle wrapping of long lines"
+              title="Toggle wrapping of long lines"
+            >
+              (Un)Wrap
             </button>
+            <!-- TODO: Toggle right pane-->
           </summary>
           <div id="cm_${k_uid(k)}"></div>
         </details>
@@ -135,7 +197,7 @@ export function render_input(unique_id: string, merge_input: MergeInput) {
   }
 
   const target_element = document.getElementById(unique_id)!;
-  target_element.innerHTML = "";
+  target_element.innerHTML = ""; // TODO: Should use replaceWith or something
   lit_html_render(html`${templates}`, target_element);
 
   const merge_state = new MergeState();
@@ -176,16 +238,6 @@ function cm_collapseSame(cm: any) {
   cm.setValue(cm.getValue());
   console.log(cm.getOption("collapseIdentical"));
   cm.scrollIntoView(null, 50);
-}
-
-function cm_toggleLineWrapping(cm: any) {
-  cm.setOption(
-    /* TODO: Interferes with collapseIdentical, always moves cursor to beginning */
-    "lineWrapping",
-    !cm.getOption("lineWrapping")
-  );
-  cm.setValue(cm.getValue());
-  // cm.scrollIntoView(null, 50); // Always happens automatically
 }
 
 function cm_nextChange(cm: CodeMirror.Editor) {

@@ -11,10 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * The library package is renamed to `diffedit3`, with a binary called
   `diffedit3-web`. The Tauri binary is still called `diffedit3-gui`.
+  
+* Line-wrapping defaults to on
 
 ### New features
 
 * The web server version of diffedit3 can be used as a library
+
+* Line-wrapping can now be toggled in the editor
 
 * Binary and files over 200KiB will not be compared.
 
