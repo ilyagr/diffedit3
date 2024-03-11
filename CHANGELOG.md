@@ -21,6 +21,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Line-wrapping and collapsing of long identical regions can now be toggled in
   the editor.
 
+* It is now possible to remove the right pane for a 2-pane view (left pane &
+  output pane only)
+
 * Binary and files over 200KiB will not be compared.
 
 * diffedit3-web: new --port-range option allows trying a different port if the

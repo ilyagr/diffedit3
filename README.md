@@ -138,13 +138,6 @@ Even if somebody writes or improves a Vim plugin to do this (which would be
 great!), there is also a need for such a tool that does not require the user to
 learn the ways of Vim or Emacs.
 
-### Viewing diffs in a two-pane view
-
-This is likely straightforward to add to `diffedit3`. There are many alternative
-tools that can do this today, `meld` and `kdiff3` among them. Vim and Emacs can
-do it in a TUI, though [it takes a little work to make that work with
-`jj`](https://github.com/martinvonz/jj/wiki).
-
 ### Resolving merge conflicts in a 4-pane view
 
 A UI that shows the base of the conflict, the two sides of the conflict, and an

@@ -31,7 +31,8 @@ class MergeState {
   }
 
   protected getSingleMergeState(filename: string): SingleMergeState {
-    let editor = this.merge_views[filename].editor();
+    const merge_view = this.merge_views[filename];
+    const editor = merge_view.editor();
     return {
       input: {
         left: this.initial_values[filename].left,
@@ -47,6 +48,7 @@ class MergeState {
       collapseIdentical: !!(editor as any).getOption(
         "collapseIdentical"
       ) /* TODO: Allow integer values? */,
+      showRightSide: !!merge_view.rightOriginal(),
     };
   }
 
@@ -62,6 +64,9 @@ class MergeState {
     // `render_input`.
     const collapseButtonEl = document.getElementById(`collapse_${unique_id}`)!;
     const linewrapButtonEl = document.getElementById(`linewrap_${unique_id}`)!;
+    const rightsideButtonEl = document.getElementById(
+      `rightside_${unique_id}`
+    )!;
     const prevChangeButtonEl = document.getElementById(
       `prevChange_${unique_id}`
     )!;
@@ -73,10 +78,14 @@ class MergeState {
     );
     const cmEl = document.getElementById(`cm_${unique_id}`)!;
 
+    let rightSide = undefined;
+    if (merge_state.showRightSide) {
+      rightSide = to_text(input.right) ?? "";
+    }
     const config = {
       value: to_text(input.edit) ?? "",
       origLeft: to_text(input.left) ?? "", // Set to null for 2 panes
-      orig: to_text(input.right) ?? "",
+      orig: rightSide,
       lineWrapping: merge_state.wrapLines,
       collapseIdentical:
         merge_state.collapseIdentical /* TODO: Could make the number of lines adjustable */,
@@ -98,6 +107,8 @@ class MergeState {
       this.recreateCodeMirrorFlippingOption(filename, "collapseIdentical");
     linewrapButtonEl.onclick = () =>
       this.recreateCodeMirrorFlippingOption(filename, "wrapLines");
+    rightsideButtonEl.onclick = () =>
+      this.recreateCodeMirrorFlippingOption(filename, "showRightSide");
     prevChangeButtonEl.onclick = () => cm_prevChange(merge_view.editor());
     nextChangeButtonEl.onclick = () => cm_nextChange(merge_view.editor());
     // Starting with details closed breaks CodeMirror, especially line numbers
@@ -191,6 +202,13 @@ export function render_input(unique_id: string, merge_input: MergeInput) {
               ⇩ Next Change
             </button>
             <button
+              id="rightside_${k_uid(k)}"
+              alt="Toggle visibility of the right pane"
+              title="Toggle visibility of the right pane"
+            >
+              2 ⬄ 3
+            </button>
+            <button
               id="linewrap_${k_uid(k)}"
               alt="Toggle wrapping of long lines"
               title="Toggle wrapping of long lines"
@@ -204,7 +222,6 @@ export function render_input(unique_id: string, merge_input: MergeInput) {
             >
               (Un)Collapse
             </button>
-            <!-- TODO: Toggle right pane-->
           </summary>
           <div id="cm_${k_uid(k)}"></div>
         </details>
@@ -236,14 +253,22 @@ type SingleMergeState = {
   // cursorPosition
   wrapLines: boolean;
   collapseIdentical: boolean;
-  // rightPane
+  showRightSide: boolean;
   // collapse this merge pane?
 };
 
-type BooleandMergeStateOption = "wrapLines" | "collapseIdentical";
+type BooleandMergeStateOption =
+  | "wrapLines"
+  | "collapseIdentical"
+  | "showRightSide";
 
 function fillInDefaultSettings(input: SingleFileMergeInput): SingleMergeState {
-  return { input: input, wrapLines: true, collapseIdentical: true };
+  return {
+    input: input,
+    wrapLines: true,
+    collapseIdentical: true,
+    showRightSide: true,
+  };
 }
 
 function flip(
