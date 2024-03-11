@@ -44,6 +44,9 @@ class MergeState {
       wrapLines:
         editor.getOption("lineWrapping") ??
         false /* TODO: is this ever undefined? */,
+      collapseIdentical: !!(editor as any).getOption(
+        "collapseIdentical"
+      ) /* TODO: Allow integer values? */,
     };
   }
 
@@ -74,8 +77,9 @@ class MergeState {
       value: to_text(input.edit) ?? "",
       origLeft: to_text(input.left) ?? "", // Set to null for 2 panes
       orig: to_text(input.right) ?? "",
-      lineWrapping: merge_state.wrapLines ?? true,
-      collapseIdentical: true,
+      lineWrapping: merge_state.wrapLines,
+      collapseIdentical:
+        merge_state.collapseIdentical /* TODO: Could make the number of lines adjustable */,
       lineNumbers: true,
       mode: "text/plain",
       connect: "align",
@@ -90,7 +94,8 @@ class MergeState {
       "Cmd-Up": cm_prevChange,
       Tab: cm_nextChange,
     });
-    collapseButtonEl.onclick = () => cm_collapseSame(merge_view.editor());
+    collapseButtonEl.onclick = () =>
+      this.recreateCodeMirrorFlippingOption(filename, "collapseIdentical");
     linewrapButtonEl.onclick = () =>
       this.recreateCodeMirrorFlippingOption(filename, "wrapLines");
     prevChangeButtonEl.onclick = () => cm_prevChange(merge_view.editor());
@@ -171,9 +176,6 @@ export function render_input(unique_id: string, merge_input: MergeInput) {
           <!-- We will close this details element with javascript shortly. See below. -->
           <summary>
             <code>${k}</code>
-            <button id="collapse_${k_uid(k)}" hidden>
-              (Un)Collapse (Doesn't work)
-            </button>
             <button
               id="prevChange_${k_uid(k)}"
               alt="Previous Change"
@@ -194,6 +196,13 @@ export function render_input(unique_id: string, merge_input: MergeInput) {
               title="Toggle wrapping of long lines"
             >
               (Un)Wrap
+            </button>
+            <button
+              id="collapse_${k_uid(k)}"
+              alt="Toggle collapse of identical regions"
+              title="Toggle collapse of identical regions"
+            >
+              (Un)Collapse
             </button>
             <!-- TODO: Toggle right pane-->
           </summary>
@@ -226,15 +235,15 @@ type SingleMergeState = {
   input: SingleFileMergeInput;
   // cursorPosition
   wrapLines: boolean;
-  // collapse identical
+  collapseIdentical: boolean;
   // rightPane
   // collapse this merge pane?
 };
 
-type BooleandMergeStateOption = "wrapLines" /* | ... */;
+type BooleandMergeStateOption = "wrapLines" | "collapseIdentical";
 
 function fillInDefaultSettings(input: SingleFileMergeInput): SingleMergeState {
-  return { input: input, wrapLines: true };
+  return { input: input, wrapLines: true, collapseIdentical: true };
 }
 
 function flip(
@@ -262,19 +271,6 @@ function to_error(input: SingleFileMergeInput) {
   return html`<b>error</b>: ${unsupported_value.file.value} (occurred on the
     ${unsupported_value.side} side)`;
 }
-
-function cm_collapseSame(cm: any) {
-  // console.log(cm.getOption("collapseIdentical"));
-  cm.setOption(
-    /* TODO: Doesn't seem to work. Might need to recreate the whole editor */
-    "collapseIdentical",
-    !cm.getOption("collapseIdentical")
-  );
-  cm.setValue(cm.getValue());
-  console.log(cm.getOption("collapseIdentical"));
-  cm.scrollIntoView(null, 50);
-}
-
 function cm_nextChange(cm: CodeMirror.Editor) {
   cm.execCommand("goNextDiff");
   cm.scrollIntoView(null, 50);

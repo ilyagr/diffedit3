@@ -18,7 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * The web server version of diffedit3 can be used as a library
 
-* Line-wrapping can now be toggled in the editor
+* Line-wrapping and collapsing of long identical regions can now be toggled in
+  the editor.
 
 * Binary and files over 200KiB will not be compared.
 
