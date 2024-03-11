@@ -8,7 +8,7 @@ import {
   TAURI_BACKEND,
   exit_user_abandoned_merge,
 } from "./backend_interactions";
-import {render_input} from "./merge_state";
+import { MergeState } from "./merge_state";
 
 // Error handling
 function show_error_to_user(e: any) {
@@ -65,7 +65,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     loading_elt
   );
 
-  const merge_views = render_input("lit", input);
+  const merge_views = MergeState.renderInDomElement("lit", input);
 
   lit_html_render(html``, loading_elt);
   const save_or_tell_user = async () =>
@@ -73,7 +73,9 @@ window.addEventListener("DOMContentLoaded", async () => {
       await save(merge_views.values());
     });
 
-  const save_button = <HTMLButtonElement>document.getElementById("button_save")!;
+  const save_button = <HTMLButtonElement>(
+    document.getElementById("button_save")!
+  );
   const save_and_quit_button = <HTMLButtonElement>(
     document.getElementById("button_save_and_quit")!
   );

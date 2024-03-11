@@ -9,18 +9,18 @@ import {
   to_text,
 } from "./backend_interactions";
 
-class MergeState {
-  merge_views: Record<string, MergeView>;
-  dom_ids: Record<string, string>;
-  initial_values: Record<string, SingleFileMergeInput>;
+export class MergeState {
+  protected merge_views: Record<string, MergeView>;
+  protected dom_ids: Record<string, string>;
+  protected initial_values: Record<string, SingleFileMergeInput>;
 
-  constructor() {
+  protected constructor() {
     this.merge_views = {};
     this.dom_ids = {};
     this.initial_values = {};
   }
 
-  values(): Record<string, string> {
+  public values(): Record<string, string> {
     const result: Record<string, string> = {};
     for (const k in this.merge_views) {
       // TODO: Treat deleted values properly. Currently, the server guesses
@@ -30,39 +30,102 @@ class MergeState {
     return result;
   }
 
-  protected getSingleMergeState(filename: string): SingleMergeState {
-    const merge_view = this.merge_views[filename];
-    const editor = merge_view.editor();
-    return {
-      input: {
-        left: this.initial_values[filename].left,
-        right: this.initial_values[filename].right,
-        edit: {
-          type: "Text",
-          value: this.merge_views[filename].editor().getValue(),
-        },
-      },
-      wrapLines:
-        editor.getOption("lineWrapping") ??
-        false /* TODO: is this ever undefined? */,
-      collapseIdentical: !!(editor as any).getOption(
-        "collapseIdentical"
-      ) /* TODO: Allow integer values? */,
-      showRightSide: !!merge_view.rightOriginal(),
-      cursorPosition: editor.getCursor(),
-    };
+  // TODO: Split off drawing one editor. Only draw a single div in a loop.
+  // Or not? Is it reasonable to render lit-html in an element that was just rendered in lit-html?
+  // If not, could have two functions.
+  // Or just don't use `lit` for creating the divs in a loop; leave a comment instead.
+  //
+  /// Renders the input inside the HTML element with id `unique_id`.
+  public static renderInDomElement(unique_id: string, merge_input: MergeInput) {
+    let templates = [];
+    let k_uid = (k: string) => `${k}_${unique_id}`;
+
+    for (const k in merge_input) {
+      const error = to_error(merge_input[k]);
+      if (error != null) {
+        templates.push(html` <details id="details_${k_uid(k)}">
+          <summary><code>${k}</code>: ${error}</summary>
+          <!-- TODO: Allow inserting error details here, perhaps grey out the triangle
+            -- if there are no details.
+            -->
+        </details>`);
+      } else {
+        templates.push(html`
+          <details open id="details_${k_uid(k)}">
+            <!-- We will close this details element with javascript shortly. See below. -->
+            <summary>
+              <code>${k}</code>
+              <button
+                id="prevChange_${k_uid(k)}"
+                alt="Previous Change"
+                title="Previous Change"
+              >
+                ⇧
+                <!-- Previous Change. Alternatives: ⇑-->
+              </button>
+              <button
+                id="nextChange_${k_uid(k)}"
+                alt="Next Change"
+                title="Next Change"
+              >
+                ⇩
+                <!-- Next Change. Alternatives:⇓-->
+              </button>
+              <button
+                id="rightside_${k_uid(k)}"
+                alt="Toggle visibility of the right pane"
+                title="Toggle visibility of the right pane"
+              >
+                2 ⬄ 3
+              </button>
+              <button
+                id="linewrap_${k_uid(k)}"
+                alt="Toggle wrapping of long lines"
+                title="Toggle wrapping of long lines"
+              >
+                (Un)Wrap
+              </button>
+              <button
+                id="collapse_${k_uid(k)}"
+                alt="Toggle collapse of identical regions"
+                title="Toggle collapse of identical regions"
+              >
+                (Un)Collapse
+              </button>
+            </summary>
+            <div id="cm_${k_uid(k)}"></div>
+          </details>
+        `);
+      }
+    }
+
+    const target_element = document.getElementById(unique_id)!;
+    target_element.innerHTML = ""; // TODO: Should use replaceWith or something
+    lit_html_render(html`${templates}`, target_element);
+
+    const merge_state = new MergeState();
+    for (let k in merge_input) {
+      if (to_error(merge_input[k]) != null) {
+        continue;
+      }
+      merge_state.createCodeMirrorMergeWidget(
+        k_uid(k),
+        k,
+        fillInDefaultSettings(merge_input[k])
+      );
+    }
+
+    return merge_state;
   }
 
-  // TODO: This method should NOT be exported. It should become protected,
-  // e.g. move render_input into the constructor of this class
-  createCodeMirrorMergeWidget(
+  protected createCodeMirrorMergeWidget(
     unique_id: string,
     filename: string,
     merge_state: SingleMergeState
   ) {
     const input = merge_state.input;
     // This method is tightly coupled with the DOM constructed in
-    // `render_input`.
+    // `renderInDomElement`.
     const collapseButtonEl = document.getElementById(`collapse_${unique_id}`)!;
     const linewrapButtonEl = document.getElementById(`linewrap_${unique_id}`)!;
     const rightsideButtonEl = document.getElementById(
@@ -129,6 +192,29 @@ class MergeState {
     this.initial_values[filename] = input;
   }
 
+  protected getSingleMergeState(filename: string): SingleMergeState {
+    const merge_view = this.merge_views[filename];
+    const editor = merge_view.editor();
+    return {
+      input: {
+        left: this.initial_values[filename].left,
+        right: this.initial_values[filename].right,
+        edit: {
+          type: "Text",
+          value: this.merge_views[filename].editor().getValue(),
+        },
+      },
+      wrapLines:
+        editor.getOption("lineWrapping") ??
+        false /* TODO: is this ever undefined? */,
+      collapseIdentical: !!(editor as any).getOption(
+        "collapseIdentical"
+      ) /* TODO: Allow integer values? */,
+      showRightSide: !!merge_view.rightOriginal(),
+      cursorPosition: editor.getCursor(),
+    };
+  }
+
   protected recreateCodeMirrorFlippingOption(
     filename: string,
     option: BooleandMergeStateOption
@@ -166,95 +252,6 @@ class MergeState {
     // TODO: Preserve cursor position
     // cm.scrollIntoView(null, 50); // Always happens automatically
   }
-}
-
-// TODO: Split off drawing one editor. Only draw a single div in a loop.
-// Or not? Is it reasonable to render lit-html in an element that was just rendered in lit-html?
-// If not, could have two functions.
-// Or just don't use `lit` for creating the divs in a loop; leave a comment instead.
-//
-/// Renders the input inside the HTML element with id `unique_id`.
-export function render_input(unique_id: string, merge_input: MergeInput) {
-  let templates = [];
-  let k_uid = (k: string) => `${k}_${unique_id}`;
-
-  for (const k in merge_input) {
-    const error = to_error(merge_input[k]);
-    if (error != null) {
-      templates.push(html` <details id="details_${k_uid(k)}">
-        <summary><code>${k}</code>: ${error}</summary>
-        <!-- TODO: Allow inserting error details here, perhaps grey out the triangle
-          -- if there are no details.
-          -->
-      </details>`);
-    } else {
-      templates.push(html`
-        <details open id="details_${k_uid(k)}">
-          <!-- We will close this details element with javascript shortly. See below. -->
-          <summary>
-            <code>${k}</code>
-            <button
-              id="prevChange_${k_uid(k)}"
-              alt="Previous Change"
-              title="Previous Change"
-            >
-              ⇑
-              <!-- Previous Change. Alternatives: ⇑⬆⇧ -->
-            </button>
-            <button
-              id="nextChange_${k_uid(k)}"
-              alt="Next Change"
-              title="Next Change"
-            >
-              ⇓
-              <!-- Next Change. Alternatives: ⇓⬇⇩-->
-            </button>
-            <button
-              id="rightside_${k_uid(k)}"
-              alt="Toggle visibility of the right pane"
-              title="Toggle visibility of the right pane"
-            >
-              2 ⇔ 3
-              <!-- ⬄ ⇔ ⟺ ⟷ ↔ -->
-            </button>
-            <button
-              id="linewrap_${k_uid(k)}"
-              alt="Toggle wrapping of long lines"
-              title="Toggle wrapping of long lines"
-            >
-              (Un)Wrap
-            </button>
-            <button
-              id="collapse_${k_uid(k)}"
-              alt="Toggle collapse of identical regions"
-              title="Toggle collapse of identical regions"
-            >
-              (Un)Collapse
-            </button>
-          </summary>
-          <div id="cm_${k_uid(k)}"></div>
-        </details>
-      `);
-    }
-  }
-
-  const target_element = document.getElementById(unique_id)!;
-  target_element.innerHTML = ""; // TODO: Should use replaceWith or something
-  lit_html_render(html`${templates}`, target_element);
-
-  const merge_state = new MergeState();
-  for (let k in merge_input) {
-    if (to_error(merge_input[k]) != null) {
-      continue;
-    }
-    merge_state.createCodeMirrorMergeWidget(
-      k_uid(k),
-      k,
-      fillInDefaultSettings(merge_input[k])
-    );
-  }
-
-  return merge_state;
 }
 
 type SingleMergeState = {
