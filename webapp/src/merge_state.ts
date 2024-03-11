@@ -30,14 +30,20 @@ class MergeState {
     return result;
   }
 
-  values_for(filename: string): SingleFileMergeInput {
+  protected getSingleMergeState(filename: string): SingleMergeState {
+    let editor = this.merge_views[filename].editor();
     return {
-      left: this.initial_values[filename].left,
-      right: this.initial_values[filename].right,
-      edit: {
-        type: "Text",
-        value: this.merge_views[filename].editor().getValue(),
+      input: {
+        left: this.initial_values[filename].left,
+        right: this.initial_values[filename].right,
+        edit: {
+          type: "Text",
+          value: this.merge_views[filename].editor().getValue(),
+        },
       },
+      wrapLines:
+        editor.getOption("lineWrapping") ??
+        false /* TODO: is this ever undefined? */,
     };
   }
 
@@ -46,10 +52,9 @@ class MergeState {
   createCodeMirrorMergeWidget(
     unique_id: string,
     filename: string,
-    input: SingleFileMergeInput,
-    // TODO: Other options. Is DOM collapsed? Cursor position?
-    wrap_lines?: boolean
+    merge_state: SingleMergeState
   ) {
+    const input = merge_state.input;
     // This method is tightly coupled with the DOM constructed in
     // `render_input`.
     const collapseButtonEl = document.getElementById(`collapse_${unique_id}`)!;
@@ -69,7 +74,7 @@ class MergeState {
       value: to_text(input.edit) ?? "",
       origLeft: to_text(input.left) ?? "", // Set to null for 2 panes
       orig: to_text(input.right) ?? "",
-      lineWrapping: wrap_lines ?? true,
+      lineWrapping: merge_state.wrapLines ?? true,
       collapseIdentical: true,
       lineNumbers: true,
       mode: "text/plain",
@@ -86,7 +91,8 @@ class MergeState {
       Tab: cm_nextChange,
     });
     collapseButtonEl.onclick = () => cm_collapseSame(merge_view.editor());
-    linewrapButtonEl.onclick = () => this.cm_toggleLineWrapping(filename);
+    linewrapButtonEl.onclick = () =>
+      this.recreateCodeMirrorFlippingOption(filename, "wrapLines");
     prevChangeButtonEl.onclick = () => cm_prevChange(merge_view.editor());
     nextChangeButtonEl.onclick = () => cm_nextChange(merge_view.editor());
     // Starting with details closed breaks CodeMirror, especially line numbers
@@ -101,11 +107,14 @@ class MergeState {
     this.initial_values[filename] = input;
   }
 
-  protected cm_toggleLineWrapping(filename: string) {
+  protected recreateCodeMirrorFlippingOption(
+    filename: string,
+    option: BooleandMergeStateOption
+  ) {
     const old_merge_view = this.merge_views[filename];
     if (old_merge_view == null) {
       console.warn(
-        "Trying to toggle line wrapping on a non-existent editor",
+        `Trying to toggle \`${option}\` option on a non-existent editor`,
         filename,
         this
       );
@@ -113,9 +122,8 @@ class MergeState {
     }
     let dom_id = this.dom_ids[filename];
     const codemirror_dom_id = `cm_${dom_id}`;
-    const desired_line_wrapping = !old_merge_view
-      .editor()
-      .getOption("lineWrapping");
+
+    const current_state = this.getSingleMergeState(filename);
 
     const new_codemirror_element = document.createElement("div");
     document
@@ -126,8 +134,7 @@ class MergeState {
     this.createCodeMirrorMergeWidget(
       dom_id,
       filename,
-      this.values_for(filename),
-      desired_line_wrapping
+      flip(current_state, option)
     );
     const detailsButtonEl = <HTMLDetailsElement>(
       document.getElementById(`details_${dom_id}`)!
@@ -205,10 +212,38 @@ export function render_input(unique_id: string, merge_input: MergeInput) {
     if (to_error(merge_input[k]) != null) {
       continue;
     }
-    merge_state.createCodeMirrorMergeWidget(k_uid(k), k, merge_input[k]);
+    merge_state.createCodeMirrorMergeWidget(
+      k_uid(k),
+      k,
+      fillInDefaultSettings(merge_input[k])
+    );
   }
 
   return merge_state;
+}
+
+type SingleMergeState = {
+  input: SingleFileMergeInput;
+  // cursorPosition
+  wrapLines: boolean;
+  // collapse identical
+  // rightPane
+  // collapse this merge pane?
+};
+
+type BooleandMergeStateOption = "wrapLines" /* | ... */;
+
+function fillInDefaultSettings(input: SingleFileMergeInput): SingleMergeState {
+  return { input: input, wrapLines: true };
+}
+
+function flip(
+  settings: SingleMergeState,
+  boolean_option: BooleandMergeStateOption
+) {
+  let result = Object.assign({}, settings);
+  result[boolean_option] = !result[boolean_option];
+  return result;
 }
 
 function to_error(input: SingleFileMergeInput) {
