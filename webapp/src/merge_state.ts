@@ -1,6 +1,6 @@
 import { html, render as lit_html_render } from "lit-html";
 
-import CodeMirror, { Editor } from "codemirror";
+import CodeMirror from "codemirror";
 import { MergeView } from "codemirror/addon/merge/merge";
 
 import {
@@ -12,10 +12,11 @@ import {
 class MergeState {
   merge_views: Record<string, MergeView>;
 
-  constructor(merge_views: Record<string, MergeView>) {
-    this.merge_views = merge_views;
+  constructor() {
+    this.merge_views = {};
   }
 
+  // TODO: This method should be exported, but ideally not others.
   values(): Record<string, string> {
     const result: Record<string, string> = {};
     for (const k in this.merge_views) {
@@ -24,6 +25,59 @@ class MergeState {
       result[k] = this.merge_views[k].editor().getValue();
     }
     return result;
+  }
+
+  // This method is tightly coupled with the DOM constructed in
+  // `render_input`.
+  createCodeMirrorMergeWidget (unique_id: string, filename: string, input: SingleFileMergeInput) {
+    const collapseButtonEl = document.getElementById(`collapse_${unique_id}`)!;
+    const linewrapButtonEl = document.getElementById(`linewrap_${unique_id}`)!;
+    const prevChangeButtonEl = document.getElementById(
+      `prevChange_${unique_id}`
+    )!;
+    const nextChangeButtonEl = document.getElementById(
+      `nextChange_${unique_id}`
+    )!;
+    const detailsButtonEl = <HTMLDetailsElement>(
+      document.getElementById(`details_${unique_id}`)!
+    );
+    const cmEl = document.getElementById(`cm_${unique_id}`)!;
+
+    const config = {
+      value: to_text(input.edit) ?? "",
+      origLeft: to_text(input.left) ?? "", // Set to null for 2 panes
+      orig: to_text(input.right) ?? "",
+      lineNumbers: true,
+      /* TODO: Toggling line wrapping breaks `collapseIdentical`. Need a
+      settings system where the user can decide whether they want line wrapping,
+      save, and reload. */
+      lineWrapping: false,
+      mode: "text/plain",
+      connect: "align",
+      collapseIdentical: true,
+    };
+    const merge_view = CodeMirror.MergeView(cmEl, config);
+    merge_view.editor().setOption("extraKeys", {
+      "Alt-Down": cm_nextChange,
+      "Option-Down": cm_nextChange,
+      "Cmd-Down": cm_nextChange,
+      "Alt-Up": cm_prevChange,
+      "Option-Up": cm_prevChange,
+      "Cmd-Up": cm_prevChange,
+      Tab: cm_nextChange,
+    });
+    collapseButtonEl.onclick = () => cm_collapseSame(merge_view.editor());
+    linewrapButtonEl.onclick = () => cm_toggleLineWrapping(merge_view.editor());
+    prevChangeButtonEl.onclick = () => cm_prevChange(merge_view.editor());
+    nextChangeButtonEl.onclick = () => cm_nextChange(merge_view.editor());
+    // Starting with details closed breaks CodeMirror, especially line numbers
+    // in left and right merge view.
+    detailsButtonEl.open = false;
+    detailsButtonEl.ontoggle = () => merge_view.editor().refresh();
+    console.log(detailsButtonEl);
+
+    // TODO: Resizing. See https://codemirror.net/5/demo/merge.html
+    this.merge_views[filename] = merge_view
   }
 }
 
@@ -36,20 +90,6 @@ class MergeState {
 export function render_input(unique_id: string, merge_input: MergeInput) {
   let templates = [];
   let k_uid = (k: string) => `${k}_${unique_id}`;
-  let to_error = (input: SingleFileMergeInput) => {
-    let unsupported_value = Array.from([
-      { file: input.left, side: "left" },
-      { file: input.right, side: "right" },
-      { file: input.edit, side: "middle" },
-    ]).find((v) => v.file.type == "Unsupported");
-    if (unsupported_value == null) {
-      return null;
-    } else if (unsupported_value.file.type != "Unsupported") {
-      throw new Error("this statement is unreachable; this check exists to make TS happy");
-    }
-    return html`<b>error</b>: ${unsupported_value.file.value} (occurred on the
-      ${unsupported_value.side} side)`;
-  };
 
   for (const k in merge_input) {
     const error = to_error(merge_input[k]);
@@ -98,58 +138,32 @@ export function render_input(unique_id: string, merge_input: MergeInput) {
   target_element.innerHTML = "";
   lit_html_render(html`${templates}`, target_element);
 
-  let merge_views: Record<string, MergeView> = {};
+  const merge_state = new MergeState();
   for (let k in merge_input) {
     if (to_error(merge_input[k]) != null) {
       continue;
     }
-    const collapseButtonEl = document.getElementById(`collapse_${k_uid(k)}`)!;
-    const linewrapButtonEl = document.getElementById(`linewrap_${k_uid(k)}`)!;
-    const prevChangeButtonEl = document.getElementById(`prevChange_${k_uid(k)}`)!;
-    const nextChangeButtonEl = document.getElementById(`nextChange_${k_uid(k)}`)!;
-    const detailsButtonEl = <HTMLDetailsElement>(
-      document.getElementById(`details_${k_uid(k)}`)!
-    );
-    const cmEl = document.getElementById(`cm_${k_uid(k)}`)!;
-
-    const config = {
-      value: to_text(merge_input[k].edit) ?? "",
-      origLeft: to_text(merge_input[k].left) ?? "", // Set to null for 2 panes
-      orig: to_text(merge_input[k].right) ?? "",
-      lineNumbers: true,
-      /* TODO: Toggling line wrapping breaks `collapseIdentical`. Need a
-      settings system where the user can decide whether they want line wrapping,
-      save, and reload. */
-      lineWrapping: false,
-      mode: "text/plain",
-      connect: "align",
-      collapseIdentical: true,
-    };
-    const merge_view = CodeMirror.MergeView(cmEl, config);
-    merge_view.editor().setOption("extraKeys", {
-      "Alt-Down": cm_nextChange,
-      "Option-Down": cm_nextChange,
-      "Cmd-Down": cm_nextChange,
-      "Alt-Up": cm_prevChange,
-      "Option-Up": cm_prevChange,
-      "Cmd-Up": cm_prevChange,
-      Tab: cm_nextChange,
-    });
-    collapseButtonEl.onclick = () => cm_collapseSame(merge_view.editor());
-    linewrapButtonEl.onclick = () => cm_toggleLineWrapping(merge_view.editor());
-    prevChangeButtonEl.onclick = () => cm_prevChange(merge_view.editor());
-    nextChangeButtonEl.onclick = () => cm_nextChange(merge_view.editor());
-    // Starting with details closed breaks CodeMirror, especially line numbers
-    // in left and right merge view.
-    detailsButtonEl.open = false;
-    detailsButtonEl.ontoggle = () => merge_view.editor().refresh();
-    console.log(detailsButtonEl);
-
-    // TODO: Resizing. See https://codemirror.net/5/demo/merge.html
-    merge_views[k] = merge_view;
+    merge_state.createCodeMirrorMergeWidget(k_uid(k), k, merge_input[k]);
   }
 
-  return new MergeState(merge_views);
+  return merge_state;
+}
+
+function to_error(input: SingleFileMergeInput) {
+  let unsupported_value = Array.from([
+    { file: input.left, side: "left" },
+    { file: input.right, side: "right" },
+    { file: input.edit, side: "middle" },
+  ]).find((v) => v.file.type == "Unsupported");
+  if (unsupported_value == null) {
+    return null;
+  } else if (unsupported_value.file.type != "Unsupported") {
+    throw new Error(
+      "this statement is unreachable; this check exists to make TS happy"
+    );
+  }
+  return html`<b>error</b>: ${unsupported_value.file.value} (occurred on the
+    ${unsupported_value.side} side)`;
 }
 
 function cm_collapseSame(cm: any) {
@@ -174,11 +188,11 @@ function cm_toggleLineWrapping(cm: any) {
   // cm.scrollIntoView(null, 50); // Always happens automatically
 }
 
-function cm_nextChange(cm: Editor) {
+function cm_nextChange(cm: CodeMirror.Editor) {
   cm.execCommand("goNextDiff");
   cm.scrollIntoView(null, 50);
 }
-function cm_prevChange(cm: Editor) {
+function cm_prevChange(cm: CodeMirror.Editor) {
   cm.execCommand("goPrevDiff");
   cm.scrollIntoView(null, 50);
 }
