@@ -24,7 +24,7 @@ pub enum MergeToolError {
     IOError(#[from] std::io::Error),
     #[error("{0}")]
     FailedToOpenPort(std::io::Error),
-    #[error("Client requested error with error code {0}")]
+    #[error("Client requested exit with error code {0}")]
     RequestedExitWithCode(ExitCode),
     #[error("Ctrl-C pressed")]
     CtrlC,
@@ -163,7 +163,10 @@ pub async fn run_server(
                         Err(MergeToolError::CtrlC)
                     },
                     Some(code) = terminate_rx.recv() => {
-                        Err(MergeToolError::RequestedExitWithCode(code))
+                        match code {
+                            0 => Ok(()),
+                            code => Err(MergeToolError::RequestedExitWithCode(code))
+                        }
                     }
                 }
             },
