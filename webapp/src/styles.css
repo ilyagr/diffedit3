@@ -92,14 +92,23 @@ button[disabled]:active {
 }
 
 details > summary {
-  height: 3.2em;
   line-height: 3.2em;
   vertical-align: middle;
   justify-content: center;
 }
 
+details:not([open]) > summary {
+  height: 3.2em;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 details:not([open]) > summary > .if-details-open {
   display: none;
+}
+
+details[open] > summary > .if-details-open {
+  white-space: nowrap;
 }
 
 details[open] > summary > .if-details-closed {
@@ -138,6 +147,8 @@ dialog {
   border-radius: 5px;
   padding: 10px;
   height: fit-content;
+  white-space: nowrap;
+  overflow-x: scroll; /* auto is also good */
   /* width:fit-content; */
   /* box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2); */
 }
@@ -161,6 +172,7 @@ dialog {
 .main-menu.collapsed {
   width: fit-content;
   height: fit-content;
+  overflow-x: hidden;
   /* TODO: Fix annoyance where doc contents jumps up/down when toggling the menu
    * See maybe https://stackoverflow.com/questions/28864210/sticky-navigation-element-jumps-during-scroll
    * This happens somewhat even if we kept `position: sticky` here.
