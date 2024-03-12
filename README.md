@@ -219,6 +219,13 @@ A `main` branch with a more readable history may or may not eventually appear.
 
 ## Medium-term TODOs
 
+### Allow ignoring whitespace
+
+This [seems unsupported by
+CodeMirror](https://discuss.codemirror.net/t/codemirror-diff-ignore-whitespaces/148/2).
+
+See also "better merging" below. Mismerge does seem to support this.
+
 ### Keep track on which file tabs were opened on reload
 
 Would need to send data to the server regularly.
@@ -253,6 +260,8 @@ Harder: separate save buttons per file and maybe an overall save button.
 
 ### If the file is deleted on the right side, the tool will write an empty file in its place when saving. It should not do that.
 
+### For the Tauri app (`diffedit3-gui`), Ctrl-C/Cmd-C for copy doesn't seem to always work. `diffedit3-web` is not affected
+
 ### Toggling options like line-wrapping, collapse of similar regions, or the right pane loses the CodeMirror viewport and selection
 
 This is because the editor needs to be recreated to avoid CodeMirror5 bugs. The
@@ -260,4 +269,8 @@ cursor position is preserved.
 
 ### A "focused single-file" view would be nice.
 
-It would increase the editor height to the entire window.
+It would increase the editor height to the entire window. This is mostly some CSS work.
+
+### Scroll up when going to next diff, down when going to prev diff, label buttons with shortcuts.
+
+Or perhaps go to the center either way.
