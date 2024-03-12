@@ -23,6 +23,10 @@ impl DataInterface for ThreeDirInput {
         &mut self,
         result: indexmap::IndexMap<String, String>,
     ) -> Result<(), DataSaveError> {
+        // TODO: Currently, the webapp does not distinguish between empty and
+        // missing files. We should work around it by guessing: if either the
+        // left or right side are missing, delete the file.
+        // TODO: Preserve the executable bit
         let Self { edit: outdir, .. } = self;
         for (relpath, contents) in result.into_iter() {
             let relpath = PathBuf::from(relpath);

@@ -29,6 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Who's counting? Not me.
 
+Some known existing bugs are mentioned at the bottom of the README.
+
+
 ## [0.0.1] - 2024-02-19
 
 Initial release

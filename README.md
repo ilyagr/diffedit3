@@ -224,7 +224,7 @@ A `main` branch with a more readable history may or may not eventually appear.
    automatically refresh the app to use the latest version of the webapp from
    `webapp/` (as opposed to `webapp/dist) in dev mode. 
 
-## Shorter-term TODOs
+## Medium-term TODOs
 
 ### Keep track on which file tabs were opened on reload
 
@@ -256,3 +256,6 @@ Simple part: don't overwrite unchanged files
 
 Harder: separate save buttons per file and maybe an overall save button.
 
+## Shorter-term TODOs and known bugs
+
+### If the file is deleted on the right side, the tool will write an empty file in its place when saving. It should not do that.
