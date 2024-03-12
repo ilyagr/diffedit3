@@ -98,7 +98,11 @@ details > summary {
   justify-content: center;
 }
 
-details:not([open]) > summary > button {
+details:not([open]) > summary > .if-details-open {
+  display: none;
+}
+
+details[open] > summary > .if-details-closed {
   display: none;
 }
 

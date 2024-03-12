@@ -43,55 +43,57 @@ export class MergeState {
     for (const k in merge_input) {
       const error = to_error(merge_input[k]);
       if (error != null) {
-        templates.push(html` <details id="details_${k_uid(k)}">
-          <summary><code>${k}</code>: ${error}</summary>
-          <!-- TODO: Allow inserting error details here, perhaps grey out the triangle
-            -- if there are no details.
-            -->
-        </details>`);
+        templates.push(html`
+        <details id="details_${k_uid(k)}">
+          <summary><code>${k}</code><span class="if-details-closed">: ${error}</span></summary>
+          ${error}
+        </details>
+        `);
       } else {
         templates.push(html`
           <details open id="details_${k_uid(k)}">
             <!-- We will close this details element with javascript shortly. See below. -->
             <summary>
               <code>${k}</code>
-              <button
-                id="prevChange_${k_uid(k)}"
-                alt="Previous Change"
-                title="Previous Change"
-              >
-                ⇧
-                <!-- Previous Change. Alternatives: ⇑-->
-              </button>
-              <button
-                id="nextChange_${k_uid(k)}"
-                alt="Next Change"
-                title="Next Change"
-              >
-                ⇩
-                <!-- Next Change. Alternatives:⇓-->
-              </button>
-              <button
-                id="rightside_${k_uid(k)}"
-                alt="Toggle visibility of the right pane"
-                title="Toggle visibility of the right pane"
-              >
-                2 ⬄ 3
-              </button>
-              <button
-                id="linewrap_${k_uid(k)}"
-                alt="Toggle wrapping of long lines"
-                title="Toggle wrapping of long lines"
-              >
-                (Un)Wrap
-              </button>
-              <button
-                id="collapse_${k_uid(k)}"
-                alt="Toggle collapse of identical regions"
-                title="Toggle collapse of identical regions"
-              >
-                (Un)Collapse
-              </button>
+              <span class="if-details-open">
+                <button
+                  id="prevChange_${k_uid(k)}"
+                  alt="Previous Change"
+                  title="Previous Change"
+                >
+                  ⇧
+                  <!-- Previous Change. Alternatives: ⇑-->
+                </button>
+                <button
+                  id="nextChange_${k_uid(k)}"
+                  alt="Next Change"
+                  title="Next Change"
+                >
+                  ⇩
+                  <!-- Next Change. Alternatives:⇓-->
+                </button>
+                <button
+                  id="rightside_${k_uid(k)}"
+                  alt="Toggle visibility of the right pane"
+                  title="Toggle visibility of the right pane"
+                >
+                  2 ⬄ 3
+                </button>
+                <button
+                  id="linewrap_${k_uid(k)}"
+                  alt="Toggle wrapping of long lines"
+                  title="Toggle wrapping of long lines"
+                >
+                  (Un)Wrap
+                </button>
+                <button
+                  id="collapse_${k_uid(k)}"
+                  alt="Toggle collapse of identical regions"
+                  title="Toggle collapse of identical regions"
+                >
+                  (Un)Collapse
+                </button>
+              </span>
             </summary>
             <div id="cm_${k_uid(k)}"></div>
           </details>
