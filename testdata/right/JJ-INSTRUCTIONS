@@ -5,10 +5,10 @@ You are using the experimental 3-pane diff editor config. Some of
 the following instructions may have been written with a 2-pane
 diff editing in mind and be a little inaccurate.
 
-You are editing changes in: kqkrsq a2d41c2 (no description set)
+You are editing changes in: nolowy 60ef618 config.md docs: document `jj config edit`
 
 The diff initially shows the commit's changes relative to:
-twqtos 052d4b6 tauri@origin| Nightly rustfmt
+kzqmwz 7c87fe2 backends: implement as_any() on OpStore and OpHeadsStore too
 
 Adjust the right side until it shows the contents you want. If you
 don't make any changes, then the operation will be aborted.
