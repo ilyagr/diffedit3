@@ -148,13 +148,19 @@ dialog {
   padding: 10px;
   height: fit-content;
   white-space: nowrap;
-  overflow-x: scroll; /* auto is also good */
+  overflow-x: hidden;
   /* width:fit-content; */
   /* box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2); */
 }
 
+.main-menu:hover,
+.main-menu:active,
+.main-menu:focus {
+  overflow-x: auto; /* Show a scroll bar if neccessary */
+}
+
 .main-menu button.main-menu-toggle {
-  border: thin solid transparent;
+  /* border: thin solid transparent; */
   font-size: 0.8em;
   position: fixed;
   right: 15px;

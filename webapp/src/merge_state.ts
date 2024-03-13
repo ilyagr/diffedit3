@@ -186,7 +186,7 @@ export class MergeState {
     // in left and right merge view.
     detailsButtonEl.open = false;
     detailsButtonEl.ontoggle = () => merge_view.editor().refresh();
-    console.log(detailsButtonEl);
+    // console.log(detailsButtonEl);
 
     // TODO: Resizing. See https://codemirror.net/5/demo/merge.html
     this.merge_views[filename] = merge_view;
