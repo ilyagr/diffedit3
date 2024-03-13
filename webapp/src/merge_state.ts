@@ -8,6 +8,7 @@ import {
   SingleFileMergeInput,
   to_text,
 } from "./backend_interactions";
+import { unreachable } from "./utils";
 
 export class MergeState {
   protected merge_views: Record<string, MergeView>;
@@ -316,9 +317,7 @@ function to_error(input: SingleFileMergeInput) {
   if (unsupported_value == null) {
     return null;
   } else if (unsupported_value.file.type != "Unsupported") {
-    throw new Error(
-      "this statement is unreachable; this check exists to make TS happy"
-    );
+    unreachable();
   }
   return html`<b>error</b>: ${unsupported_value.file.value} (occurred on the
     ${unsupported_value.side} side)`;

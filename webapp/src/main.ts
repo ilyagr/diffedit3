@@ -9,6 +9,7 @@ import {
   exit_user_abandoned_merge,
 } from "./backend_interactions";
 import { MergeState } from "./merge_state";
+import { unreachable } from "./utils";
 
 // Error handling
 function show_error_to_user(e: any) {
@@ -54,7 +55,10 @@ window.addEventListener("DOMContentLoaded", async () => {
   } catch (e) {
     show_error_to_user(e);
     await exit_fatal_error();
-    throw new Error("Internal error: this statement should be unreachable");
+    // TODO: This is only truly unreachable with Tauri backend, but could be
+    // reached with the local server backend. The code should be refactored
+    // accordingly.
+    unreachable();
   }
 
   lit_html_render(
