@@ -31,11 +31,6 @@ export class MergeState {
     return result;
   }
 
-  // TODO: Split off drawing one editor. Only draw a single div in a loop.
-  // Or not? Is it reasonable to render lit-html in an element that was just rendered in lit-html?
-  // If not, could have two functions.
-  // Or just don't use `lit` for creating the divs in a loop; leave a comment instead.
-  //
   /// Renders the input inside the HTML element with id `unique_id`.
   public static renderInDomElement(unique_id: string, merge_input: MergeInput) {
     let templates = [];
@@ -112,6 +107,22 @@ export class MergeState {
     }
 
     let target_element = replaceElementByIdWithNewEmptyDiv(unique_id)!;
+    // Rendering the template here defeats lit-htmls's optimizations and is not
+    // at all in the spirit of lit-html. The original reason for this design is
+    // to have CodeMirror rendered on an already shown DOM element, which is
+    // hopefully the use-case CodeMirror 5 was most tested for. lit-html is used
+    // mainly for its contextual escaping functionality as opposed to its
+    // rendering opimizations.
+    //
+    // TODO: Consider improving this design and making it more modern.
+    //    - We can't use lit-element because it's unlikely CodeMirror5 works
+    //      well with shadow DOM.
+    //    - We could create all the CodeMirror elements first and then return
+    //      the resulting lit-html template. The caller can then render it. This
+    //      could potentially trigger some CodeMirror bugs (or it might be
+    //      fine). It might (or might not) also be slower since all the editor
+    //      elements would be generated before any DOM is rendered. (Or maybe
+    //      it's not slower?)
     lit_html_render(html`${templates}`, target_element);
 
     const merge_state = new MergeState();
@@ -244,7 +255,7 @@ export class MergeState {
       return;
     }
     let dom_id = this.dom_ids[filename];
-  
+
     const current_state = this.getSingleMergeState(filename);
     replaceElementByIdWithNewEmptyDiv(`cm_${dom_id}`);
     this.createCodeMirrorMergeWidget(

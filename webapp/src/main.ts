@@ -1,4 +1,5 @@
 import { html, render as lit_html_render } from "lit-html";
+import { listen as tauriListen } from "@tauri-apps/api/event";
 
 import {
   get_merge_data,
@@ -36,7 +37,6 @@ async function run_and_show_any_errors_to_user<T>(f: {
   }
 }
 
-import { listen } from "@tauri-apps/api/event";
 window.addEventListener("DOMContentLoaded", async () => {
   const loading_elt = replaceElementByIdWithNewEmptyDiv("loading_message")!;
   lit_html_render(
@@ -75,6 +75,8 @@ window.addEventListener("DOMContentLoaded", async () => {
       await save(merge_views.values());
     });
 
+  // TODO: Let the user see some sort of the description of what we are
+  // comparing
   const save_button = <HTMLButtonElement>(
     document.getElementById("button_save")!
   );
@@ -121,14 +123,14 @@ window.addEventListener("DOMContentLoaded", async () => {
   if (TAURI_BACKEND) {
     // Events from the app menu
     // Not sure whether I need to "unlisten"
-    /* const unlisten = */ await listen("save", async (_event) =>
+    /* const unlisten = */ await tauriListen("save", async (_event) =>
       save_or_tell_user()
     );
-    await listen("save_and_quit", async (_event) =>
+    await tauriListen("save_and_quit", async (_event) =>
       save_and_quit_or_tell_user()
     );
-    await listen("revert", async (_event) => revert());
-    await listen("abandon_changes_and_quit", async (_event) =>
+    await tauriListen("revert", async (_event) => revert());
+    await tauriListen("abandon_changes_and_quit", async (_event) =>
       exit_user_abandoned_merge()
     );
   } else {
@@ -144,6 +146,4 @@ window.addEventListener("DOMContentLoaded", async () => {
       return true;
     });
   }
-
-  // TODO: Some sort of the description of what we are comparing
 });
