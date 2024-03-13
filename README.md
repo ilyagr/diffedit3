@@ -109,6 +109,11 @@ Some alternatives to CodeMirror 5 we could consider:
   only supports two-pane diffs at the moment. I started a [Discourse
   discussion](https://discuss.codemirror.net/t/fr-three-way-comparison-for-the-v6-merge-plugin/7879)
   with a feature request for three-pane diffs.
+
+    There is no response yet, but from other discussions, it seems that the author
+    of CodeMirror is willing to be hired as a consultant to implement new
+    features.
+
 - [`mismerge`](https://github.com/BearToCode/mismerge) is promising. It is
   missing some features for now (see the issues in the repo).
 
