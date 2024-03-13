@@ -323,11 +323,17 @@ function to_error(input: SingleFileMergeInput) {
   return html`<b>error</b>: ${unsupported_value.file.value} (occurred on the
     ${unsupported_value.side} side)`;
 }
+
+// For margin > 150, the cursor is centered vertically for CodeMirror of default
+// height (which is 300).
+// TODO: We can add logic where if cursor is down 80% of the editor view on "Go
+// to next diff", move it to 25% (and the opposite for go to previous diff)
+const SCROLL_MARGIN = 200;
 function cm_nextChange(cm: CodeMirror.Editor) {
   cm.execCommand("goNextDiff");
-  cm.scrollIntoView(null, 50);
+  cm.scrollIntoView(null, SCROLL_MARGIN);
 }
 function cm_prevChange(cm: CodeMirror.Editor) {
   cm.execCommand("goPrevDiff");
-  cm.scrollIntoView(null, 50);
+  cm.scrollIntoView(null, SCROLL_MARGIN);
 }
