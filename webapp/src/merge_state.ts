@@ -8,7 +8,7 @@ import {
   SingleFileMergeInput,
   to_text,
 } from "./backend_interactions";
-import { unreachable } from "./utils";
+import { replaceElementByIdWithNewEmptyDiv, unreachable } from "./utils";
 
 export class MergeState {
   protected merge_views: Record<string, MergeView>;
@@ -111,8 +111,7 @@ export class MergeState {
       }
     }
 
-    const target_element = document.getElementById(unique_id)!;
-    target_element.innerHTML = ""; // TODO: Should use replaceWith or something
+    let target_element = replaceElementByIdWithNewEmptyDiv(unique_id)!;
     lit_html_render(html`${templates}`, target_element);
 
     const merge_state = new MergeState();
@@ -245,16 +244,9 @@ export class MergeState {
       return;
     }
     let dom_id = this.dom_ids[filename];
-    const codemirror_dom_id = `cm_${dom_id}`;
-
+  
     const current_state = this.getSingleMergeState(filename);
-
-    const new_codemirror_element = document.createElement("div");
-    document
-      .getElementById(codemirror_dom_id)
-      ?.replaceWith(new_codemirror_element);
-    new_codemirror_element.id = codemirror_dom_id;
-
+    replaceElementByIdWithNewEmptyDiv(`cm_${dom_id}`);
     this.createCodeMirrorMergeWidget(
       dom_id,
       filename,

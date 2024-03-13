@@ -9,7 +9,7 @@ import {
   exit_user_abandoned_merge,
 } from "./backend_interactions";
 import { MergeState } from "./merge_state";
-import { unreachable } from "./utils";
+import { replaceElementByIdWithNewEmptyDiv, unreachable } from "./utils";
 
 // Error handling
 function show_error_to_user(e: any) {
@@ -38,9 +38,7 @@ async function run_and_show_any_errors_to_user<T>(f: {
 
 import { listen } from "@tauri-apps/api/event";
 window.addEventListener("DOMContentLoaded", async () => {
-  const loading_elt = document.getElementById("loading_message")!;
-  // TODO: Try the until directive?
-  loading_elt.innerHTML = "";
+  const loading_elt = replaceElementByIdWithNewEmptyDiv("loading_message")!;
   lit_html_render(
     html`
       <h2>Loading...</h2>
