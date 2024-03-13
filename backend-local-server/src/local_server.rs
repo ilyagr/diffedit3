@@ -189,6 +189,9 @@ pub async fn run_server(
             app,
             async {
                 result = tokio::select! {
+                    // TODO: doesn't seem to work for dependents. This may be a
+                    // good thing; see
+                    // https://docs.rs/tokio/latest/tokio/signal/fn.ctrl_c.html#caveats.
                     _ = tokio::signal::ctrl_c() => {
                         Err(MergeToolError::CtrlC)
                     },
@@ -204,4 +207,18 @@ pub async fn run_server(
         )
         .await?;
     result
+}
+
+/// Initialize tokio correctly and call `run_server`
+pub fn run_server_sync(
+    input: Box<dyn crate::DataInterface>,
+    min_port: usize,
+    max_port: usize,
+    open_browser: bool,
+) -> Result<(), MergeToolError> {
+    tokio::runtime::Builder::new_multi_thread()
+        .enable_all()
+        .build()
+        .unwrap()
+        .block_on(run_server(input, min_port, max_port, open_browser))
 }
