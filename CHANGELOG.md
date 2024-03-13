@@ -18,8 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * The web server version of diffedit3 can be used as a library
 
-* Line-wrapping and collapsing of long identical regions can now be toggled in
-  the editor.
+* Line-wrapping, collapsing of long identical regions, and aligning of changes
+  using blank lines can now be toggled in the editor.
 
 * It is now possible to remove the right pane for a 2-pane view (left pane &
   output pane only)

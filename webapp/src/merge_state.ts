@@ -44,10 +44,12 @@ export class MergeState {
       const error = to_error(merge_input[k]);
       if (error != null) {
         templates.push(html`
-        <details id="details_${k_uid(k)}">
-          <summary><code>${k}</code><span class="if-details-closed">: ${error}</span></summary>
-          ${error}
-        </details>
+          <details id="details_${k_uid(k)}">
+            <summary>
+              <code>${k}</code><span class="if-details-closed">: ${error}</span>
+            </summary>
+            ${error}
+          </details>
         `);
       } else {
         templates.push(html`
@@ -93,6 +95,13 @@ export class MergeState {
                 >
                   (Un)Collapse
                 </button>
+                <button
+                  id="align_${k_uid(k)}"
+                  alt="Toggle insertion of blank lines to align changed regions."
+                  title="Toggle insertion of blank lines to align changed regions."
+                >
+                  (Un)Align
+                </button>
               </span>
             </summary>
             <div id="cm_${k_uid(k)}"></div>
@@ -133,6 +142,7 @@ export class MergeState {
     const rightsideButtonEl = document.getElementById(
       `rightside_${unique_id}`
     )!;
+    const alignButtonEl = document.getElementById(`align_${unique_id}`)!;
     const prevChangeButtonEl = document.getElementById(
       `prevChange_${unique_id}`
     )!;
@@ -157,7 +167,7 @@ export class MergeState {
         merge_state.collapseIdentical /* TODO: Could make the number of lines adjustable */,
       lineNumbers: true,
       mode: "text/plain",
-      connect: "align",
+      connect: merge_state.align ? "align" : undefined,
     };
     const merge_view = CodeMirror.MergeView(cmEl, config);
     merge_view.editor().setOption("extraKeys", {
@@ -180,6 +190,8 @@ export class MergeState {
       this.recreateCodeMirrorFlippingOption(filename, "wrapLines");
     rightsideButtonEl.onclick = () =>
       this.recreateCodeMirrorFlippingOption(filename, "showRightSide");
+    alignButtonEl.onclick = () =>
+      this.recreateCodeMirrorFlippingOption(filename, "align");
     prevChangeButtonEl.onclick = () => cm_prevChange(merge_view.editor());
     nextChangeButtonEl.onclick = () => cm_nextChange(merge_view.editor());
     // Starting with details closed breaks CodeMirror, especially line numbers
@@ -213,6 +225,7 @@ export class MergeState {
         "collapseIdentical"
       ) /* TODO: Allow integer values? */,
       showRightSide: !!merge_view.rightOriginal(),
+      align: (editor as any).getOption("connect") == "align",
       cursorPosition: editor.getCursor(),
     };
   }
@@ -261,6 +274,7 @@ type SingleMergeState = {
   wrapLines: boolean;
   collapseIdentical: boolean;
   showRightSide: boolean;
+  align: boolean;
   // TODO: Also try to preserve the selection? Viewport position?
   cursorPosition?: CodeMirror.Position;
   // TODO: Track whether the entire merge pane is collapsed? This would be
@@ -271,13 +285,15 @@ type SingleMergeState = {
 type BooleandMergeStateOption =
   | "wrapLines"
   | "collapseIdentical"
-  | "showRightSide";
+  | "showRightSide"
+  | "align";
 
 function fillInDefaultSettings(input: SingleFileMergeInput): SingleMergeState {
   return {
     input: input,
     wrapLines: true,
     collapseIdentical: true,
+    align: true,
     showRightSide: true,
   };
 }
