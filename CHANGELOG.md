@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### New features
 
+* `diffedit3` now has a logo (and an icon, and a favicon). See the top of the
+  README. :)
+
 ### Fixed bugs
 
 
