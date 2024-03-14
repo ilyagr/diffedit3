@@ -1,5 +1,9 @@
 [package]
 name = "diffedit3"
+description = "Edit diffs in a 3-pane view"
+license = { workspace = true }
+repository = { workspace = true }
+readme = { workspace = true }
 version = { workspace = true }
 edition = { workspace = true }
 

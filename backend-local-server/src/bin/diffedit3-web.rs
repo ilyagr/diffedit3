@@ -19,7 +19,7 @@ pub struct LocalServerCli {
     port_range: Option<Vec<usize>>,
     /// Do not try to open the browser automatically
     ///
-    /// See https://crates.io/crates/open for a brief description of how the
+    /// See <https://crates.io/crates/open> for a brief description of how the
     /// default browser is chosen. The `BROWSER` environment variable is not
     /// respected, unfortunately.
     // TODO(ilyagr): One way to respect the BROWSER environment variable might
