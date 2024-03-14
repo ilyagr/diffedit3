@@ -195,13 +195,7 @@ In both cases, the binary will be produced in the `target/release` dir.
 The commit history of the `dev` branch is messy. The branch may be force-pushed
 at any time. 
 
-The `release` branch is not meant to be force-pushed.
-
-Branches with names like `v0.0.1-ish` belong to the `dev` branch and may be
-force-pushed or disappear. However, they should roughly correspond to the
-corresponding commit of the `release` branch.
-
-A `main` branch with a more readable history may or may not eventually appear.
+Pre-v0.0.1 commits are also messy, and are on the `v0.0.1-ish` branch.
 
 ### Prerequisites
 
