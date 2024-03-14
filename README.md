@@ -84,7 +84,10 @@ program = "diffedit3"
 edit-args = ["$left", "$right", "$output"]
 ```
 
-Then, the tool will be used for `jj split` and many other commands.
+Then, the tool will be used for `jj split` and many other commands. If you don't
+make it the default diff-editor, you can use `jj split --tool diffedit3`.
+
+TODO: Explain `jj split --tool :builtin-web` once that's implemented.
 
 
 ## Potential uses outside `jj`
