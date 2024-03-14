@@ -18,7 +18,7 @@ use crate::DataInterface;
 type DataInterfacePointer = Arc<Mutex<Box<dyn DataInterface>>>;
 
 #[derive(rust_embed::RustEmbed)]
-#[folder = "../webapp/dist"]
+#[folder = "webapp-dist/"]
 struct StaticFiles;
 
 pub type ExitCode = i32;

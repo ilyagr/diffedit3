@@ -7,12 +7,6 @@ readme = { workspace = true }
 version = { workspace = true }
 edition = { workspace = true }
 
-include = [
-   "../webapp/dist/**/*",
-   "**/*.rs",
-   "*.md"
-]
-
 [dependencies]
 clap = { version = "4.5.0", features = ["derive"] }
 indexmap = { version = "2.2.3", features = ["serde"] }
