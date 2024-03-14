@@ -1,3 +1,5 @@
+# <img src="webapp/assets/icons/de3-icon.svg" height = "25px" alt = "Logo" /> Diffedit3
+
 ## Overview
 
 The tool in this repo is a UI for editing diffs in a three-pane view. It is
