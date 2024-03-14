@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking changes
 
+### New features
+
+### Fixed bugs
+
+
+
+## [v0.1.0] - 2024-03-13
+
+### Breaking changes
+
 * The library package is renamed to `diffedit3`, with a binary called
   `diffedit3-web`. The Tauri binary is still called `diffedit3-gui`.
   
@@ -38,7 +48,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Who's counting? Not me.
 
 Some known existing bugs are mentioned at the bottom of the README.
-
 
 ## [0.0.1] - 2024-02-19
 
