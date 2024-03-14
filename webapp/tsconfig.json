@@ -17,7 +17,10 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    /* Allow image import. https://vitejs.dev/guide/features.html#client-types */
+    "types": ["vite/client"]
   },
   "include": ["src"]
 }

@@ -3,6 +3,8 @@ import { html, render as lit_html_render } from "lit-html";
 import CodeMirror from "codemirror";
 import { MergeView } from "codemirror/addon/merge/merge";
 
+import toggle_rightside_icon from "../assets/icons/rightpane-icon.svg";
+
 import {
   MergeInput,
   SingleFileMergeInput,
@@ -75,7 +77,8 @@ export class MergeState {
                   alt="Toggle visibility of the right pane"
                   title="Toggle visibility of the right pane"
                 >
-                  2 ⬄ 3
+                  <img src=${toggle_rightside_icon} style="height: 1em" />
+                  <!-- 2 ⬄ 3 -->
                 </button>
                 <button
                   id="linewrap_${k_uid(k)}"
