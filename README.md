@@ -261,7 +261,7 @@ Harder: separate save buttons per file and maybe an overall save button.
 
 ### If the file is deleted on the right side, the tool will write an empty file in its place when saving. It should not do that.
 
-### For the Tauri app (`diffedit3-gui`), Ctrl-C/Cmd-C for copy doesn't seem to always work. `diffedit3-web` is not affected
+### For the Tauri app (`diffedit3-gui`), Ctrl-C/Cmd-C for copy doesn't seem to always work. Ctrl-Up and Cmd-Up for going to the previous diff also doesn't seem to work. `diffedit3-web` is not affected
 
 ### Toggling options like line-wrapping, collapse of similar regions, or the right pane loses the CodeMirror viewport and selection
 
