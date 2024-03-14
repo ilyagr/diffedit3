@@ -58,19 +58,25 @@ export class MergeState {
               <span class="if-details-open">
                 <button
                   id="prevChange_${k_uid(k)}"
-                  alt="Previous Change"
-                  title="Previous Change"
+                  alt="Previous Change (Ctrl-↑, Super-↑)"
+                  title="Previous Change (Ctrl-↑, Super-↑)"
                 >
-                  ⇧
-                  <!-- Previous Change. Alternatives: ⇑-->
+                  ▲
+                  <!-- Previous Change. Alternatives: ⇧⇑▲
+                  ---- https://stackoverflow.com/a/22156412/563359
+                  --->
                 </button>
                 <button
                   id="nextChange_${k_uid(k)}"
-                  alt="Next Change"
-                  title="Next Change"
+                  alt="Next Change (Ctrl-↓, Super-↓)"
+                  title="Next Change (Ctrl-↓, Super-↓)"
                 >
-                  ⇩
-                  <!-- Next Change. Alternatives:⇓-->
+                  ▼
+                  <!-- Next Change. Alternatives:⇓⇩▼.
+                  ---- or <div style="transform: scale(1, -1);">⇧</div>
+                  ---- (For some reason, the down arrow ⇓ doesn't look the same as
+                  ---- the up arrow ⇧, so the latter can be flipped)
+                  --->
                 </button>
                 <button
                   id="rightside_${k_uid(k)}"
