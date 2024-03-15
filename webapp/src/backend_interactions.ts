@@ -28,7 +28,7 @@ export const TAURI_BACKEND = "__TAURI__" in globalThis;
 async function backend_request(
   command_name: string,
   method: string,
-  content?: Object | undefined
+  content?: Object | undefined,
 ) {
   if (TAURI_BACKEND) {
     let tauri_args = {};
@@ -44,7 +44,7 @@ async function backend_request(
 async function http_backend_request(
   command_name: string,
   method: string,
-  content?: Object | undefined
+  content?: Object | undefined,
 ) {
   let body = null,
     headers: Record<string, string> = {};

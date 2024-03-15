@@ -19,7 +19,7 @@ function show_error_to_user(e: any) {
     document.getElementById("modal_dialog_with_message")!
   );
   const dialogContentsElt = document.getElementById(
-    "message_of_modal_dialog_with_message"
+    "message_of_modal_dialog_with_message",
   )!;
   lit_html_render(`${String(e)}`, dialogContentsElt);
   dialogElt.showModal();
@@ -44,7 +44,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       <h2>Loading...</h2>
       <p>Getting the data we want to merge...</p>
     `,
-    loading_elt
+    loading_elt,
   );
 
   let input;
@@ -64,7 +64,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       <h2>Loading...</h2>
       <p>Rendering diffs...</p>
     `,
-    loading_elt
+    loading_elt,
   );
 
   const merge_views = MergeState.renderInDomElement("lit", input);
@@ -124,14 +124,14 @@ window.addEventListener("DOMContentLoaded", async () => {
     // Events from the app menu
     // Not sure whether I need to "unlisten"
     /* const unlisten = */ await tauriListen("save", async (_event) =>
-      save_or_tell_user()
+      save_or_tell_user(),
     );
     await tauriListen("save_and_quit", async (_event) =>
-      save_and_quit_or_tell_user()
+      save_and_quit_or_tell_user(),
     );
     await tauriListen("revert", async (_event) => revert());
     await tauriListen("abandon_changes_and_quit", async (_event) =>
-      exit_user_abandoned_merge()
+      exit_user_abandoned_merge(),
     );
   } else {
     // Tauri takes care of this via the menu.

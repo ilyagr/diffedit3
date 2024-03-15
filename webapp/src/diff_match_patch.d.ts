@@ -1,1 +1,1 @@
-declare module 'diff_match_patch';
+declare module "diff_match_patch";

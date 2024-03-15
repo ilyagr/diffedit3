@@ -142,7 +142,7 @@ export class MergeState {
       merge_state.createCodeMirrorMergeWidget(
         k_uid(k),
         k,
-        fillInDefaultSettings(merge_input[k])
+        fillInDefaultSettings(merge_input[k]),
       );
     }
 
@@ -152,7 +152,7 @@ export class MergeState {
   protected createCodeMirrorMergeWidget(
     unique_id: string,
     filename: string,
-    merge_state: SingleMergeState
+    merge_state: SingleMergeState,
   ) {
     const input = merge_state.input;
     // This method is tightly coupled with the DOM constructed in
@@ -160,14 +160,14 @@ export class MergeState {
     const collapseButtonEl = document.getElementById(`collapse_${unique_id}`)!;
     const linewrapButtonEl = document.getElementById(`linewrap_${unique_id}`)!;
     const rightsideButtonEl = document.getElementById(
-      `rightside_${unique_id}`
+      `rightside_${unique_id}`,
     )!;
     const alignButtonEl = document.getElementById(`align_${unique_id}`)!;
     const prevChangeButtonEl = document.getElementById(
-      `prevChange_${unique_id}`
+      `prevChange_${unique_id}`,
     )!;
     const nextChangeButtonEl = document.getElementById(
-      `nextChange_${unique_id}`
+      `nextChange_${unique_id}`,
     )!;
     const detailsButtonEl = <HTMLDetailsElement>(
       document.getElementById(`details_${unique_id}`)!
@@ -242,7 +242,7 @@ export class MergeState {
         editor.getOption("lineWrapping") ??
         false /* TODO: is this ever undefined? */,
       collapseIdentical: !!(editor as any).getOption(
-        "collapseIdentical"
+        "collapseIdentical",
       ) /* TODO: Allow integer values? */,
       showRightSide: !!merge_view.rightOriginal(),
       align: (editor as any).getOption("connect") == "align",
@@ -252,14 +252,14 @@ export class MergeState {
 
   protected recreateCodeMirrorFlippingOption(
     filename: string,
-    option: BooleandMergeStateOption
+    option: BooleandMergeStateOption,
   ) {
     const old_merge_view = this.merge_views[filename];
     if (old_merge_view == null) {
       console.warn(
         `Trying to toggle \`${option}\` option on a non-existent editor`,
         filename,
-        this
+        this,
       );
       return;
     }
@@ -270,7 +270,7 @@ export class MergeState {
     this.createCodeMirrorMergeWidget(
       dom_id,
       filename,
-      flip(current_state, option)
+      flip(current_state, option),
     );
     const detailsButtonEl = <HTMLDetailsElement>(
       document.getElementById(`details_${dom_id}`)!
@@ -313,7 +313,7 @@ function fillInDefaultSettings(input: SingleFileMergeInput): SingleMergeState {
 
 function flip(
   settings: SingleMergeState,
-  boolean_option: BooleandMergeStateOption
+  boolean_option: BooleandMergeStateOption,
 ) {
   let result = Object.assign({}, settings);
   result[boolean_option] = !result[boolean_option];

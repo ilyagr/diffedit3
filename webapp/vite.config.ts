@@ -36,7 +36,7 @@ export default defineConfig({
       // It *seems* that this workaround makes a difference. I'm
       // *guessing* this is related to CodeMirror5 being CommonJS and
       // possibly having some crazy recursive includes.
-      strictRequires: true
+      strictRequires: true,
     },
     rollupOptions: {
       // https://github.com/vitejs/vite/issues/10506#issuecomment-1367718113
