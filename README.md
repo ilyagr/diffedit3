@@ -33,7 +33,8 @@ Releases GitHub page:
 
 - `diffedit3-gui` has the same functionality, but runs as a full-fledged
   application based on [Tauri](https://tauri.app/). This version may be
-  discontinued in the future.
+  discontinued in the future (and currently has some bugs with key bindings not
+  working); let me know if you have interest in it and I shouldn't just drop it.
 
 After obtaining the binary, you can test that it works with `diffedit3-web
 --demo` or `diffedit3-gui --demo`. To use it with `jj`, add the following
