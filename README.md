@@ -209,7 +209,29 @@ Pre-v0.0.1 commits are also messy, and are on the `v0.0.1-ish` branch.
 2. (If you are touching HTML/CSS/JS) Run `npm run watch` in a separate terminal. This will auto-update `webapp/dist` whenever you change files in `webapp/`.
 3. Use `cargo run -p backend-local-server -- --demo` to run the app. If touching
    the webapp, remember to manually make sure that `npm run watch` is not
-   showing any errors before running/building the app. 
+   showing any errors before running/building the app.
+4. (Recommended) Set up your editor to format on save using [Prettier] and
+   `cargo +nightly fmt`. For VS Code, you can install https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode and https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer, and then add the following to your workspace (or global) `settings.json`: 
+
+    ```json
+    "[rust]": {
+        "editor.formatOnSave": true
+    },
+    "[typescript]": {
+        "editor.formatOnSave": true
+    },
+    "[html]": {
+        "editor.formatOnSave": true
+    },
+    "[yaml]": {
+        "editor.formatOnSave": true
+    },
+    "[github-actions-workflow]": {
+        "editor.formatOnSave": true
+    },
+    ```
+
+    Running `npm run build` will also run `prettier` via `npm run format`.
 
 ### Option 2: using `backend-tauri`
 

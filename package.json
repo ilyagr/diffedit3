@@ -2,13 +2,17 @@
   "name": "diffedit3",
   "scripts": {
     "dev": "cd webapp && vite",
-    "build": "cd webapp && tsc && vite build",
+    "format": "prettier . --write",
+    "lint": "echo If we ever try to have a linter, read https://prettier.io/docs/en/install#eslint-and-other-linters",
+    "build": "npm run format && cd webapp && tsc && vite build",
     "preview": "cd webapp && vite preview",
     "watch": "cd webapp && vite build --watch",
     "tauri": "cd webapp && tauri"
   },
   "workspaces": [
     "webapp"
-  ]
+  ],
+  "devDependencies": {
+    "prettier": "3.2.5"
+  }
 }
-
