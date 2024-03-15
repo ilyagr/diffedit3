@@ -16,7 +16,7 @@ env:
   CARGO_PROFILE_DEV_DEBUG: 0
 
 jobs:
-  check-dist-up-to-date:
+  check-formatting-and-dist-up-to-date:
     name: Check that webapp was compiled
     runs-on: ubuntu-latest
     steps:
@@ -35,17 +35,19 @@ jobs:
         run: npm clean-install
 
       - name: build
-        run: npm run build
+        run: npm run build # Also runs `npm run format`
 
       - name: Check for uncommitted changes
         shell: bash
         run: |
           git add -N . # `git diff` ignores added files without this
           if git diff --stat --exit-code; then
-              echo "OK, building the webapp did not cause any changes."
+              echo "OK, building and reformatting the webapp did not cause any changes."
           else
               echo
-              echo 'Updates to the webapp were not bundled to webapp/dist/.'
+              echo 'Updates to the webapp were not bundled to webapp/dist/'
+              echo 'or `prettier` was not run to reformat webapp files.'
+              echo
               echo 'Please run:'
               echo '   npm clean-install && npm run build'
               exit 1
