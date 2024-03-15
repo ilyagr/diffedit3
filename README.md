@@ -20,8 +20,8 @@ mode](https://martinvonz.github.io/jj/v0.14.0/config/#experimental-3-pane-diff-e
 Meld is far more polished, so you should prefer it to `diffedit3` when and if
 you can easily use it. `diffedit3`, however, can be used when Meld would be
 difficult to install or difficult to run, as long as a web browser is available
-(e.g. over SSH with port forwarding). If it's bundled with `jj`, it will require
-no configuration.
+(e.g. over SSH with port forwarding, via WSL, ...). If it's bundled with `jj`,
+it will require no configuration.
 
 To use `diffedit3` today, you can obtain one of the two binaries from the
 Releases GitHub page:
