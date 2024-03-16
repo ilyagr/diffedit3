@@ -182,6 +182,11 @@ pub async fn run_server(
             }
         });
     }
+    eprintln!(
+        "Hint: if you'd like to tell the server to exit successfully and use the last saved \
+         version of the data, you can run:"
+    );
+    eprintln!("    curl http://{socket_addr}/api/exit --json 0");
 
     let mut result = Ok(());
     Server::new_with_acceptor(acceptor)
