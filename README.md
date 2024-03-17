@@ -291,6 +291,8 @@ Harder: separate save buttons per file and maybe an overall save button.
 This is because the editor needs to be recreated to avoid CodeMirror5 bugs. The
 cursor position is preserved.
 
-### A "focused single-file" view would be nice.
+### Pinned view menu has an ugly scrollbar when the window is narrow.
 
-It would increase the editor height to the entire window. This is mostly some CSS work.
+This has to do with the fact that `<details>` do not seem to support `display:
+flex`. The solution would be to replace `<details>` with a custom
+implementation.

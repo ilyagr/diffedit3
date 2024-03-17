@@ -4,6 +4,8 @@ import CodeMirror from "codemirror";
 import { MergeView } from "codemirror/addon/merge/merge";
 
 import toggle_rightside_icon from "../assets/icons/rightpane-icon.svg";
+import pin_icon from "../assets/icons/pin.svg";
+import pin_outline_icon from "../assets/icons/pin-outline.svg";
 
 import {
   MergeInput,
@@ -33,6 +35,12 @@ export class MergeState {
     return result;
   }
 
+  public refreshAll() {
+    for (const k in this.merge_views) {
+      this.merge_views[k].editor().refresh();
+    }
+  }
+
   /// Renders the input inside the HTML element with id `unique_id`.
   public static renderInDomElement(unique_id: string, merge_input: MergeInput) {
     let templates = [];
@@ -42,7 +50,7 @@ export class MergeState {
       const error = to_error(merge_input[k]);
       if (error != null) {
         templates.push(html`
-          <details id="details_${k_uid(k)}">
+          <details id="details_${k_uid(k)}" class="merge-view">
             <summary>
               <code>${k}</code><span class="if-details-closed">: ${error}</span>
             </summary>
@@ -51,9 +59,30 @@ export class MergeState {
         `);
       } else {
         templates.push(html`
-          <details open id="details_${k_uid(k)}">
+          <details open id="details_${k_uid(k)}" class="merge-view">
             <!-- We will close this details element with javascript shortly. See below. -->
             <summary>
+              <span id="pin_${k_uid(k)}" class="pin-span">
+                <!-- TODO: This could be a toggleable checkbox as in
+                  ---- https://developer.mozilla.org/en-US/docs/Web/CSS/:checked#toggling_elements_with_a_hidden_checkbox
+                  --->
+                <!-- TODO: Move style to CSS -->
+                <!-- Try to move using relative position -->
+                <img
+                  src=${pin_outline_icon}
+                  class="if-not-pinned"
+                  style="height: 1em; margin-left: 0em; margin-right: 0.1em; margin-top: 0.1em;"
+                  alt="Show only this file (pin)"
+                  title="Show only this file (pin)"
+                />
+                <img
+                  src=${pin_icon}
+                  class="if-pinned"
+                  style="height: 1em; margin-left: 0em; margin-right: 0.1em; margin-top: 0.1em;"
+                  alt="Unpin"
+                  title="Unpin"
+                />
+              </span>
               <code>${k}</code>
               <span class="if-details-open">
                 <button
@@ -169,6 +198,7 @@ export class MergeState {
     const nextChangeButtonEl = document.getElementById(
       `nextChange_${unique_id}`,
     )!;
+    const pinButtonEl = document.getElementById(`pin_${unique_id}`)!;
     const detailsButtonEl = <HTMLDetailsElement>(
       document.getElementById(`details_${unique_id}`)!
     );
@@ -214,6 +244,24 @@ export class MergeState {
       this.recreateCodeMirrorFlippingOption(filename, "align");
     prevChangeButtonEl.onclick = () => cm_prevChange(merge_view.editor());
     nextChangeButtonEl.onclick = () => cm_nextChange(merge_view.editor());
+    pinButtonEl.onclick = () => {
+      // TODOs: Unpin on closing details
+      // Animate unpin (flash boundary)
+      // Move button, change it to a pinpin
+      const parent_window = pinButtonEl.closest(".app-window")!;
+      parent_window.classList.toggle("pinned-mode");
+      for (const merge_view of parent_window.getElementsByClassName(
+        `merge-view` /* TODO: Should be this collections's merge views only */,
+      )) {
+        if (merge_view.id == `details_${unique_id}`) {
+          merge_view.classList.toggle("pinned-mode-selected");
+        } else {
+          merge_view.classList.remove("pinned-mode-selected");
+        }
+      }
+      this.refreshAll();
+      return false;
+    };
     // Starting with details closed breaks CodeMirror, especially line numbers
     // in left and right merge view.
     detailsButtonEl.open = false;

@@ -14,6 +14,26 @@
   -webkit-text-size-adjust: 100%;
 }
 
+/* https://www.paulirish.com/2012/box-sizing-border-box-ftw/
+   https://github.com/sindresorhus/modern-normalize?tab=readme-ov-file
+   */
+/* apply a natural box layout model to all elements, but allowing components to change */
+html {
+  box-sizing: border-box;
+  height: 100%;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 8px;
+  height: calc(100% - 16px);
+  overflow: auto;
+}
+
 .container {
   margin: 0;
   padding-top: 10vh;
@@ -113,6 +133,92 @@ details[open] > summary > .if-details-open {
 
 details[open] > summary > .if-details-closed {
   display: none;
+}
+
+.app-window.pinned-mode {
+  height: 100%;
+  display: flex; /* Could also be a grid */
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.pinned-mode .merge-view:not(.pinned-mode-selected),
+.pinned-mode .if-not-pinned,
+.if-pinned {
+  display: none;
+}
+
+.pinned-mode .if-pinned {
+  display: inherit;
+}
+
+.pin-span {
+  /* TODO: Stop using `<details>` and get rid of this spacing hack */
+  position: relative;
+  top: 0.2em;
+  left: -0.6em;
+  width: 0.5em;
+  display: inline-block;
+}
+
+@supports (not (-moz-appearance: button)) and (contain: paint) and
+  (-webkit-appearance: none) {
+  /* Is meant to filter out Chrome. https://stackoverflow.com/a/73264364/563359
+   * It has different spaceing after the details toggle.
+   * Not the end of the world if it doesn't work perfectly.
+   *
+   * Seems to affect Safari as well, unfortunately.
+   */
+
+  .pin-span {
+    left: -0.3em;
+  }
+}
+.app-window.pinned-mode > * {
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: auto;
+  overflow: hidden;
+}
+.app-window.pinned-mode > #lit {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.pinned-mode #lit > .merge-view {
+  flex: 1;
+  height: 100%;
+}
+
+.pinned-mode details.merge-view > summary {
+  /* TODO: Stop using `<details>` and get rid of this spacing hack.
+   * It should be 2px, not 0.3em without the space for the scroll bar.
+   */
+  height: calc(
+    3.2em + 0.3em
+  ); /* Should match the height of the div. Approximately what it would be anyway + scroll bar space*/
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.pinned-mode details.merge-view > div {
+  height: calc(100% - (3.2em + 0.3em));
+}
+
+.pinned-mode .merge-view .CodeMirror-merge,
+.pinned-mode .merge-view .CodeMirror-merge-pane,
+.pinned-mode .merge-view .CodeMirror {
+  height: 100%;
+  max-height: 100%;
+}
+
+.CodeMirror-merge {
+  overflow: hidden;
+}
+
+.CodeMirror {
+  overflow-y: auto;
 }
 
 /* https://discuss.codemirror.net/t/how-to-always-display-cursor/227/12 */

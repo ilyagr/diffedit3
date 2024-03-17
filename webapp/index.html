@@ -21,40 +21,42 @@
   </head>
 
   <body>
-    <div class="main-menu">
-      <button id="button_save">Save</button>
-      <button id="button_save_and_quit">Save and Quit</button>
-      <button id="button_revert">Revert to Last Save</button>
-      <button
-        id="button_abandon_changes_and_quit"
-        title="Abandons ALL changes, including saved changes"
-      >
-        Abandon Changes and Quit
-      </button>
-      <button
-        class="main-menu-toggle"
-        id="button_collapse_uncollapse_menu"
-        alt="Show/Hide Menu"
-        title="Show/Hide Menu"
-      >
-        <div class="if-menu-shown">×</div>
-        <div class="if-menu-hidden">≡</div>
-      </button>
-    </div>
-    <!-- If the dialog is not modal, CodeMirror obscures it.
+    <div class="app-window">
+      <div class="main-menu">
+        <button id="button_save">Save</button>
+        <button id="button_save_and_quit">Save and Quit</button>
+        <button id="button_revert">Revert to Last Save</button>
+        <button
+          id="button_abandon_changes_and_quit"
+          title="Abandons ALL changes, including saved changes"
+        >
+          Abandon Changes and Quit
+        </button>
+        <button
+          class="main-menu-toggle"
+          id="button_collapse_uncollapse_menu"
+          alt="Show/Hide Menu"
+          title="Show/Hide Menu"
+        >
+          <div class="if-menu-shown">×</div>
+          <div class="if-menu-hidden">≡</div>
+        </button>
+      </div>
+      <!-- If the dialog is not modal, CodeMirror obscures it.
     -- TODO: try fixing this with CSS if we need non-model dialogs
     -->
-    <dialog id="modal_dialog_with_message">
-      <div id="message_of_modal_dialog_with_message"></div>
-      <form method="dialog">
-        <button>OK</button>
-      </form>
-    </dialog>
-    <div id="args"></div>
-    <div id="loading_message">
-      <h2>Loading...</h2>
-      <p>If this message persists, Javascript is not working.</p>
+      <dialog id="modal_dialog_with_message">
+        <div id="message_of_modal_dialog_with_message"></div>
+        <form method="dialog">
+          <button>OK</button>
+        </form>
+      </dialog>
+      <div id="args"></div>
+      <div id="loading_message">
+        <h2>Loading...</h2>
+        <p>If this message persists, Javascript is not working.</p>
+      </div>
+      <div id="lit"></div>
     </div>
-    <div id="lit"></div>
   </body>
 </html>

@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### New features
 
+* The editor now supports a "pinned" mode where one file merge takes up the
+  whole app window.
+
 ### Fixed bugs
 
 
