@@ -317,6 +317,16 @@ Harder: separate save buttons per file and maybe an overall save button.
 
 ### For the Tauri app (`diffedit3-gui`), Ctrl-C/Cmd-C for copy doesn't seem to always work. Ctrl-Up and Cmd-Up for going to the previous diff also doesn't seem to work. The webapp `diffedit3` version is not affected
 
+### Might want to try the [CodeMirror search plugin](https://codemirror.net/5/doc/manual.html#addon_search)
+
+Browser search works somewhat, but will not find parts of the file that weren't
+loaded by CodeMirror.
+
+It's unknown how well the search plugin works with the merge view.
+
+Another alternative would be to set `viewportMargin` to `Infinity`, but that's
+likely to be slow.
+
 ### Toggling options like line-wrapping, collapse of similar regions, or the right pane loses the CodeMirror viewport and selection
 
 This is because the editor needs to be recreated to avoid CodeMirror5 bugs. The
