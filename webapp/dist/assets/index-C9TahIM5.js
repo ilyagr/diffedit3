@@ -93,7 +93,11 @@ b`.split(/\n/).length!=3?function(e){for(var t=0,i=[],r=e.length;t<=r;){var n=e.
                   alt="Toggle visibility of the right pane"
                   title="Toggle visibility of the right pane"
                 >
-                  <img src=${zf} style="height: 1em" />
+                  <!-- TODO: Less hacky way to vertically center the image -->
+                  <img
+                    src=${zf}
+                    style="height: 1em; position: relative; top: 2px; "
+                  />
                   <!-- 2 ⬄ 3 -->
                 </button>
                 <button

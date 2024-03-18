@@ -112,7 +112,11 @@ export class MergeState {
                   alt="Toggle visibility of the right pane"
                   title="Toggle visibility of the right pane"
                 >
-                  <img src=${toggle_rightside_icon} style="height: 1em" />
+                  <!-- TODO: Less hacky way to vertically center the image -->
+                  <img
+                    src=${toggle_rightside_icon}
+                    style="height: 1em; position: relative; top: 2px; "
+                  />
                   <!-- 2 ⬄ 3 -->
                 </button>
                 <button
