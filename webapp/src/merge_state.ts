@@ -324,18 +324,19 @@ export class MergeState {
   }
 
   protected toggle_pinning(parent_window: Element, unique_id: string) {
-    // Animate unpin (flash boundary)
     parent_window.classList.toggle("pinned-mode");
     for (const merge_view of parent_window.getElementsByClassName(
       `merge-view` /* TODO: Should be this collections's merge views only */,
     )) {
       if (merge_view.id == `details_${unique_id}`) {
         merge_view.classList.toggle("pinned-mode-selected");
+        merge_view.classList.add("pinned-mode-was-last-toggled"); // For animation purposes
         if (merge_view.classList.contains("pinned-mode-selected")) {
           (merge_view as HTMLDetailsElement).open = true;
         }
       } else {
         merge_view.classList.remove("pinned-mode-selected");
+        merge_view.classList.remove("pinned-mode-was-last-toggled"); // For animation purposes
       }
     }
     this.refreshAll();
