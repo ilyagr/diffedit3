@@ -309,7 +309,7 @@ dialog {
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.6);
 }
 
-.main-menu.collapsed button:not(.main-menu-toggle) {
+.main-menu.collapsed > *:not(.main-menu-toggle) {
   display: none;
 }
 .main-menu.collapsed {
