@@ -1,0 +1,37 @@
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+- package-ecosystem: "cargo"
+  directory: "/"
+  schedule:
+    interval: "daily"
+  open-pull-requests-limit: 10
+  commit-message:
+    prefix: "cargo:"
+  groups:
+    cargo-dependencies:
+      patterns:
+      - "*"
+- package-ecosystem: "npm"
+  directory: "/"
+  schedule:
+    interval: "daily"
+  open-pull-requests-limit: 10
+  commit-message:
+    prefix: "npm:"
+  groups:
+    npm-dependencies:
+      patterns:
+      - "*"
+- package-ecosystem: "github-actions"
+  directory: "/"
+  schedule:
+    interval: "daily"
+  open-pull-requests-limit: 10
+  commit-message:
+    prefix: "github:"
+  groups:
+    github-dependencies:
+      patterns:
+      - "*"
