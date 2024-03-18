@@ -14,7 +14,7 @@
     "@types/codemirror": "5",
     "@types/diff-match-patch": "^1.0.36",
     "typescript": "^5.4.2",
-    "vite": "^5.1.5",
+    "vite": "^5.1.6",
     "vite-plugin-checker": "^0.6.4"
   }
 }
