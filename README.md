@@ -294,7 +294,3 @@ cursor position is preserved.
 ### A "focused single-file" view would be nice.
 
 It would increase the editor height to the entire window. This is mostly some CSS work.
-
-### Scroll up when going to next diff, down when going to prev diff, label buttons with shortcuts.
-
-Or perhaps go to the center either way.
