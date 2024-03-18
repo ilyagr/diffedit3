@@ -15,6 +15,19 @@
       button_collapse_uncollapse_menu.onclick = function () {
         this.closest(".main-menu").classList.toggle("collapsed");
       };
+      main_menu_logo.onclick = function (event) {
+        if (
+          event?.buttons == 2 ||
+          event.shiftKey ||
+          event.ctrlKey ||
+          event.metaKey
+        ) {
+          main_menu_logo.style["background-color"] =
+            "#" + Math.floor(Math.random() * 16777215).toString(16);
+        } else {
+          main_menu_logo.style["background-color"] = "whitesmoke";
+        }
+      };
     </script>
     <script type="module" src="/src/load_codemirror5_merge.ts" defer></script>
     <script type="module" src="/src/main.ts" defer></script>
@@ -24,19 +37,20 @@
     <div class="app-window">
       <div class="main-menu">
         <img
+          id="main_menu_logo"
           src="assets/icons/de3-icon.svg"
           style="
             width: 3.5em;
             position: absolute;
             top: d5px;
-            background-color: white;
+            background-color: whitesmoke;
             border-radius: 5px;
             padding-top: 2px;
             padding-bottom: 2px;
             padding-left: 6px;
             padding-right: 6px;
             margin: 1.6px;
-            /* border: thin solid lightgrey */
+            /* border: thin solid lightgrey; */
           "
           alt="Logo"
         />
