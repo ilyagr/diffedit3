@@ -222,6 +222,7 @@ export class MergeState {
       lineNumbers: true,
       mode: "text/plain",
       connect: merge_state.align ? "align" : undefined,
+      viewportMargin: 50, // Up from default of 10. Does this make things slow?
     };
     const merge_view = CodeMirror.MergeView(cmEl, config);
     merge_view.editor().setOption("extraKeys", {
