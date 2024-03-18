@@ -224,8 +224,13 @@ details[open] > summary > .if-details-closed {
     3.2em + 0.3em
   ); /* Should match the height of the div. Approximately what it would be anyway + scroll bar space*/
   white-space: nowrap;
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow: hidden;
+}
+
+.pinned-mode details.merge-view > summary:hover,
+.pinned-mode details.merge-view > summary:active,
+.pinned-mode details.merge-view > summary:focus {
+  overflow-x: auto; /* Show a scroll bar if neccessary */
 }
 
 .pinned-mode details.merge-view > div {
