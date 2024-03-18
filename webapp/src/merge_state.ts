@@ -244,28 +244,22 @@ export class MergeState {
       this.recreateCodeMirrorFlippingOption(filename, "align");
     prevChangeButtonEl.onclick = () => cm_prevChange(merge_view.editor());
     nextChangeButtonEl.onclick = () => cm_nextChange(merge_view.editor());
-    pinButtonEl.onclick = () => {
-      // TODOs: Unpin on closing details
-      // Animate unpin (flash boundary)
-      // Move button, change it to a pinpin
-      const parent_window = pinButtonEl.closest(".app-window")!;
-      parent_window.classList.toggle("pinned-mode");
-      for (const merge_view of parent_window.getElementsByClassName(
-        `merge-view` /* TODO: Should be this collections's merge views only */,
-      )) {
-        if (merge_view.id == `details_${unique_id}`) {
-          merge_view.classList.toggle("pinned-mode-selected");
-        } else {
-          merge_view.classList.remove("pinned-mode-selected");
-        }
-      }
-      this.refreshAll();
-      return false;
-    };
+
+    const parent_window = pinButtonEl.closest(".app-window")!;
+    pinButtonEl.onclick = () => this.toggle_pinning(parent_window, unique_id);
     // Starting with details closed breaks CodeMirror, especially line numbers
     // in left and right merge view.
     detailsButtonEl.open = false;
-    detailsButtonEl.ontoggle = () => merge_view.editor().refresh();
+    detailsButtonEl.ontoggle = () => {
+      if (!detailsButtonEl.open) {
+        // We just closed the details
+        if (parent_window.classList.contains("pinned-mode")) {
+          this.toggle_pinning(parent_window, unique_id);
+        }
+      } else {
+        merge_view.editor().refresh();
+      }
+    };
     // console.log(detailsButtonEl);
 
     // TODO: Resizing. See https://codemirror.net/5/demo/merge.html
@@ -327,6 +321,25 @@ export class MergeState {
     detailsButtonEl.open = true;
     // TODO: Preserve cursor position
     // cm.scrollIntoView(null, 50); // Always happens automatically
+  }
+
+  protected toggle_pinning(parent_window: Element, unique_id: string) {
+    // Animate unpin (flash boundary)
+    parent_window.classList.toggle("pinned-mode");
+    for (const merge_view of parent_window.getElementsByClassName(
+      `merge-view` /* TODO: Should be this collections's merge views only */,
+    )) {
+      if (merge_view.id == `details_${unique_id}`) {
+        merge_view.classList.toggle("pinned-mode-selected");
+        if (merge_view.classList.contains("pinned-mode-selected")) {
+          (merge_view as HTMLDetailsElement).open = true;
+        }
+      } else {
+        merge_view.classList.remove("pinned-mode-selected");
+      }
+    }
+    this.refreshAll();
+    return false;
   }
 }
 
