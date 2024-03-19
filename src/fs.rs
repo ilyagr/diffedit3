@@ -142,3 +142,93 @@ fn scan_several(roots: [&PathBuf; 3]) -> Result<EntriesToCompare, DataReadError>
     }
     Ok(result)
 }
+
+#[cfg(test)]
+mod tests {
+    use indexmap::indexmap;
+    use indoc::indoc;
+    use itertools::Itertools;
+    use tempdir::TempDir;
+
+    use super::*;
+
+    fn left_right_edit_threedirinput(base: &Path) -> ThreeDirInput {
+        ThreeDirInput {
+            left: base.join("left").to_owned(),
+            right: base.join("right").to_owned(),
+            edit: base.join("edit").to_owned(),
+        }
+    }
+
+    #[test]
+    fn it_works() {
+        let tmp_dir = TempDir::new("de3test").unwrap();
+        txtar::from_str(indoc! {"
+        -- left/subdir/txt --
+        Some text
+        "})
+        .materialize(tmp_dir.path())
+        .unwrap();
+        let result = scan(tmp_dir.path())
+            .map(|(dir_path, file_type)| {
+                (
+                    dir_path
+                        .path()
+                        .strip_prefix(tmp_dir.path())
+                        .unwrap()
+                        .to_owned(),
+                    file_type,
+                )
+            })
+            .collect_vec();
+        insta::assert_yaml_snapshot!(result, @r###"
+        ---
+        - - left/subdir/txt
+          - type: Text
+            value: "Some text\n"
+        "###);
+        let mut input = left_right_edit_threedirinput(tmp_dir.path());
+        insta::assert_yaml_snapshot!(input.scan().unwrap(), @r###"
+        ---
+        subdir/txt:
+          - type: Text
+            value: "Some text\n"
+          - type: Missing
+          - type: Missing
+        "###);
+        let result = input.save(indexmap! {
+            "subdir/txt".to_string() => "".to_string()
+        });
+        insta::assert_debug_snapshot!(result, @r###"
+        Err(
+            IOError(
+                "/var/folders/lj/rv4h95_d0mxb9ryztzpz4qph0000gn/T/de3test.hg2lQoslcgCd/edit/subdir/txt",
+                Os {
+                    code: 2,
+                    kind: NotFound,
+                    message: "No such file or directory",
+                },
+            ),
+        )
+        "###);
+        let result = input.save(indexmap! {
+            "another_txt".to_string() => "".to_string(),
+            "subdir/txt".to_string() => "".to_string()
+        });
+        insta::assert_debug_snapshot!(result, @r###"
+        Err(
+            ValidationFailError(
+                "another_txt",
+            ),
+        )
+        "###);
+        insta::assert_yaml_snapshot!(input.scan().unwrap(), @r###"
+        ---
+        subdir/txt:
+          - type: Text
+            value: "Some text\n"
+          - type: Missing
+          - type: Missing
+        "###);
+    }
+}
