@@ -9,7 +9,7 @@ it will hopefully become a part of `jj`.
 See [below](#potential-uses-outside-jj) for the explanation of the purpose of
 `diffedit3` for people less familiar with `jj`.
 
-![Screenshot of v. 0.0.1](diffedit3-0.0.1-screenshot.png)
+![Screenshot of v. 0.1.2](diffedit3-0.1.2-screenshot.png)
 
 The name `diffedit3` may change in the near future.
 
