@@ -145,7 +145,7 @@ fn scan_several(roots: [&PathBuf; 3]) -> Result<EntriesToCompare, DataReadError>
 
 #[cfg(test)]
 mod tests {
-    use indexmap::indexmap;
+    use indexmap::IndexMap;
     use indoc::indoc;
     use itertools::Itertools;
     use tempdir::TempDir;
@@ -158,6 +158,10 @@ mod tests {
             right: base.join("right").to_owned(),
             edit: base.join("edit").to_owned(),
         }
+    }
+
+    fn string_pair(first: &str, second: &str) -> (String, String) {
+        (first.to_string(), second.to_string())
     }
 
     #[test]
@@ -196,9 +200,7 @@ mod tests {
           - type: Missing
           - type: Missing
         "###);
-        let result = input.save(indexmap! {
-            "subdir/txt".to_string() => "".to_string()
-        });
+        let result = input.save(IndexMap::from([string_pair("subdir/txt", "")]));
         insta::assert_debug_snapshot!(result, @r###"
         Err(
             IOError(
@@ -211,10 +213,10 @@ mod tests {
             ),
         )
         "###);
-        let result = input.save(indexmap! {
-            "another_txt".to_string() => "".to_string(),
-            "subdir/txt".to_string() => "".to_string()
-        });
+        let result = input.save(IndexMap::from([
+            string_pair("subdir/txt", ""),
+            string_pair("another_txt", ""),
+        ]));
         insta::assert_debug_snapshot!(result, @r###"
         Err(
             ValidationFailError(
