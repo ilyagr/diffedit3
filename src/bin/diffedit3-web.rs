@@ -8,15 +8,15 @@ pub struct LocalServerCli {
     #[command(flatten)]
     lib_cli: diffedit3::fs::Cli,
     /// Port to use for `http://127.0.0.1`
-    #[arg(long, short, default_value = "8080")]
-    port: usize,
+    #[arg(long, short, conflicts_with = "port_range")]
+    port: Option<usize>,
     // TODO: Change syntax from `--port-range 8080 8085` to `--port 8080-8085`?
     /// Minimum and maximum port numbers to try for `http://127.0.0.1`.
     ///
     /// First, the minimum port is tried. If that is busy, the next port is
     /// tried, and so on.
-    #[arg(long, num_args(2), conflicts_with = "port")]
-    port_range: Option<Vec<usize>>,
+    #[arg(long, num_args(2), default_values = ["8080", "8090"])]
+    port_range: Vec<usize>,
     /// Do not try to open the browser automatically
     ///
     /// See <https://crates.io/crates/open> for a brief description of how the
@@ -58,9 +58,9 @@ async fn main() -> Result<(), MergeToolError> {
         tracing_subscriber::fmt::init();
     }
 
-    let (min_port, max_port) = match cli.port_range {
-        Some(v) => (v[0], v[1]), // Clap guarantees exactly two values
-        None => (cli.port, cli.port),
+    let (min_port, max_port) = match cli.port {
+        Some(port) => (port, port),
+        None => (cli.port_range[0], cli.port_range[1]), // Clap guarantees exactly two values
     };
     if min_port > max_port {
         exit_with_cli_error(format!(
