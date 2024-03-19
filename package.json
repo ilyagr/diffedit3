@@ -2,6 +2,7 @@
   "name": "diffedit3",
   "scripts": {
     "dev": "echo To start the server properly, run \"cargo run -- --demo\" while running \"npm run watch\" in the background. && exit 1",
+    "tauri-dev": "cd webapp && vite",
     "format": "prettier . --write",
     "lint": "echo If we ever try to have a linter, read https://prettier.io/docs/en/install#eslint-and-other-linters. && exit 1",
     "build": "npm run format && cd webapp && tsc && vite build",
