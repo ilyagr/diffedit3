@@ -145,6 +145,9 @@ fn scan_several(roots: [&PathBuf; 3]) -> Result<EntriesToCompare, DataReadError>
 
 #[cfg(test)]
 mod tests {
+    use std::io::ErrorKind;
+
+    use assert_matches::assert_matches;
     use indexmap::IndexMap;
     use indoc::indoc;
     use itertools::Itertools;
@@ -191,6 +194,7 @@ mod tests {
           - type: Text
             value: "Some text\n"
         "###);
+        // TODO: A different bug if edit/subdir/another_file is specified
         let mut input = left_right_edit_threedirinput(tmp_dir.path());
         insta::assert_yaml_snapshot!(input.scan().unwrap(), @r###"
         ---
@@ -201,18 +205,12 @@ mod tests {
           - type: Missing
         "###);
         let result = input.save(IndexMap::from([string_pair("subdir/txt", "")]));
-        insta::assert_debug_snapshot!(result, @r###"
-        Err(
-            IOError(
-                "/var/folders/lj/rv4h95_d0mxb9ryztzpz4qph0000gn/T/de3test.hg2lQoslcgCd/edit/subdir/txt",
-                Os {
-                    code: 2,
-                    kind: NotFound,
-                    message: "No such file or directory",
-                },
-            ),
-        )
-        "###);
+        // BUG
+        assert_matches!(result,
+            Err(DataSaveError::IOError(path, err))
+            if path.ends_with("subdir/txt") &&
+               err.kind() == ErrorKind::NotFound
+        );
         let result = input.save(IndexMap::from([
             string_pair("subdir/txt", ""),
             string_pair("another_txt", ""),
