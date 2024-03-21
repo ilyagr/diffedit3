@@ -395,13 +395,13 @@ mod tests {
         -- left/txt --
         Some text
         -- edit/randomfile --
-        Doesn't matter what goes here
+        This file exists solely to create the `edit/` dir
         "});
         insta::assert_yaml_snapshot!(showdir(tmp_dir.path()), @r###"
         ---
         edit/randomfile:
           type: Text
-          value: "Doesn't matter what goes here\n"
+          value: "This file exists solely to create the `edit/` dir\n"
         left/txt:
           type: Text
           value: "Some text\n"
@@ -413,7 +413,7 @@ mod tests {
           - type: Missing
           - type: Missing
           - type: Text
-            value: "Doesn't matter what goes here\n"
+            value: "This file exists solely to create the `edit/` dir\n"
         txt:
           - type: Text
             value: "Some text\n"
@@ -429,7 +429,7 @@ mod tests {
           - type: Missing
           - type: Missing
           - type: Text
-            value: "Doesn't matter what goes here\n"
+            value: "This file exists solely to create the `edit/` dir\n"
         txt:
           - type: Text
             value: "Some text\n"
@@ -438,7 +438,7 @@ mod tests {
             value: somevalue
         "###);
         // TODO: If the file is missing on RHS, an empty save should mean that the file
-        // should stay (or be) deleted.
+        // should be deleted.
         let () = input
             .save(IndexMap::from([string_pair("txt", "")]))
             .unwrap();
@@ -448,7 +448,7 @@ mod tests {
           - type: Missing
           - type: Missing
           - type: Text
-            value: "Doesn't matter what goes here\n"
+            value: "This file exists solely to create the `edit/` dir\n"
         txt:
           - type: Text
             value: "Some text\n"
