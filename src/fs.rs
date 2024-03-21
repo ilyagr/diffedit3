@@ -445,4 +445,6 @@ mod tests {
             value: ""
         "###);
     }
+
+    // TODO: Test of comparing file with a dir
 }
