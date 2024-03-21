@@ -31,6 +31,10 @@ impl DataInterface for ThreeDirInput {
         for (relpath, contents) in result.into_iter() {
             let relpath = PathBuf::from(relpath);
             let path = outdir.join(relpath);
+            if let Some(parent) = path.parent() {
+                std::fs::create_dir_all(parent)
+                    .map_err(|io_err| DataSaveError::IOError(path.clone(), io_err))?;
+            }
             std::fs::write(path.clone(), contents)
                 .map_err(|io_err| DataSaveError::IOError(path, io_err))?;
         }
@@ -146,7 +150,6 @@ fn scan_several(roots: [&PathBuf; 3]) -> Result<EntriesToCompare, DataReadError>
 #[cfg(test)]
 mod tests {
     use std::collections::BTreeMap;
-    use std::io::ErrorKind;
 
     use assert_matches::assert_matches;
     use indexmap::IndexMap;
@@ -363,29 +366,31 @@ mod tests {
           - type: Missing
           - type: Missing
         "###);
-        let result = input.save(IndexMap::from([string_pair("txt", "somevalue")]));
-        // BUG: We fail to create `right/txt` because `right/` does not exist
-        assert_matches!(result,
-            Err(DataSaveError::IOError(path, err))
-            if path.ends_with("txt") &&
-               err.kind() == ErrorKind::NotFound
-        );
-        // TODO: If the file is missing on RHS, an empty save should mean that the file
-        // should stay deleted. We should not even try to create it
-        let result = input.save(IndexMap::from([string_pair("txt", "")]));
-        // BUG: We fail to create `edit/txt` because `right/` does not exist
-        assert_matches!(result,
-            Err(DataSaveError::IOError(path, err))
-            if path.ends_with("txt") &&
-               err.kind() == ErrorKind::NotFound
-        );
+        let () = input
+            .save(IndexMap::from([string_pair("txt", "somevalue")]))
+            .unwrap();
         insta::assert_yaml_snapshot!(showscan(&input), @r###"
         ---
         txt:
           - type: Text
             value: "Some text\n"
           - type: Missing
+          - type: Text
+            value: somevalue
+        "###);
+        // TODO: If the file is missing on RHS, an empty save should mean that the file
+        // should stay deleted.
+        let () = input
+            .save(IndexMap::from([string_pair("txt", "")]))
+            .unwrap();
+        insta::assert_yaml_snapshot!(showscan(&input), @r###"
+        ---
+        txt:
+          - type: Text
+            value: "Some text\n"
           - type: Missing
+          - type: Text
+            value: ""
         "###);
     }
 
