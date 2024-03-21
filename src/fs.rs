@@ -151,21 +151,19 @@ mod tests {
     use assert_matches::assert_matches;
     use indexmap::IndexMap;
     use indoc::indoc;
-    use path_slash::*;
     use serde::Serialize;
     use tempdir::TempDir;
 
     use super::*;
 
+    fn to_slash_string_lossy(path: &Path) -> String {
+        path.to_string_lossy().replace('\\', "/")
+    }
+
     fn showdir(path: &Path) -> impl Serialize {
         BTreeMap::from_iter(scan(path).map(|(dir_path, file_type)| {
             (
-                dir_path
-                    .path()
-                    .strip_prefix(path)
-                    .unwrap()
-                    .to_slash_lossy()
-                    .to_string(),
+                to_slash_string_lossy(dir_path.path().strip_prefix(path).unwrap()),
                 file_type,
             )
         }))
@@ -177,7 +175,7 @@ mod tests {
             entries
                 .0
                 .into_iter()
-                .map(|(k, v)| (k.to_slash_lossy().to_string(), v)),
+                .map(|(k, v)| (to_slash_string_lossy(&k), v)),
         )
     }
 
