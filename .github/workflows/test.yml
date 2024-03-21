@@ -16,6 +16,43 @@ env:
   CARGO_PROFILE_DEV_DEBUG: 0
 
 jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-14, windows-latest]
+        cargo_flags: [""]
+        include:
+          - os: ubuntu-latest
+            cargo_flags: "--all-features"
+    runs-on: ${{ matrix.os }}
+
+    # TODO FIXME (aseipp): keep the timeout limit to ~15 minutes. this is long
+    # enough to give us runway for the future, but also once we hit it, we're at
+    # the "builds are taking too long" stage and we should start looking at ways
+    # to optimize the CI.
+    #
+    # at the same time, this avoids some issues where some flaky, bugged tests
+    # seem to be causing multi-hour runs on Windows (GPG signing issues), which
+    # is a problem we should fix. in the mean time, this will make these flakes
+    # less harmful, as it won't cause builds to spin for multiple hours, requiring
+    # manual cancellation.
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@1482605bfc5719782e1267fd0c0cc350fe7646b8
+        with:
+          toolchain: 1.76
+      - name: Build diffedit3-web (but not Tauri diffedit3-gui, which has "gdk-3.0" runtime dependecy )
+        run: cargo build -p diffedit3 --all-targets --verbose ${{ matrix.cargo_flags }}
+      - name: Test
+        run: cargo test -p diffedit3 --all-targets --verbose ${{ matrix.cargo_flags }}
+        env:
+          RUST_BACKTRACE: 1
+
   check-formatting-and-dist-up-to-date:
     name: Check that webapp was compiled
     runs-on: ubuntu-latest
