@@ -457,4 +457,92 @@ mod tests {
             value: ""
         "###);
     }
+
+    #[test]
+    fn file_vs_dir() {
+        let tmp_dir = tmpdir_from_txtar(indoc! {"
+        -- left/test --
+        Some text
+        -- right/test/file --
+        Dir file
+        -- edit/test/file --
+        Dir file (edit)
+        "});
+        insta::assert_yaml_snapshot!(showdir(tmp_dir.path()), @r###"
+        ---
+        edit/test/file:
+          type: Text
+          value: "Dir file (edit)\n"
+        left/test:
+          type: Text
+          value: "Some text\n"
+        right/test/file:
+          type: Text
+          value: "Dir file\n"
+        "###);
+        let mut input = left_right_edit_threedirinput(tmp_dir.path());
+        insta::assert_yaml_snapshot!(showscan(&input), @r###"
+        ---
+        test:
+          - type: Text
+            value: "Some text\n"
+          - type: Missing
+          - type: Missing
+        test/file:
+          - type: Missing
+          - type: Text
+            value: "Dir file\n"
+          - type: Text
+            value: "Dir file (edit)\n"
+        "###);
+        let () = input
+            .save(IndexMap::from([string_pair("test/file", "New value\n")]))
+            .unwrap();
+        insta::assert_yaml_snapshot!(showscan(&input), @r###"
+        ---
+        test:
+          - type: Text
+            value: "Some text\n"
+          - type: Missing
+          - type: Missing
+        test/file:
+          - type: Missing
+          - type: Text
+            value: "Dir file\n"
+          - type: Text
+            value: "New value\n"
+        "###);
+        // TODO: This should not cause an error; this is what will happen if the user
+        // changes nothing and presses Save.
+        let result = input.save(IndexMap::from([string_pair("test", "")]));
+
+        // The error is of kind IsADirectory, but we can't check that in stable Rust.
+        // (This also applies below) TODO: Could use `assert_debug_snapshot`,
+        // but that requires some redacting of the file path.
+        assert_matches!(dbg!(result),
+            Err(DataSaveError::IOError(path, _))
+            if path.ends_with("edit/test")
+        );
+        // It is OK to error out here, but it would be better to do soemthing more
+        // intelligent. For example, the input could be marked as "Unsupported"
+        let result = input.save(IndexMap::from([string_pair("test", "")]));
+        assert_matches!(dbg!(result),
+            Err(DataSaveError::IOError(path, _))
+            if path.ends_with("edit/test")
+        );
+        insta::assert_yaml_snapshot!(showscan(&input), @r###"
+        ---
+        test:
+          - type: Text
+            value: "Some text\n"
+          - type: Missing
+          - type: Missing
+        test/file:
+          - type: Missing
+          - type: Text
+            value: "Dir file\n"
+          - type: Text
+            value: "New value\n"
+        "###);
+    }
 }
