@@ -151,9 +151,21 @@ mod tests {
     use indexmap::IndexMap;
     use indoc::indoc;
     use itertools::Itertools;
+    use serde::Serialize;
     use tempdir::TempDir;
 
     use super::*;
+
+    fn showdir(path: &Path) -> impl Serialize {
+        scan(path)
+            .map(|(dir_path, file_type)| {
+                (
+                    dir_path.path().strip_prefix(path).unwrap().to_owned(),
+                    file_type,
+                )
+            })
+            .collect_vec()
+    }
 
     fn left_right_edit_threedirinput(base: &Path) -> ThreeDirInput {
         ThreeDirInput {
@@ -167,32 +179,35 @@ mod tests {
         (first.to_string(), second.to_string())
     }
 
-    #[test]
-    fn it_works() {
+    fn tmpdir_from_txtar(textarchive: &str) -> TempDir {
         let tmp_dir = TempDir::new("de3test").unwrap();
-        txtar::from_str(indoc! {"
+        txtar::from_str(textarchive)
+            .materialize(tmp_dir.path())
+            .unwrap();
+        tmp_dir
+    }
+
+    #[test]
+    fn common_case_save() {
+        let tmp_dir = tmpdir_from_txtar(indoc! {"
         -- left/subdir/txt --
         Some text
-        "})
-        .materialize(tmp_dir.path())
-        .unwrap();
-        let result = scan(tmp_dir.path())
-            .map(|(dir_path, file_type)| {
-                (
-                    dir_path
-                        .path()
-                        .strip_prefix(tmp_dir.path())
-                        .unwrap()
-                        .to_owned(),
-                    file_type,
-                )
-            })
-            .collect_vec();
-        insta::assert_yaml_snapshot!(result, @r###"
+        -- right/subdir/txt --
+        Changed text
+        -- edit/subdir/txt --
+        Changed text for editing
+        "});
+        insta::assert_yaml_snapshot!(showdir(tmp_dir.path()), @r###"
         ---
+        - - right/subdir/txt
+          - type: Text
+            value: "Changed text\n"
         - - left/subdir/txt
           - type: Text
             value: "Some text\n"
+        - - edit/subdir/txt
+          - type: Text
+            value: "Changed text for editing\n"
         "###);
         // TODO: A different bug if edit/subdir/another_file is specified
         let mut input = left_right_edit_threedirinput(tmp_dir.path());
@@ -201,19 +216,44 @@ mod tests {
         subdir/txt:
           - type: Text
             value: "Some text\n"
-          - type: Missing
-          - type: Missing
+          - type: Text
+            value: "Changed text\n"
+          - type: Text
+            value: "Changed text for editing\n"
         "###);
-        let result = input.save(IndexMap::from([string_pair("subdir/txt", "")]));
-        // BUG
-        assert_matches!(result,
-            Err(DataSaveError::IOError(path, err))
-            if path.ends_with("subdir/txt") &&
-               err.kind() == ErrorKind::NotFound
-        );
+        let () = input
+            .save(IndexMap::from([string_pair("subdir/txt", "Edited text")]))
+            .unwrap();
+        insta::assert_yaml_snapshot!(input.scan().unwrap(), @r###"
+        ---
+        subdir/txt:
+          - type: Text
+            value: "Some text\n"
+          - type: Text
+            value: "Changed text\n"
+          - type: Text
+            value: Edited text
+        "###);
+
+        // If the file exists on all sides, an empty save means an empty file.
+        let () = input
+            .save(IndexMap::from([string_pair("subdir/txt", "")]))
+            .unwrap();
+        insta::assert_yaml_snapshot!(input.scan().unwrap(), @r###"
+        ---
+        subdir/txt:
+          - type: Text
+            value: "Some text\n"
+          - type: Text
+            value: "Changed text\n"
+          - type: Text
+            value: ""
+        "###);
+
+        // Test a validation error
         let result = input.save(IndexMap::from([
-            string_pair("subdir/txt", ""),
             string_pair("another_txt", ""),
+            string_pair("subdir/txt", "This text should not be written"),
         ]));
         insta::assert_debug_snapshot!(result, @r###"
         Err(
@@ -222,13 +262,187 @@ mod tests {
             ),
         )
         "###);
+        // Should be the same as previous version
         insta::assert_yaml_snapshot!(input.scan().unwrap(), @r###"
         ---
         subdir/txt:
           - type: Text
             value: "Some text\n"
+          - type: Text
+            value: "Changed text\n"
+          - type: Text
+            value: ""
+        "###);
+    }
+
+    #[test]
+    fn deleted_lhs_file() {
+        let tmp_dir = tmpdir_from_txtar(indoc! {"
+        -- right/txt --
+        Some text
+        -- edit/txt --
+        Some text for editing
+        "});
+        insta::assert_yaml_snapshot!(showdir(tmp_dir.path()), @r###"
+        ---
+        - - right/txt
+          - type: Text
+            value: "Some text\n"
+        - - edit/txt
+          - type: Text
+            value: "Some text for editing\n"
+        "###);
+        let mut input = left_right_edit_threedirinput(tmp_dir.path());
+        insta::assert_yaml_snapshot!(input.scan().unwrap(), @r###"
+        ---
+        txt:
+          - type: Missing
+          - type: Text
+            value: "Some text\n"
+          - type: Text
+            value: "Some text for editing\n"
+        "###);
+        let () = input
+            .save(IndexMap::from([string_pair("txt", "somevalue")]))
+            .unwrap();
+        insta::assert_yaml_snapshot!(input.scan().unwrap(), @r###"
+        ---
+        txt:
+          - type: Missing
+          - type: Text
+            value: "Some text\n"
+          - type: Text
+            value: somevalue
+        "###);
+        // TODO: If the file is missing on LHS, an empty save should mean that the file
+        // should be deleted.
+        let () = input
+            .save(IndexMap::from([string_pair("txt", "")]))
+            .unwrap();
+        insta::assert_yaml_snapshot!(input.scan().unwrap(), @r###"
+        ---
+        txt:
+          - type: Missing
+          - type: Text
+            value: "Some text\n"
+          - type: Text
+            value: ""
+        "###);
+    }
+
+    #[test]
+    fn deleted_rhs_file() {
+        let tmp_dir = tmpdir_from_txtar(indoc! {"
+        -- left/txt --
+        Some text
+        "});
+        insta::assert_yaml_snapshot!(showdir(tmp_dir.path()), @r###"
+        ---
+        - - left/txt
+          - type: Text
+            value: "Some text\n"
+        "###);
+        let mut input = left_right_edit_threedirinput(tmp_dir.path());
+        insta::assert_yaml_snapshot!(input.scan().unwrap(), @r###"
+        ---
+        txt:
+          - type: Text
+            value: "Some text\n"
           - type: Missing
           - type: Missing
+        "###);
+        let result = input.save(IndexMap::from([string_pair("txt", "somevalue")]));
+        // BUG: We fail to create `right/txt` because `right/` does not exist
+        assert_matches!(result,
+            Err(DataSaveError::IOError(path, err))
+            if path.ends_with("txt") &&
+               err.kind() == ErrorKind::NotFound
+        );
+        // TODO: If the file is missing on RHS, an empty save should mean that the file
+        // should stay deleted. We should not even try to create it
+        let result = input.save(IndexMap::from([string_pair("txt", "")]));
+        // BUG: We fail to create `edit/txt` because `right/` does not exist
+        assert_matches!(result,
+            Err(DataSaveError::IOError(path, err))
+            if path.ends_with("txt") &&
+               err.kind() == ErrorKind::NotFound
+        );
+        insta::assert_yaml_snapshot!(input.scan().unwrap(), @r###"
+        ---
+        txt:
+          - type: Text
+            value: "Some text\n"
+          - type: Missing
+          - type: Missing
+        "###);
+    }
+
+    #[test]
+    fn deleted_rhs_file_with_dir() {
+        let tmp_dir = tmpdir_from_txtar(indoc! {"
+        -- left/txt --
+        Some text
+        -- edit/randomfile --
+        Doesn't matter what goes here
+        "});
+        insta::assert_yaml_snapshot!(showdir(tmp_dir.path()), @r###"
+        ---
+        - - left/txt
+          - type: Text
+            value: "Some text\n"
+        - - edit/randomfile
+          - type: Text
+            value: "Doesn't matter what goes here\n"
+        "###);
+        let mut input = left_right_edit_threedirinput(tmp_dir.path());
+        insta::assert_yaml_snapshot!(input.scan().unwrap(), @r###"
+        ---
+        randomfile:
+          - type: Missing
+          - type: Missing
+          - type: Text
+            value: "Doesn't matter what goes here\n"
+        txt:
+          - type: Text
+            value: "Some text\n"
+          - type: Missing
+          - type: Missing
+        "###);
+        let () = input
+            .save(IndexMap::from([string_pair("txt", "somevalue")]))
+            .unwrap();
+        insta::assert_yaml_snapshot!(input.scan().unwrap(), @r###"
+        ---
+        randomfile:
+          - type: Missing
+          - type: Missing
+          - type: Text
+            value: "Doesn't matter what goes here\n"
+        txt:
+          - type: Text
+            value: "Some text\n"
+          - type: Missing
+          - type: Text
+            value: somevalue
+        "###);
+        // TODO: If the file is missing on RHS, an empty save should mean that the file
+        // should stay (or be) deleted.
+        let () = input
+            .save(IndexMap::from([string_pair("txt", "")]))
+            .unwrap();
+        insta::assert_yaml_snapshot!(input.scan().unwrap(), @r###"
+        ---
+        randomfile:
+          - type: Missing
+          - type: Missing
+          - type: Text
+            value: "Doesn't matter what goes here\n"
+        txt:
+          - type: Text
+            value: "Some text\n"
+          - type: Missing
+          - type: Text
+            value: ""
         "###);
     }
 }
