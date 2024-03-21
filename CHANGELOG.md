@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed bugs
 
+* A bug that prevented saving the comparison when a file's dir existed on the
+  left side but not on the right side.
+
 ### Maintenance
 
 * There are now some tests; GitHub CI runs them.
