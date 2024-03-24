@@ -22,7 +22,7 @@ repository = "https://github.com/ilyagr/diffedit3"
 
 [dependencies]
 clap = { version = "4.5.3", features = ["derive"] }
-indexmap = { version = "2.2.3", features = ["serde"] }
+indexmap = { version = "2.2.6", features = ["serde"] }
 open = "5.0.1"
 parking_lot = "0.12.1"
 poem = { version = "2.0.0", features = ["embed"] }
