@@ -173,6 +173,8 @@ pub async fn run_server(
             // Use `spawn_blocking` since `webbrowser::open` may block (for text-mode
             // browsers. TODO: find out if it blocks when running a fresh instance of
             // `firefox` on Linux.)
+            // TODO: It does block. Use a thread or that_detached. Also, "Successfully
+            // launched browser" then gets printed after browser exits.
             eprintln!("Trying to launch a browser at {http_address}...");
             match open::that(&http_address) {
                 Ok(_) => eprintln!("Successfully launched browser."),
