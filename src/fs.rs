@@ -142,3 +142,93 @@ fn scan_several(roots: [&PathBuf; 3]) -> Result<EntriesToCompare, DataReadError>
     }
     Ok(result)
 }
+
+#[cfg(test)]
+mod tests {
+    use std::io::ErrorKind;
+
+    use assert_matches::assert_matches;
+    use indexmap::IndexMap;
+    use indoc::indoc;
+    use itertools::Itertools;
+    use tempdir::TempDir;
+
+    use super::*;
+
+    fn left_right_edit_threedirinput(base: &Path) -> ThreeDirInput {
+        ThreeDirInput {
+            left: base.join("left").to_owned(),
+            right: base.join("right").to_owned(),
+            edit: base.join("edit").to_owned(),
+        }
+    }
+
+    fn string_pair(first: &str, second: &str) -> (String, String) {
+        (first.to_string(), second.to_string())
+    }
+
+    #[test]
+    fn it_works() {
+        let tmp_dir = TempDir::new("de3test").unwrap();
+        txtar::from_str(indoc! {"
+        -- left/subdir/txt --
+        Some text
+        "})
+        .materialize(tmp_dir.path())
+        .unwrap();
+        let result = scan(tmp_dir.path())
+            .map(|(dir_path, file_type)| {
+                (
+                    dir_path
+                        .path()
+                        .strip_prefix(tmp_dir.path())
+                        .unwrap()
+                        .to_owned(),
+                    file_type,
+                )
+            })
+            .collect_vec();
+        insta::assert_yaml_snapshot!(result, @r###"
+        ---
+        - - left/subdir/txt
+          - type: Text
+            value: "Some text\n"
+        "###);
+        // TODO: A different bug if edit/subdir/another_file is specified
+        let mut input = left_right_edit_threedirinput(tmp_dir.path());
+        insta::assert_yaml_snapshot!(input.scan().unwrap(), @r###"
+        ---
+        subdir/txt:
+          - type: Text
+            value: "Some text\n"
+          - type: Missing
+          - type: Missing
+        "###);
+        let result = input.save(IndexMap::from([string_pair("subdir/txt", "")]));
+        // BUG
+        assert_matches!(result,
+            Err(DataSaveError::IOError(path, err))
+            if path.ends_with("subdir/txt") &&
+               err.kind() == ErrorKind::NotFound
+        );
+        let result = input.save(IndexMap::from([
+            string_pair("subdir/txt", ""),
+            string_pair("another_txt", ""),
+        ]));
+        insta::assert_debug_snapshot!(result, @r###"
+        Err(
+            ValidationFailError(
+                "another_txt",
+            ),
+        )
+        "###);
+        insta::assert_yaml_snapshot!(input.scan().unwrap(), @r###"
+        ---
+        subdir/txt:
+          - type: Text
+            value: "Some text\n"
+          - type: Missing
+          - type: Missing
+        "###);
+    }
+}

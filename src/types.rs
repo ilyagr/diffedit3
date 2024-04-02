@@ -214,7 +214,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn it_works() {
+    fn fake_data() {
         insta::assert_yaml_snapshot!(FakeData.scan().unwrap(), 
         @r###"
         ---
