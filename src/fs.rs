@@ -152,7 +152,7 @@ mod tests {
     use indexmap::IndexMap;
     use indoc::indoc;
     use serde::Serialize;
-    use tempdir::TempDir;
+    use tempfile::TempDir;
 
     use super::*;
 
@@ -192,7 +192,7 @@ mod tests {
     }
 
     fn tmpdir_from_txtar(textarchive: &str) -> TempDir {
-        let tmp_dir = TempDir::new("de3test").unwrap();
+        let tmp_dir = TempDir::with_prefix("de3test").unwrap();
         txtar::from_str(textarchive)
             .materialize(tmp_dir.path())
             .unwrap();
