@@ -13,12 +13,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed bugs
 
+
+## [v0.2.0] - 2024-04-05
+
+### Breaking changes
+
+* Major version update to `poem` dependency
+
+### New features
+
+### Fixed bugs
+
 * A bug that prevented saving the comparison when a file's dir existed on the
   left side but not on the right side.
 
 ### Maintenance
 
 * There are now some tests; GitHub CI runs them.
+
 
 ## [v0.1.2] - 2024-03-18
 
