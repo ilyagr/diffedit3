@@ -52,14 +52,14 @@ jobs:
         run: |
           # TODO: Create a third action to combine both in one archive
           outdir="target/${{ matrix.target }}/release"
-          name="diffedit3-web-${{ github.event.release.tag_name }}-${{ matrix.target }}"
+          name="diffedit3-${{ github.event.release.tag_name }}-${{ matrix.target }}"
           cd "$outdir"
           ls # Debug
           if [ "${{ matrix.os }}" = "windows-2022" ]; then
-            7z a "../../../$name.zip" diffedit3-web.exe
+            7z a "../../../$name.zip" diffedit3.exe
             echo "ASSET=$name.zip" >> $GITHUB_ENV
           else
-            tar czf "../../../$name.tar.gz"  diffedit3-web
+            tar czf "../../../$name.tar.gz"  diffedit3
             echo "ASSET=$name.tar.gz" >> $GITHUB_ENV
           fi
       - name: Upload release archive
@@ -125,7 +125,7 @@ jobs:
         run: |
           # TODO: Create a third action to combine both in one archive
           outdir="target/release"
-          name="diffedit3-gui-${{ github.event.release.tag_name }}-${{ matrix.os }}"
+          name="diffedit3-unsupported-tauri-gui-${{ github.event.release.tag_name }}-${{ matrix.os }}"
           cd "$outdir"
           ls # Debug
           if [ "${{ matrix.os }}" = "windows-2022" ]; then

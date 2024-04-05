@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking changes
 
+Renamed the `diffedit3-web` binary to `diffedit3`
+
+The `diffedit3-gui` release artifact is now marked as unsupported in
+its name.
+
 ### New features
 
 ### Fixed bugs
