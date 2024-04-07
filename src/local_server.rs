@@ -1,6 +1,6 @@
-use std::io;
 use std::sync::Arc;
 use std::time::Duration;
+use std::{io, thread};
 
 // Using parking_lot::Mutex for a timeout. We could alternatively use tokio::sync::Mutex, but
 // the docs suggest only using it if absolutely neccessary.
@@ -171,10 +171,11 @@ pub async fn run_server(
     eprintln!("Listening at {socket_addr}.");
     if open_browser {
         let http_address = format!("http://{socket_addr}");
-        tokio::task::spawn_blocking(move || {
-            // Use `spawn_blocking` since `webbrowser::open` may block (for text-mode
-            // browsers. TODO: find out if it blocks when running a fresh instance of
-            // `firefox` on Linux.)
+        thread::spawn(move || {
+            // `open::that` blocks sometimes, e.g. when running a fresh instance
+            // of `firefox` on linux. We use a new thread instead of `tokio`
+            // since, in my brief experiments, even
+            // `tokio::task::spawn_blocking` does not always prevent a deadlock.
             eprintln!("Trying to launch a browser at {http_address}...");
             match open::that(&http_address) {
                 Ok(_) => eprintln!("Successfully launched browser."),
