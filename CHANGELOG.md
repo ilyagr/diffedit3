@@ -16,6 +16,8 @@ its name.
 
 ### New features
 
+`diffedit3` can now be installed with `cargo binstall diffedit3`.
+
 ### Fixed bugs
 
 

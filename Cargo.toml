@@ -13,6 +13,10 @@ version = { workspace = true }
 edition = { workspace = true }
 include = ["/src", "/webapp/dist", "/*.md"]
 
+[package.metadata.binstall]
+# `cargo binstall` gets confused by the `v` before versions in archive name.
+pkg-url = "{ repo }/releases/download/v{ version }/diffedit3-v{ version }-{ target }.{ archive-format }"
+
 [workspace.package]
 version = "0.2.0"  # Also update package.json and tauri.conf.json
 edition = "2021"
