@@ -20,6 +20,23 @@ its name.
 
 ### Fixed bugs
 
+## [v0.3.0] - 2024-04-11
+
+Make `diffedit3` easier to install
+
+### Breaking changes
+
+Renamed the `diffedit3-web` binary to `diffedit3`
+
+The `diffedit3-gui` release artifact is now marked as unsupported in
+its name.
+
+### New features
+
+`diffedit3` can now be installed with `cargo binstall diffedit3`.
+
+### Fixed bugs
+
 
 ## [v0.2.0] - 2024-04-05
 

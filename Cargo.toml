@@ -18,7 +18,7 @@ include = ["/src", "/webapp/dist", "/*.md"]
 pkg-url = "{ repo }/releases/download/v{ version }/diffedit3-v{ version }-{ target }.{ archive-format }"
 
 [workspace.package]
-version = "0.2.0"  # Also update package.json and tauri.conf.json
+version = "0.3.0"  # Also update package.json and tauri.conf.json
 edition = "2021"
 license = "Apache-2.0"
 readme = "README.md"
