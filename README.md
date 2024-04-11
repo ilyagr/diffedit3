@@ -11,8 +11,6 @@ See [below](#potential-uses-outside-jj) for the explanation of the purpose of
 
 ![Screenshot of v. 0.1.2](diffedit3-0.1.2-screenshot.png)
 
-The name `diffedit3` may change in the near future.
-
 The interface of `diffedit3` is quite similar to that of
 [Meld](https://meldmerge.org/), when used in the [experimental 3-pane diff
 editing
@@ -20,36 +18,69 @@ mode](https://martinvonz.github.io/jj/v0.14.0/config/#experimental-3-pane-diff-e
 Meld is far more polished, so you should prefer it to `diffedit3` when and if
 you can easily use it. `diffedit3`, however, can be used when Meld would be
 difficult to install or difficult to run, as long as a web browser is available
-(e.g. over SSH with port forwarding, via WSL, ...). If it's bundled with `jj`,
-it will require no configuration.
+(e.g. over SSH with port forwarding, via WSL, ...).
 
-To use `diffedit3` today, you can obtain one of the two binaries from the
-Releases GitHub page:
-
-- `diffedit3-web` is the more lightweight option. It runs a local HTTP server.
+In order to be as portable as possible, `diffedit3` runs a local HTTP server.
   The UI runs in your browser at `http://127.0.0.1:8080`, quite similarly to how
-  [Jupyter](https://jupyter.org) works. If `diffedit3` is bundled with `jj`, the
-  interface will likely be very similar to this.
+  [Jupyter](https://jupyter.org) works. Much of the UI is a wrapper around the
+  [CodeMirror editor/library](https://codemirror.net/5/). See below for [more
+  implementation
+  details](#notes-on-implementation-and-alternative-possibilities).
 
-- `diffedit3-gui` has the same functionality, but runs as a full-fledged
-  application based on [Tauri](https://tauri.app/). This version may be
-  discontinued in the future (and currently has some bugs with key bindings not
-  working); let me know if you have interest in it and I shouldn't just drop it.
+## Installing `diffedit3`
 
-After obtaining the binary, you can test that it works with `diffedit3-web
---demo` or `diffedit3-gui --demo`. To use it with `jj`, add the following
-snippet to your [`jj`
-config](https://martinvonz.github.io/jj/v0.14.0/config/#editing-diffs):
+There are several ways to install `diffedit3`.
+
+- You can obtain `diffedit3` from the [Releases page of this
+repo](https://github.com/ilyagr/diffedit3/releases/latest). Download the archive
+appropriate for your system, unpack it, and put the executable in your PATH.
+
+- If you have Rust installed, you can use `cargo install diffedit3 --locked`.
+
+- If you have [`cargo binstall`](https://github.com/cargo-bins/cargo-binstall),
+you can `cargo binstall diffedit3`. It is then recommended to install and use
+[`cargo-update`](https://github.com/nabijaczleweli/cargo-update) to update both
+`diffedit3` and `cargo-binstall`.
+
+After obtaining the binary, you can test that it woks by running `diffedit3
+--demo`.
+
+### A note on the unsupported Tauri binaries
+
+The release page also contains binaries with "unsupported-tauri-gui" in their
+name that contain a `diffedit3-gui` executable.
+
+you can use these interchangeably with the regular `diffedit3` executable if you
+prefer a proper GUI application (based on [Tauri](https://tauri.app/)) to a
+Jupyter-style webapp. If you just want to try it out, run `diffedit3-gui
+--demo`.
+
+However, `diffedit3-gui` is minimally supported and has known bugs (mostly with
+key bindings) that the author isn't sure how to fix. You would also need to
+manually configure `jj` to use it.
+
+## Using `diffedit3` with `jj`
+
+For `jj` 0.17+, `diffedit3` should be pre-configured. It should be sufficient to
+set `ui.diff-editor="diffedit3"` in your [`jj` config] or invoke `jj` commands
+with `--tool diffedit3` argument. If the `diffedit3` executable is not in your
+PATH, you can also set `merge-tools.diffedit3.program` to the path to the
+executable. (TODO: Link to docs and remove this TODO once the PR with the docs
+and the config lands.)
+
+To use `diffedit3` with older versions of `jj`,  add the following snippet to
+your [`jj` config]:
+
+[`jj` config]: https://martinvonz.github.io/jj/v0.14.0/config/#editing-diffs
 
 ```toml
 [ui]
-diff-editor = "diffedit3"   # Or "diffedit3-gui"
+diff-editor = "diffedit3"
 
 [merge-tools.diffedit3]
-program = "diffedit3-web"
-edit-args = ["$left", "$right", "$output"]
-
-[merge-tools.diffedit3-gui]
+# Replace `program` with the full path to the
+# binary if it is not in your PATH.
+program = "diffedit3"  
 edit-args = ["$left", "$right", "$output"]
 ```
 
@@ -284,7 +315,7 @@ Harder: separate save buttons per file and maybe an overall save button.
 
 ### If the file is deleted on the right side, the tool will write an empty file in its place when saving. It should not do that.
 
-### For the Tauri app (`diffedit3-gui`), Ctrl-C/Cmd-C for copy doesn't seem to always work. Ctrl-Up and Cmd-Up for going to the previous diff also doesn't seem to work. `diffedit3-web` is not affected
+### For the Tauri app (`diffedit3-gui`), Ctrl-C/Cmd-C for copy doesn't seem to always work. Ctrl-Up and Cmd-Up for going to the previous diff also doesn't seem to work. The webapp `diffedit3` version is not affected
 
 ### Toggling options like line-wrapping, collapse of similar regions, or the right pane loses the CodeMirror viewport and selection
 
