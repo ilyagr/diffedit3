@@ -14,7 +14,7 @@
     "@types/codemirror": "5",
     "@types/diff-match-patch": "^1.0.36",
     "prettier": "3.2.5",
-    "typescript": "^5.4.3",
+    "typescript": "^5.4.5",
     "vite": "^5.2.4",
     "vite-plugin-checker": "^0.6.4"
   }
