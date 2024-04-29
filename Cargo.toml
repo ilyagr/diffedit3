@@ -28,11 +28,11 @@ repository = "https://github.com/ilyagr/diffedit3"
 clap = { version = "4.5.3", features = ["derive"] }
 indexmap = { version = "2.2.6", features = ["serde"] }
 open = "5.0.1"
-parking_lot = "0.12.1"
+parking_lot = "0.12.2"
 poem = { version = "3.0.0", features = ["embed"] }
 rust-embed = { version = "8.2.0" }
-serde = { version = "1.0.196", features = ["serde_derive"] }
-thiserror = "1.0.58"
+serde = { version = "1.0.199", features = ["serde_derive"] }
+thiserror = "1.0.59"
 tokio = { version = "1.36.0", features = [
     "macros",
     "rt-multi-thread",
