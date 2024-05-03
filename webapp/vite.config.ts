@@ -31,6 +31,7 @@ export default defineConfig({
     }),
   ],
   build: {
+    minify: false,
     commonjsOptions: {
       // https://github.com/vitejs/vite/issues/13672#issuecomment-1784110536
       // It *seems* that this workaround makes a difference. I'm
