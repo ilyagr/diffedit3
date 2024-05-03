@@ -16,6 +16,7 @@ use thiserror::Error;
 
 use crate::DataInterface;
 type DataInterfacePointer = Arc<Mutex<Box<dyn DataInterface>>>;
+pub type PortsToTry = Box<dyn Iterator<Item = usize>>;
 
 #[derive(rust_embed::RustEmbed)]
 #[folder = "webapp/dist/"]
@@ -131,8 +132,7 @@ fn acceptor_to_socket_address(
 
 pub async fn run_server(
     input: Box<dyn crate::DataInterface>,
-    min_port: usize,
-    max_port: usize,
+    ports_to_try: PortsToTry,
     open_browser: bool,
 ) -> Result<(), MergeToolError> {
     let (terminate_channel, mut terminate_rx): (ExitCodeSender, _) = tokio::sync::mpsc::channel(10);
@@ -147,21 +147,19 @@ pub async fn run_server(
         .nest("/", EmbeddedFilesEndpoint::<StaticFiles>::new())
         .nest("/api", apis);
 
-    let mut port = min_port;
-    let mut error = None;
-    let acceptor = loop {
-        if port > max_port {
-            return Err(MergeToolError::FailedToOpenPort(error.unwrap()));
+    let acceptor = 'acceptor: {
+        let mut error = None;
+        for port in ports_to_try {
+            let listener = TcpListener::bind(format!("127.0.0.1:{}", port));
+            match listener.into_acceptor().await {
+                Ok(a) => break 'acceptor a,
+                Err(err) => {
+                    eprintln!("Couldn't bind to port {port}.");
+                    error = Some(err)
+                }
+            };
         }
-        let listener = TcpListener::bind(format!("127.0.0.1:{}", port));
-        match listener.into_acceptor().await {
-            Ok(a) => break a,
-            Err(err) => {
-                eprintln!("Couldn't bind to port {port}.");
-                error = Some(err)
-            }
-        };
-        port += 1;
+        return Err(MergeToolError::FailedToOpenPort(error.unwrap()));
     };
 
     // Get the actual address we bound to. The primary reason to do this instead of
@@ -212,13 +210,12 @@ pub async fn run_server(
 /// Initialize tokio correctly and call `run_server`
 pub fn run_server_sync(
     input: Box<dyn crate::DataInterface>,
-    min_port: usize,
-    max_port: usize,
+    ports_to_try: PortsToTry,
     open_browser: bool,
 ) -> Result<(), MergeToolError> {
     tokio::runtime::Builder::new_multi_thread()
         .enable_all()
         .build()
         .unwrap()
-        .block_on(run_server(input, min_port, max_port, open_browser))
+        .block_on(run_server(input, ports_to_try, open_browser))
 }

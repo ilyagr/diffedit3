@@ -1,5 +1,8 @@
 use clap::Parser;
 use diffedit3::local_server::{run_server, MergeToolError};
+use thiserror::Error;
+
+type PortRange = std::ops::RangeInclusive<usize>;
 
 /// Compare three directories in a browser and allow editing one of them
 #[derive(Parser)]
@@ -7,16 +10,21 @@ use diffedit3::local_server::{run_server, MergeToolError};
 pub struct LocalServerCli {
     #[command(flatten)]
     lib_cli: diffedit3::fs::Cli,
-    /// Port to use for `http://127.0.0.1`
-    #[arg(long, short, conflicts_with = "port_range")]
-    port: Option<usize>,
-    // TODO: Change syntax from `--port-range 8080 8085` to `--port 8080-8085`?
-    /// Minimum and maximum port numbers to try for `http://127.0.0.1`.
+    /// Port or port range to use for `http://127.0.0.1` (can be repeated)
     ///
-    /// First, the minimum port is tried. If that is busy, the next port is
-    /// tried, and so on.
-    #[arg(long, num_args(2), default_values = ["8080", "8090"])]
-    port_range: Vec<usize>,
+    /// Port 0 is a special value that instructs the OS to pick a random unused
+    /// port number. Ports 1-1023 are generally unavailable for use by
+    /// unprivileged processes.
+    ///
+    /// For example, the default is equivalent to `--port 8080-8090 --port 0`.
+    /// This means that port number 8080 is tried first. If that is busy, port
+    /// 8081 is tried, and so on. If all ports between 8080 and 8090 (inclusive)
+    /// are busy, port 0 is tried, meaning that the OS picks a random open port.
+    #[arg(
+        long, short, default_values = ["8080-8090", "0"],
+        value_name = "PORT_OR_PORT_RANGE", value_parser = parse_port_range
+    )]
+    port: Vec<PortRange>,
     /// Do not try to open the browser automatically
     ///
     /// See <https://crates.io/crates/open> for a brief description of how the
@@ -32,6 +40,38 @@ pub struct LocalServerCli {
     /// Make the server print debugging information
     #[arg(long, short)]
     verbose: bool,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Error)]
+enum ParsePortRangeError {
+    #[error(
+        "A port range must be one unsigned integer or two unsigned integers separated by a -, for \
+         example 1234 or 1234-56789"
+    )]
+    SyntaxError,
+    #[error("The minimum port {0} cannot be greater than the maximum port {1}")]
+    InequalityError(usize, usize),
+}
+
+fn parse_port_range(s: &str) -> Result<PortRange, ParsePortRangeError> {
+    let parse_usize = |s: &str| {
+        s.parse::<usize>()
+            .map_err(|_| ParsePortRangeError::SyntaxError)
+    };
+    match s.split_once('-') {
+        None => {
+            let port = parse_usize(s)?;
+            Ok(port..=port)
+        }
+        Some((first, second)) => {
+            let (min_port, max_port) = (parse_usize(first)?, parse_usize(second)?);
+            if min_port <= max_port {
+                Ok(min_port..=max_port)
+            } else {
+                Err(ParsePortRangeError::InequalityError(min_port, max_port))
+            }
+        }
+    }
 }
 
 fn exit_with_cli_error(s: String) -> ! {
@@ -58,17 +98,13 @@ async fn main() -> Result<(), MergeToolError> {
         tracing_subscriber::fmt::init();
     }
 
-    let (min_port, max_port) = match cli.port {
-        Some(port) => (port, port),
-        None => (cli.port_range[0], cli.port_range[1]), // Clap guarantees exactly two values
-    };
-    if min_port > max_port {
-        exit_with_cli_error(format!(
-            "Error: the minimum port {min_port} cannot be greater than the maximum port \
-             {max_port}."
-        ));
-    };
-    if let Err(err) = run_server(input, min_port, max_port, !cli.no_browser).await {
+    if let Err(err) = run_server(
+        input,
+        Box::new(cli.port.into_iter().flatten()),
+        !cli.no_browser,
+    )
+    .await
+    {
         std::process::exit(match err {
             MergeToolError::IOError(err) => {
                 eprintln!("{err}");
