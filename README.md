@@ -61,7 +61,7 @@ manually configure `jj` to use it.
 
 ## Using `diffedit3` with `jj`
 
-For `jj` 0.17+, `diffedit3` should be pre-configured. It should be sufficient to
+For `jj` 0.18+, `diffedit3` should be pre-configured. It should be sufficient to
 set `ui.diff-editor="diffedit3"` in your [`jj` config] or invoke `jj` commands
 with `--tool diffedit3` argument. If the `diffedit3` executable is not in your
 PATH, you can also set `merge-tools.diffedit3.program` to the path to the
