@@ -9,13 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking changes
 
-* The `--port-range` option was removed. Instead, `--port` can now be repeated and accepts dash-separated ranges. For example, the default is now equivalent to `--port 8080-8090 --port 0`.
-
-* This also corresponds to a breaking change to the `local_server` library interface
-
 ### New features
 
 ### Fixed bugs
+
+## [v0.4.0] - 2024-05-04
+
+### Breaking changes
+
+* The `--port-range` option was removed. Instead, `--port` can now be repeated and accepts dash-separated ranges. For example, the default is now equivalent to `--port 8080-8090 --port 0`.
+
+* This also corresponds to a breaking change to the `local_server` library interface
 
 ## [v0.3.0] - 2024-04-11
 
