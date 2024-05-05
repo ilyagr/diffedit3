@@ -163,18 +163,19 @@ pub async fn run_server(
     };
 
     // Get the actual address we bound to. The primary reason to do this instead of
-    // using `port` is to find out what port number the OS picked if `cli.port==0`.
+    // using `port` is to find out what port number the OS picked if we ended up
+    // requesting port 0.
     let socket_addr = acceptor_to_socket_address(&acceptor)?;
-    // Now that the acceptor exists, the browser should be able to connect IIUC.
-    eprintln!("Listening at {socket_addr}.");
+    // Now that the acceptor exists, the browser should be able to connect.
+    let http_address = format!("http://{socket_addr}");
+    eprintln!("Listening at {http_address}.");
     if open_browser {
-        let http_address = format!("http://{socket_addr}");
         tokio::task::spawn_blocking(move || {
             // Use `spawn_blocking` since `webbrowser::open` may block (for text-mode
             // browsers. TODO: find out if it blocks when running a fresh instance of
             // `firefox` on Linux.)
-            eprintln!("Trying to launch a browser at {http_address}...");
-            match open::that(&http_address) {
+            eprintln!("Trying to launch a browser...");
+            match open::that(http_address) {
                 Ok(_) => eprintln!("Successfully launched browser."),
                 Err(err) => eprintln!("Failed to launch a browser: {err}"),
             }
