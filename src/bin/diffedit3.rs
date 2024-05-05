@@ -33,7 +33,7 @@ pub struct LocalServerCli {
     // TODO(ilyagr): One way to respect the BROWSER environment variable might
     // be to use the `webbrowser` crate to get the browser command. It'd be
     // better to use something else to actually launch the browser, as
-    // `webbrowser::open` has limited error handlind, like
+    // `webbrowser::open` has limited error handling, like
     // `open::that_detached`.
     #[arg(long, short = 'N')]
     no_browser: bool,

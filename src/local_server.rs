@@ -3,7 +3,7 @@ use std::sync::Arc;
 use std::time::Duration;
 
 // Using parking_lot::Mutex for a timeout. We could alternatively use tokio::sync::Mutex, but
-// the docs suggest only using it if absolutely neccessary.
+// the docs suggest only using it if absolutely necessary.
 use parking_lot::Mutex;
 use poem::endpoint::EmbeddedFilesEndpoint;
 use poem::error::ResponseError;
@@ -73,7 +73,7 @@ fn get_merge_data(
     // TODO: We can consider wrapping this IO in `tokio::spawn_blocking`, but it
     // doesn't seem crucial since there shouldn't actually be that much concurrency.
     // TODO: Is there some notion of a separate "lock for reading" that would allow
-    // simulataneous reads?
+    // simultaneous reads?
     let timeout = Duration::from_millis(200);
     let input = input
         .try_lock_for(timeout)

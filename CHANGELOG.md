@@ -64,7 +64,7 @@ its name.
 
 ## [v0.1.1] - 2024-03-15
 
-Mostly some internal code reorgaization.
+Mostly some internal code reorganization.
 
 ### New features
 

@@ -528,7 +528,7 @@ mod tests {
             Err(DataSaveError::IOError(path, _))
             if path.ends_with("edit/test")
         );
-        // It is OK to error out here, but it would be better to do soemthing more
+        // It is OK to error out here, but it would be better to do something more
         // intelligent. For example, the input could be marked as "Unsupported"
         let result = input.save(IndexMap::from([string_pair("test", "")]));
         assert_matches!(dbg!(result),
