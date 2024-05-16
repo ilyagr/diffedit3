@@ -236,8 +236,7 @@ Pre-v0.0.1 commits are also messy, and are on the `v0.0.1-ish` branch.
 
 ### Option 1: using `backend-local-server`
 
-1. (If you are planning to touch HTML/CSS/JS) Install `node`/`npm`, run `npm
-  install`.
+1. (If you are planning to touch HTML/CSS/JS) Install `node`/`npm`, run `npm clean-install`.
 2. (If you are touching HTML/CSS/JS) Run `npm run watch` in a separate terminal. This will auto-update `webapp/dist` whenever you change files in `webapp/`.
 3. Use `cargo run -p backend-local-server -- --demo` to run the app. If touching
    the webapp, remember to manually make sure that `npm run watch` is not
@@ -263,7 +262,7 @@ Pre-v0.0.1 commits are also messy, and are on the `v0.0.1-ish` branch.
     },
     ```
 
-    Running `npm run build` will also run `prettier` via `npm run format`.
+5. Before pushing, run `npm run build` to avoid issues with the CI. This also runs `prettier` via `npm run format`.
 
 ### Option 2: using `backend-tauri`
 
