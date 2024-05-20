@@ -109,7 +109,7 @@ jobs:
       - name: install frontend dependencies
         run: npm clean-install
 
-      - uses: tauri-apps/tauri-action@v0.5.2
+      - uses: tauri-apps/tauri-action@v0.5.3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # Will publish a release manually
