@@ -25,20 +25,20 @@ readme = "README.md"
 repository = "https://github.com/ilyagr/diffedit3"
 
 [dependencies]
-clap = { version = "4.5.3", features = ["derive"] }
+clap = { version = "4.5.6", features = ["derive"] }
 indexmap = { version = "2.2.6", features = ["serde"] }
-open = "5.0.1"
+open = "5.1.4"
 parking_lot = "0.12.2"
 poem = { version = "3.0.0", features = ["embed"] }
 rust-embed = { version = "8.2.0" }
 serde = { version = "1.0.199", features = ["serde_derive"] }
 thiserror = "1.0.59"
-tokio = { version = "1.36.0", features = [
+tokio = { version = "1.38.0", features = [
     "macros",
     "rt-multi-thread",
     "signal",
 ] }
-toml = { version = "0.8.12", features = ["indexmap"] }
+toml = { version = "0.8.14", features = ["indexmap"] }
 tracing-subscriber = "0.3.18"
 walkdir = "2.4.0"
 
