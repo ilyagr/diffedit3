@@ -180,7 +180,7 @@ learn the ways of Vim or Emacs.
 ### Resolving merge conflicts in a 3-pane view
 
 This would be a compromise, see the next section for a more radical and less
-feasible approach.
+feasible approach, as well as alternatives.
 
 Currently, `diffedit3` could be used to resolve conflicts by putting the file
 with conflict markers in the center and the left/right sides on the sides. There
