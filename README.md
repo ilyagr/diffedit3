@@ -177,6 +177,30 @@ Even if somebody writes or improves a Vim plugin to do this (which would be
 great!), there is also a need for such a tool that does not require the user to
 learn the ways of Vim or Emacs.
 
+### Resolving merge conflicts in a 3-pane view
+
+This would be a compromise, see the next section for a more radical and less
+feasible approach.
+
+Currently, `diffedit3` could be used to resolve conflicts by putting the file
+with conflict markers in the center and the left/right sides on the sides. There
+are a few limitations:
+
+- The tool currently does not work correctly if the arguments are files as opposed
+    to directories. This can be fixed (TODO). So, it does not work with `jj resolve`.
+- Such a view would show many distracting useless diffs that can be trivially resolved
+  (and should be resolved in the center panel). The user would need help navigating
+  to the relevant parts (conflicts).
+- AFAIK, CodeMirror's merge plugin does not support `Go to next/previous conflict`
+  button that would go to the next diff where the center pane differs from both
+  left and right sides. (This would also correspond to going to the next conflict in
+  the view I described, there's no need to look at conflict markers for this)
+
+Alternatively, a tool like `jj` could adjust the left/right sides to remove the
+diffs that can be trivially resolved before sending the files to `diffedit3`. This would
+make the conflicts much easier to navigate for experienced users, but more confusing for
+new users.
+
 ### Resolving merge conflicts in a 4-pane view
 
 A UI that shows the base of the conflict, the two sides of the conflict, and an
