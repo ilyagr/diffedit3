@@ -1,6 +1,9 @@
 /target/
 node_modules/
 
+# insta
+*.pending-snap
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
