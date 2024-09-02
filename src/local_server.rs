@@ -18,7 +18,7 @@ use crate::DataInterface;
 type DataInterfacePointer = Arc<Mutex<Box<dyn DataInterface>>>;
 pub type PortsToTry = Box<dyn Iterator<Item = usize>>;
 
-#[derive(rust_embed::RustEmbed)]
+#[derive(rust_embed::Embed)]
 #[folder = "webapp/dist/"]
 struct StaticFiles;
 
