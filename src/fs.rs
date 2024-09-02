@@ -4,6 +4,8 @@ use walkdir::{DirEntry, WalkDir};
 
 use crate::{DataInterface, DataReadError, DataSaveError, EntriesToCompare, FakeData, FileEntry};
 
+/// Either three dirs to compare or three files to compare
+// TODO: Error if we have two files and a dir
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct ThreeDirInput {
     pub left: PathBuf,
@@ -28,6 +30,15 @@ impl DataInterface for ThreeDirInput {
         // left or right side are missing, delete the file.
         // TODO: Preserve the executable bit
         let Self { edit: outdir, .. } = self;
+        if let Some(only_file_contents) = result.get("") {
+            // outdir is not actually a dir, but a file
+            if result.len() == 1 {
+                return std::fs::write(outdir.clone(), only_file_contents)
+                    .map_err(|io_err| DataSaveError::IOError(outdir.clone(), io_err));
+            }
+            // TODO: If results.len() > 1, return a better error, do not save
+            // anything
+        }
         for (relpath, contents) in result.into_iter() {
             let relpath = PathBuf::from(relpath);
             let path = outdir.join(relpath);
@@ -203,7 +214,8 @@ mod tests {
     }
 
     #[test]
-    fn common_case_save() {
+    /// The common case
+    fn dirs_save() {
         let tmp_dir = tmpdir_from_txtar(indoc! {"
         -- left/subdir/txt --
         Some text
@@ -288,6 +300,124 @@ mod tests {
           - type: Text
             value: ""
         "###);
+    }
+
+    #[test]
+    fn single_file_save() {
+        let tmp_dir = tmpdir_from_txtar(indoc! {"
+        -- left --
+        Some text
+        -- right --
+        Changed text
+        -- edit --
+        Changed text for editing
+        "});
+        insta::assert_yaml_snapshot!(showdir(tmp_dir.path()), @r#"
+        ---
+        edit:
+          type: Text
+          value: "Changed text for editing\n"
+        left:
+          type: Text
+          value: "Some text\n"
+        right:
+          type: Text
+          value: "Changed text\n"
+        "#);
+        let mut input = left_right_edit_threedirinput(tmp_dir.path());
+        insta::assert_yaml_snapshot!(showscan(&input), @r#"
+        ---
+        "":
+          - type: Text
+            value: "Some text\n"
+          - type: Text
+            value: "Changed text\n"
+          - type: Text
+            value: "Changed text for editing\n"
+        "#);
+        let () = input
+            .save(IndexMap::from([string_pair("", "Edited text")]))
+            .unwrap();
+        insta::assert_yaml_snapshot!(showscan(&input), @r#"
+        ---
+        "":
+          - type: Text
+            value: "Some text\n"
+          - type: Text
+            value: "Changed text\n"
+          - type: Text
+            value: Edited text
+        "#);
+
+        // Test a validation error
+        let result = input.save(IndexMap::from([
+            string_pair("another_txt", ""),
+            string_pair("subdir/txt", "This text should not be written"),
+        ]));
+        insta::assert_debug_snapshot!(result, @r###"
+        Err(
+            ValidationFailError(
+                "another_txt",
+            ),
+        )
+        "###);
+        // Should be the same as previous version
+        insta::assert_yaml_snapshot!(showscan(&input), @r#"
+        ---
+        "":
+          - type: Text
+            value: "Some text\n"
+          - type: Text
+            value: "Changed text\n"
+          - type: Text
+            value: Edited text
+        "#);
+    }
+
+    #[test]
+    fn files_and_dirs_mix_save_error() {
+        let tmp_dir = tmpdir_from_txtar(indoc! {"
+        -- left --
+        Some text
+        -- right/file --
+        Text in a subdir
+        -- edit/file --
+        Changed text in a subdir for editing
+        "});
+        insta::assert_yaml_snapshot!(showdir(tmp_dir.path()), @r#"
+        ---
+        edit/file:
+          type: Text
+          value: "Changed text in a subdir for editing\n"
+        left:
+          type: Text
+          value: "Some text\n"
+        right/file:
+          type: Text
+          value: "Text in a subdir\n"
+        "#);
+        let mut input = left_right_edit_threedirinput(tmp_dir.path());
+        insta::assert_yaml_snapshot!(showscan(&input), @r#"
+        ---
+        "":
+          - type: Text
+            value: "Some text\n"
+          - type: Missing
+          - type: Missing
+        file:
+          - type: Missing
+          - type: Text
+            value: "Text in a subdir\n"
+          - type: Text
+            value: "Changed text in a subdir for editing\n"
+        "#);
+        // Test that this results in an error
+        let result = input.save(IndexMap::from([
+            string_pair("file", "Edited text for file"),
+            string_pair("", "Edited text for root"),
+        ]));
+        // TODO: Better error, make sure nothing is changed by the failed save
+        assert_matches!(dbg!(result), Err(DataSaveError::IOError(_path, _)));
     }
 
     #[test]
