@@ -160,6 +160,14 @@ details[open] > summary > .if-details-closed {
   width: 0.5em;
   display: inline-block;
 }
+.single-editor .pin-span {
+  display: none;
+}
+.single-editor details > summary {
+  /* Spacing hack to hide the details button */
+  position: relative;
+  left: -1em;
+}
 
 @supports (not (-moz-appearance: button)) and (contain: paint) and
   (-webkit-appearance: none) {
