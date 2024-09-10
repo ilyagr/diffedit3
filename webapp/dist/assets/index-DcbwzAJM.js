@@ -13659,13 +13659,22 @@ function replaceElementByIdWithNewEmptyDiv(id) {
   return new_element;
 }
 class MergeState {
-  constructor() {
+  /// `parent_window` is an Element that should contain the element that
+  /// MergeState will operate in. It will have a CSS class set when the editor
+  /// transitions to the pinned mode or single-editor mode.
+  //
+  // TODO: This will be less messy if we set these CSS classes on an element
+  // private to the MergeState, and have the caller supply a call-back so that
+  // it can react to the setting of pinned or single-editor state.
+  constructor(parent_window) {
     __publicField(this, "merge_views");
     __publicField(this, "dom_ids");
     __publicField(this, "initial_values");
+    __publicField(this, "parent_window");
     this.merge_views = {};
     this.dom_ids = {};
     this.initial_values = {};
+    this.parent_window = parent_window;
   }
   values() {
     const result = {};
@@ -13786,7 +13795,11 @@ class MergeState {
     }
     let target_element = replaceElementByIdWithNewEmptyDiv(unique_id);
     Q(ke`${templates}`, target_element);
-    const merge_state = new MergeState();
+    const parent_window = target_element.closest(".app-window");
+    if (!parent_window) {
+      throw `Element with id ${unique_id} must be a child of an element with class .app-window`;
+    }
+    const merge_state = new MergeState(parent_window);
     for (let k2 in merge_input) {
       if (to_error(merge_input[k2]) != null) {
         continue;
@@ -13853,13 +13866,12 @@ class MergeState {
     alignButtonEl.onclick = () => this.recreateCodeMirrorFlippingOption(filename, "align");
     prevChangeButtonEl.onclick = () => cm_prevChange(merge_view.editor());
     nextChangeButtonEl.onclick = () => cm_nextChange(merge_view.editor());
-    const parent_window = pinButtonEl.closest(".app-window");
-    pinButtonEl.onclick = () => this.toggle_pinning(parent_window, unique_id);
+    pinButtonEl.onclick = () => this.toggle_pinning(unique_id);
     detailsButtonEl.open = false;
     detailsButtonEl.ontoggle = () => {
       if (!detailsButtonEl.open) {
-        if (parent_window.classList.contains("pinned-mode")) {
-          this.toggle_pinning(parent_window, unique_id);
+        if (this.parent_window.classList.contains("pinned-mode")) {
+          this.toggle_pinning(unique_id);
         }
       } else {
         merge_view.editor().refresh();
@@ -13911,9 +13923,9 @@ class MergeState {
     const detailsButtonEl = document.getElementById(`details_${dom_id}`);
     detailsButtonEl.open = true;
   }
-  toggle_pinning(parent_window, unique_id) {
-    parent_window.classList.toggle("pinned-mode");
-    for (const merge_view of parent_window.getElementsByClassName(
+  toggle_pinning(unique_id) {
+    this.parent_window.classList.toggle("pinned-mode");
+    for (const merge_view of this.parent_window.getElementsByClassName(
       `merge-view`
     )) {
       if (merge_view.id == `details_${unique_id}`) {
