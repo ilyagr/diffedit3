@@ -50,6 +50,10 @@ export class MergeState {
     }
   }
 
+  public singleEditor(): boolean {
+    return Object.keys(this.merge_views).length == 1;
+  }
+
   /// Renders the input inside the HTML element with id `unique_id`.
   public static renderInDomElement(unique_id: string, merge_input: MergeInput) {
     let templates = [];
@@ -182,6 +186,7 @@ export class MergeState {
     }
     const merge_state = new MergeState(parent_window);
 
+    const singleEditor = Object.keys(merge_input).length == 1;
     for (let k in merge_input) {
       if (to_error(merge_input[k]) != null) {
         continue;
@@ -191,6 +196,11 @@ export class MergeState {
         k,
         fillInDefaultSettings(merge_input[k]),
       );
+      if (singleEditor) {
+        parent_window.classList.add("single-editor");
+        // Pin the only editor
+        merge_state.toggle_pinning(k_uid(k));
+      }
     }
 
     return merge_state;
@@ -264,12 +274,19 @@ export class MergeState {
     prevChangeButtonEl.onclick = () => cm_prevChange(merge_view.editor());
     nextChangeButtonEl.onclick = () => cm_nextChange(merge_view.editor());
 
-    pinButtonEl.onclick = () => this.toggle_pinning(unique_id);
+    pinButtonEl.onclick = () => {
+      if (!this.singleEditor()) {
+        this.toggle_pinning(unique_id);
+        return false;
+      }
+    };
     // Starting with details closed breaks CodeMirror, especially line numbers
     // in left and right merge view.
     detailsButtonEl.open = false;
     detailsButtonEl.ontoggle = () => {
-      if (!detailsButtonEl.open) {
+      if (this.singleEditor()) {
+        detailsButtonEl.open = true;
+      } else if (!detailsButtonEl.open) {
         // We just closed the details
         if (this.parent_window.classList.contains("pinned-mode")) {
           this.toggle_pinning(unique_id);
@@ -358,7 +375,6 @@ export class MergeState {
       }
     }
     this.refreshAll();
-    return false;
   }
 }
 

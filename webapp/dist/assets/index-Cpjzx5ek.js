@@ -13688,6 +13688,9 @@ class MergeState {
       this.merge_views[k2].editor().refresh();
     }
   }
+  singleEditor() {
+    return Object.keys(this.merge_views).length == 1;
+  }
   /// Renders the input inside the HTML element with id `unique_id`.
   static renderInDomElement(unique_id, merge_input) {
     let templates = [];
@@ -13800,6 +13803,7 @@ class MergeState {
       throw `Element with id ${unique_id} must be a child of an element with class .app-window`;
     }
     const merge_state = new MergeState(parent_window);
+    const singleEditor = Object.keys(merge_input).length == 1;
     for (let k2 in merge_input) {
       if (to_error(merge_input[k2]) != null) {
         continue;
@@ -13809,6 +13813,10 @@ class MergeState {
         k2,
         fillInDefaultSettings(merge_input[k2])
       );
+      if (singleEditor) {
+        parent_window.classList.add("single-editor");
+        merge_state.toggle_pinning(k_uid(k2));
+      }
     }
     return merge_state;
   }
@@ -13866,10 +13874,17 @@ class MergeState {
     alignButtonEl.onclick = () => this.recreateCodeMirrorFlippingOption(filename, "align");
     prevChangeButtonEl.onclick = () => cm_prevChange(merge_view.editor());
     nextChangeButtonEl.onclick = () => cm_nextChange(merge_view.editor());
-    pinButtonEl.onclick = () => this.toggle_pinning(unique_id);
+    pinButtonEl.onclick = () => {
+      if (!this.singleEditor()) {
+        this.toggle_pinning(unique_id);
+        return false;
+      }
+    };
     detailsButtonEl.open = false;
     detailsButtonEl.ontoggle = () => {
-      if (!detailsButtonEl.open) {
+      if (this.singleEditor()) {
+        detailsButtonEl.open = true;
+      } else if (!detailsButtonEl.open) {
         if (this.parent_window.classList.contains("pinned-mode")) {
           this.toggle_pinning(unique_id);
         }
@@ -13940,7 +13955,6 @@ class MergeState {
       }
     }
     this.refreshAll();
-    return false;
   }
 }
 function fillInDefaultSettings(input) {
