@@ -61,31 +61,29 @@ manually configure `jj` to use it.
 
 ## Using `diffedit3` with `jj`
 
-For `jj` 0.18+, `diffedit3` should be pre-configured. It should be sufficient to
-set `ui.diff-editor="diffedit3"` in your [`jj` config] or invoke `jj` commands
-with `--tool diffedit3` argument. If the `diffedit3` executable is not in your
-PATH, you can also set `merge-tools.diffedit3.program` to the path to the
-executable. (TODO: Link to docs and remove this TODO once the PR with the docs
-and the config lands.)
+For `jj` 0.18+, `diffedit3` should be pre-configured as a diff editor.
+If the `diffedit3` executable is not in your PATH, you may need to set
+`merge-tools.diffedit3.program` to the path to the executable (but it may be
+better to just move it into the PATH instead).
 
-To use `diffedit3` with older versions of `jj`,  add the following snippet to
-your [`jj` config]:
+You can use `jj` with `diffedit3`, for example, as follows:
 
-[`jj` config]: https://martinvonz.github.io/jj/v0.14.0/config/#editing-diffs
-
-```toml
-[ui]
-diff-editor = "diffedit3"
-
-[merge-tools.diffedit3]
-# Replace `program` with the full path to the
-# binary if it is not in your PATH.
-program = "diffedit3"  
-edit-args = ["$left", "$right", "$output"]
+```
+jj split --tool diffedit3
 ```
 
-Then, the tool will be used for `jj split` and many other commands.
+You can make `diffedit3` the default diff editing tool by setting
+`ui.diff-editor="diffedit3"` in your [`jj` config] ([additional docs]).
 
+Using `diffedit3` as a merge tool with `jj resolve` is not currently
+recommended. (TODO: hopefully, this will change shortly).
+
+If you'd like to adjust the config or use `diffedit3` with older versions
+of `jj`, you can adapt `jj`'s default TOML config for `diffedit3` from its
+[`merge-tools.toml`](https://github.com/martinvonz/jj/blob/main/cli/src/config/merge_tools.toml).
+
+[`jj` config]: https://martinvonz.github.io/jj/v0.14.0/config/#editing-diffs
+[additional docs]: https://martinvonz.github.io/jj/latest/config/#experimental-3-pane-diff-editing
 
 ## Potential uses outside `jj`
 
@@ -225,10 +223,15 @@ Compare.
 Patches welcome :). Any such changes run the risk of running into CodeMirror5's
 merge plugin's bugs, so be careful checking that your changes work.
 
-### Word wrapping, buttons to take all changes from  the left/right pane
+### Buttons to take all changes from  the left/right pane
 
 This is planned. This requires destroying the CodeMirror widget and creating a
 new one (in order to avoid CodeMirror5 bugs).
+
+### Ability to edit left/right side, use `diffedit3` as a scratchpad
+
+Need to check if this triggers any bugs. See also
+https://github.com/ilyagr/diffedit3/issues/51.
 
 ## Building `diffedit3` from source
 
