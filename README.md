@@ -176,9 +176,9 @@ Currently, `diffedit3` could be used to resolve conflicts by putting the file
 with conflict markers in the center and the left/right sides on the sides. There
 are a few limitations:
 
-- The tool currently does not work correctly if the arguments are files as opposed
+- (Fixed in `diffedit3 0.5.0`) The tool currently does not work correctly if the arguments are files as opposed
     to directories. This can be fixed (TODO). So, it does not work with `jj resolve`.
-- Such a view would show many distracting useless diffs that can be trivially resolved
+- (**Update:** To be fixed in `jj` as described below) Such a view would show many distracting useless diffs that can be trivially resolved
   (and should be resolved in the center panel). The user would need help navigating
   to the relevant parts (conflicts).
 - AFAIK, CodeMirror's merge plugin does not support `Go to next/previous conflict`
@@ -186,10 +186,15 @@ are a few limitations:
   left and right sides. (This would also correspond to going to the next conflict in
   the view I described, there's no need to look at conflict markers for this)
 
-Alternatively, a tool like `jj` could adjust the left/right sides to remove the
+(**Update:** This is the plan.) Alternatively, a tool like `jj` could adjust the left/right sides to remove the
 diffs that can be trivially resolved before sending the files to `diffedit3`. This would
 make the conflicts much easier to navigate for experienced users, but more confusing for
 new users.
+
+**Update:** To reduce confusion, we might eventually show different views
+of the merge: the original files, the simplified files as described in
+the previous paragraph, the original jj conflict view vs the version
+edited by the user.
 
 ### Resolving merge conflicts in a 4-pane view
 
