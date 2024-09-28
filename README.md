@@ -70,6 +70,9 @@ with `--tool diffedit3` argument. If the `diffedit3` executable is not
 in your PATH, you can also set `merge-tools.diffedit3.program` to the
 path to the executable.
 
+Using `diffedit3` as a merge tool (with `jj resolve`) is not currently
+recommended. (TODO: hopefully, this will change shortly).
+
 If you'd like to adjust the config or use `diffedit3` with older versions
 of `jj`, you can adapt `jj`'s default TOML config for `diffedit3` from its
 [`merge-tools.toml`](https://github.com/martinvonz/jj/blob/main/cli/src/config/merge_tools.toml).
