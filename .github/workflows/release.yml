@@ -63,7 +63,7 @@ jobs:
             echo "ASSET=$name.tar.gz" >> $GITHUB_ENV
           fi
       - name: Upload release archive
-        uses: shogo82148/actions-upload-release-asset@8f032eff0255912cc9c8455797fd6d72f25c7ab7 # v1.7.5
+        uses: shogo82148/actions-upload-release-asset@aac270e08f6b4547ada0b3800f88e1eb3ce9d400 # v1.7.7
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -109,7 +109,7 @@ jobs:
       - name: install frontend dependencies
         run: npm clean-install
 
-      - uses: tauri-apps/tauri-action@v0.5.6
+      - uses: tauri-apps/tauri-action@v0.5.14
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # Will publish a release manually
@@ -138,7 +138,7 @@ jobs:
           cd ../..
           ls
       - name: Upload release archive
-        uses: shogo82148/actions-upload-release-asset@8f032eff0255912cc9c8455797fd6d72f25c7ab7 # v1.7.5
+        uses: shogo82148/actions-upload-release-asset@aac270e08f6b4547ada0b3800f88e1eb3ce9d400 # v1.7.7
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
