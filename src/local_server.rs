@@ -18,8 +18,15 @@ use crate::DataInterface;
 type DataInterfacePointer = Arc<Mutex<Box<dyn DataInterface>>>;
 pub type PortsToTry = Box<dyn Iterator<Item = usize>>;
 
+#[cfg(debug_assertions)]
 #[derive(rust_embed::Embed)]
 #[folder = "webapp/dist/"]
+struct StaticFiles;
+
+#[cfg(not(debug_assertions))]
+#[derive(rust_embed::Embed)]
+#[folder = "webapp/dist/"]
+#[exclude = "*.map"]
 struct StaticFiles;
 
 pub type ExitCode = i32;

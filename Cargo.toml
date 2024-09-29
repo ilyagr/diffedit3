@@ -30,7 +30,7 @@ indexmap = { version = "2.5.0", features = ["serde"] }
 open = "5.3.0"
 parking_lot = "0.12.2"
 poem = { version = "3.1.0", features = ["embed"] }
-rust-embed = { version = "8.5.0" }
+rust-embed = { version = "8.5.0" , features = ["include-exclude"] }
 serde = { version = "1.0.210", features = ["serde_derive"] }
 thiserror = "1.0.64"
 tokio = { version = "1.38.0", features = [
