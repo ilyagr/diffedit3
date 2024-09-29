@@ -225,6 +225,11 @@ merge plugin's bugs, so be careful checking that your changes work.
 This is planned. This requires destroying the CodeMirror widget and creating a
 new one (in order to avoid CodeMirror5 bugs).
 
+### Ability to edit left/right side, use `diffedit3` as a scratchpad
+
+Need to check if this triggers any bugs. See also
+https://github.com/ilyagr/diffedit3/issues/51.
+
 ## Building `diffedit3` from source
 
 For the local server version, running `cargo build --release` should suffice. This assumes that the compiled javascript in `webapp/dist` is up to date and therefore does not require installing `npm`.
