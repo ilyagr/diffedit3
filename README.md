@@ -220,7 +220,7 @@ Compare.
 Patches welcome :). Any such changes run the risk of running into CodeMirror5's
 merge plugin's bugs, so be careful checking that your changes work.
 
-### Word wrapping, buttons to take all changes from  the left/right pane
+### Buttons to take all changes from  the left/right pane
 
 This is planned. This requires destroying the CodeMirror widget and creating a
 new one (in order to avoid CodeMirror5 bugs).
