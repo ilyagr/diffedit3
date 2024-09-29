@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### New features
 
+### Fixed bugs
+
+## [v0.5.0] - 2025-09-29
+
+### New features
+
 * `diffedit3` now accepts files as arguments, not just dirs. So, `diffedit3
   left_file right_file output_file` is now allowed. Mixing dirs and files is not
   allowed.
@@ -18,8 +24,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * When used on a single file, `diffedit3` now permanently stays in "pinned" mode
   and the pinning/collapsing controls are disabled. Allowing the user to
   collapse the only editor doesn't make much sense.
-
-### Fixed bugs
 
 ## [v0.4.0] - 2024-05-04
 
