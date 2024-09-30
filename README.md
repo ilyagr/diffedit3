@@ -75,8 +75,9 @@ jj split --tool diffedit3
 You can make `diffedit3` the default diff editing tool by setting
 `ui.diff-editor="diffedit3"` in your [`jj` config] ([additional docs]).
 
-Using `diffedit3` as a merge tool with `jj resolve` is not currently
-recommended. (TODO: hopefully, this will change shortly).
+Using `diffedit3` as a merge tool with `jj resolve` is possible since version
+0.5.0, but requires configuration and is not currently convenient or
+recommended. (TODO: hopefully, this will improve shortly).
 
 If you'd like to adjust the config or use `diffedit3` with older versions
 of `jj`, you can adapt `jj`'s default TOML config for `diffedit3` from its
