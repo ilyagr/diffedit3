@@ -11,5 +11,9 @@
   },
   "workspaces": [
     "webapp"
-  ]
+  ],
+  "dependencies": {
+    "@tauri-apps/api": "^2.0.1",
+    "@tauri-apps/cli": "^2.0.1"
+  }
 }
