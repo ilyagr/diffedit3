@@ -10,7 +10,8 @@ use indexmap::IndexMap;
 // tokio::sync::Mutex, but the docs suggest only using it if absolutely
 // neccessary.
 use parking_lot::Mutex;
-use tauri::{CustomMenuItem, Menu, Submenu};
+use tauri::menu::{Menu, MenuItemBuilder, Submenu};
+// TODO: https://tauri.app/start/migrate/from-tauri-1/#migrate-to-menu-module
 
 type DataMutex = Mutex<Box<dyn DataInterface>>;
 

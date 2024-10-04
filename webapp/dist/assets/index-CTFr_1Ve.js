@@ -13479,100 +13479,52 @@ const Q = (t, i, s) => {
   }
   return h2._$AI(t), h2;
 };
-function uid() {
-  return window.crypto.getRandomValues(new Uint32Array(1))[0];
-}
+typeof SuppressedError === "function" ? SuppressedError : function(error, suppressed, message) {
+  var e = new Error(message);
+  return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+};
 function transformCallback(callback, once = false) {
-  const identifier = uid();
-  const prop = `_${identifier}`;
-  Object.defineProperty(window, prop, {
-    value: (result) => {
-      if (once) {
-        Reflect.deleteProperty(window, prop);
-      }
-      return callback === null || callback === void 0 ? void 0 : callback(result);
-    },
-    writable: false,
-    configurable: true
-  });
-  return identifier;
+  return window.__TAURI_INTERNALS__.transformCallback(callback, once);
 }
-async function invoke(cmd, args = {}) {
-  return new Promise((resolve, reject) => {
-    const callback = transformCallback((e) => {
-      resolve(e);
-      Reflect.deleteProperty(window, `_${error}`);
-    }, true);
-    const error = transformCallback((e) => {
-      reject(e);
-      Reflect.deleteProperty(window, `_${callback}`);
-    }, true);
-    window.__TAURI_IPC__({
-      cmd,
-      callback,
-      error,
-      ...args
-    });
-  });
-}
-async function invokeTauriCommand(command) {
-  return invoke("tauri", command);
-}
-async function _unlisten(event, eventId) {
-  return invokeTauriCommand({
-    __tauriModule: "Event",
-    message: {
-      cmd: "unlisten",
-      event,
-      eventId
-    }
-  });
-}
-async function listen$1(event, windowLabel, handler) {
-  return invokeTauriCommand({
-    __tauriModule: "Event",
-    message: {
-      cmd: "listen",
-      event,
-      windowLabel,
-      handler: transformCallback(handler)
-    }
-  }).then((eventId) => {
-    return async () => _unlisten(event, eventId);
-  });
+async function invoke(cmd, args = {}, options) {
+  return window.__TAURI_INTERNALS__.invoke(cmd, args, options);
 }
 var TauriEvent;
 (function(TauriEvent2) {
   TauriEvent2["WINDOW_RESIZED"] = "tauri://resize";
   TauriEvent2["WINDOW_MOVED"] = "tauri://move";
   TauriEvent2["WINDOW_CLOSE_REQUESTED"] = "tauri://close-requested";
-  TauriEvent2["WINDOW_CREATED"] = "tauri://window-created";
   TauriEvent2["WINDOW_DESTROYED"] = "tauri://destroyed";
   TauriEvent2["WINDOW_FOCUS"] = "tauri://focus";
   TauriEvent2["WINDOW_BLUR"] = "tauri://blur";
   TauriEvent2["WINDOW_SCALE_FACTOR_CHANGED"] = "tauri://scale-change";
   TauriEvent2["WINDOW_THEME_CHANGED"] = "tauri://theme-changed";
-  TauriEvent2["WINDOW_FILE_DROP"] = "tauri://file-drop";
-  TauriEvent2["WINDOW_FILE_DROP_HOVER"] = "tauri://file-drop-hover";
-  TauriEvent2["WINDOW_FILE_DROP_CANCELLED"] = "tauri://file-drop-cancelled";
-  TauriEvent2["MENU"] = "tauri://menu";
-  TauriEvent2["CHECK_UPDATE"] = "tauri://update";
-  TauriEvent2["UPDATE_AVAILABLE"] = "tauri://update-available";
-  TauriEvent2["INSTALL_UPDATE"] = "tauri://update-install";
-  TauriEvent2["STATUS_UPDATE"] = "tauri://update-status";
-  TauriEvent2["DOWNLOAD_PROGRESS"] = "tauri://update-download-progress";
+  TauriEvent2["WINDOW_CREATED"] = "tauri://window-created";
+  TauriEvent2["WEBVIEW_CREATED"] = "tauri://webview-created";
+  TauriEvent2["DRAG_ENTER"] = "tauri://drag-enter";
+  TauriEvent2["DRAG_OVER"] = "tauri://drag-over";
+  TauriEvent2["DRAG_DROP"] = "tauri://drag-drop";
+  TauriEvent2["DRAG_LEAVE"] = "tauri://drag-leave";
 })(TauriEvent || (TauriEvent = {}));
-async function listen(event, handler) {
-  return listen$1(event, null, handler);
-}
-async function exit$1(exitCode = 0) {
-  return invokeTauriCommand({
-    __tauriModule: "Process",
-    message: {
-      cmd: "exit",
-      exitCode
-    }
+async function _unlisten(event, eventId) {
+  await invoke("plugin:event|unlisten", {
+    event,
+    eventId
   });
+}
+async function listen(event, handler, options) {
+  var _a;
+  const target = (_a = void 0) !== null && _a !== void 0 ? _a : { kind: "Any" };
+  return invoke("plugin:event|listen", {
+    event,
+    target,
+    handler: transformCallback(handler)
+  }).then((eventId) => {
+    return async () => _unlisten(event, eventId);
+  });
+}
+async function exit$1(code = 0) {
+  await invoke("plugin:process|exit", { code });
 }
 function to_text(file_entry) {
   if (file_entry.type == "Text") {
@@ -14091,4 +14043,4 @@ window.addEventListener("DOMContentLoaded", async () => {
     });
   }
 });
-//# sourceMappingURL=index-Cpjzx5ek.js.map
+//# sourceMappingURL=index-CTFr_1Ve.js.map
