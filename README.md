@@ -94,6 +94,11 @@ version of the data they like. This interface is not novel, Meld can be
 configured in the same way. However, I believe it should be better known and
 used more.
 
+**Update:** What I describe below may already be implemented in
+https://github.com/jjlee/git-meld-index.
+I have not tried using the two tools together, but I'm insterested in the experience
+of people who do.
+
 If you are not familiar with the various `jj` operations where this is useful,
 the most obvious use-cases are:
 
