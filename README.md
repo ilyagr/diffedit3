@@ -94,8 +94,10 @@ version of the data they like. This interface is not novel, Meld can be
 configured in the same way. However, I believe it should be better known and
 used more.
 
-**Update:** What I describe below may already be implemented in
-https://github.com/jjlee/git-meld-index.
+**Update:** What I describe below is partially implemented in
+https://github.com/jjlee/git-meld-index. For now, they only implement
+a 2-pane comparison of working copy and index, but a three-pane view
+is in their list of ideas: https://github.com/jjlee/git-meld-index?tab=readme-ov-file#ideas.
 I have not tried using the two tools together, but I'm insterested in the experience
 of people who do.
 
