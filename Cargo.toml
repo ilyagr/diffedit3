@@ -25,32 +25,32 @@ readme = "README.md"
 repository = "https://github.com/ilyagr/diffedit3"
 
 [dependencies]
-clap = { version = "4.5.18", features = ["derive"] }
-indexmap = { version = "2.5.0", features = ["serde"] }
-open = "5.3.0"
+clap = { version = "4.5.23", features = ["derive"] }
+indexmap = { version = "2.7.0", features = ["serde"] }
+open = "5.3.1"
 parking_lot = "0.12.2"
-poem = { version = "3.1.0", features = ["embed"] }
+poem = { version = "3.1.5", features = ["embed"] }
 rust-embed = { version = "8.5.0" , features = ["include-exclude"] }
-serde = { version = "1.0.210", features = ["serde_derive"] }
-thiserror = "1.0.64"
-tokio = { version = "1.38.0", features = [
+serde = { version = "1.0.216", features = ["serde_derive"] }
+thiserror = "2.0.9"
+tokio = { version = "1.42.0", features = [
     "macros",
     "rt-multi-thread",
     "signal",
 ] }
 toml = { version = "0.8.15", features = ["indexmap"] }
-tracing-subscriber = "0.3.18"
+tracing-subscriber = "0.3.19"
 walkdir = "2.4.0"
 
 [dev-dependencies]
 assert_matches = "1.5.0"
 indoc = "2.0.4"
-insta = { version = "1.40.0", features = [
+insta = { version = "1.41.1", features = [
     "redactions",
     "serde",
     "yaml",
     "json",
 ] }
 itertools = "0.13.0"
-tempfile = "3.11.0"
+tempfile = "3.14.0"
 txtar = "1.0.0"
