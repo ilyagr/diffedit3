@@ -46,7 +46,7 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@1482605bfc5719782e1267fd0c0cc350fe7646b8
         with:
-          toolchain: 1.76
+          toolchain: 1.81
       - name: Build diffedit3-web (but not Tauri diffedit3-gui, which has "gdk-3.0" runtime dependecy )
         run: cargo build -p diffedit3 --all-targets --verbose ${{ matrix.cargo_flags }}
       - name: Test
@@ -98,7 +98,7 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@1482605bfc5719782e1267fd0c0cc350fe7646b8
         with:
-          toolchain: 1.76
+          toolchain: 1.81
           components: clippy
       - name: install dependencies (ubuntu + Tauri only)
         run: |

@@ -2,6 +2,7 @@
 name = "diffedit3-gui"
 version = { workspace = true }
 edition = { workspace = true }
+rust-version = { workspace = true }
 
 [build-dependencies]
 tauri-build = { version = "1.5", features = [] }

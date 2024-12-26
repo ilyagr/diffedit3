@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking changes
 
+* The Rust MSRV is now 1.81 (up from 1.76)
+
 ### New features
 
 ### Fixed bugs

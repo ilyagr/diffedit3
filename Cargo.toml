@@ -11,6 +11,7 @@ repository = { workspace = true }
 readme = { workspace = true }
 version = { workspace = true }
 edition = { workspace = true }
+rust-version = { workspace = true }
 include = ["/src", "/webapp/dist", "/*.md"]
 
 [package.metadata.binstall]
@@ -19,6 +20,7 @@ pkg-url = "{ repo }/releases/download/v{ version }/diffedit3-v{ version }-{ targ
 
 [workspace.package]
 version = "0.5.0"  # Also update package.json and tauri.conf.json
+rust-version = "1.81"  # Also update test.yml
 edition = "2021"
 license = "Apache-2.0"
 readme = "README.md"
