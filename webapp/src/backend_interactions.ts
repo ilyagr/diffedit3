@@ -1,4 +1,8 @@
-import { InvokeArgs, invoke as tauriInvoke } from "@tauri-apps/api/core";
+import {
+  InvokeArgs,
+  invoke as tauriInvoke,
+  isTauri,
+} from "@tauri-apps/api/core";
 import { exit as tauriExit } from "@tauri-apps/plugin-process";
 
 export type FileEntry =
@@ -23,9 +27,7 @@ export function to_text(file_entry: FileEntry): string | null {
 // Tauri interop
 
 // https://github.com/tauri-apps/tauri/discussions/6119
-// TODO: Can this be replaced with https://github.com/tauri-apps/tauri/discussions/6119#discussioncomment-11666454
-// or something less brittle?
-export const TAURI_BACKEND = "__TAURI_INTERNALS__" in globalThis;
+export const TAURI_BACKEND = isTauri();
 
 async function backend_request(
   command_name: string,
