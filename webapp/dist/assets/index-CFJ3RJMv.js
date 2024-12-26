@@ -104,57 +104,57 @@ function requireCodemirror() {
           node.className = current.slice(0, match.index) + (after ? match[1] + after : "");
         }
       };
-      function removeChildren(e) {
-        for (var count = e.childNodes.length; count > 0; --count) {
-          e.removeChild(e.firstChild);
+      function removeChildren(e2) {
+        for (var count = e2.childNodes.length; count > 0; --count) {
+          e2.removeChild(e2.firstChild);
         }
-        return e;
+        return e2;
       }
-      function removeChildrenAndAdd(parent, e) {
-        return removeChildren(parent).appendChild(e);
+      function removeChildrenAndAdd(parent, e2) {
+        return removeChildren(parent).appendChild(e2);
       }
       function elt(tag, content, className, style) {
-        var e = document.createElement(tag);
+        var e2 = document.createElement(tag);
         if (className) {
-          e.className = className;
+          e2.className = className;
         }
         if (style) {
-          e.style.cssText = style;
+          e2.style.cssText = style;
         }
         if (typeof content == "string") {
-          e.appendChild(document.createTextNode(content));
+          e2.appendChild(document.createTextNode(content));
         } else if (content) {
-          for (var i2 = 0; i2 < content.length; ++i2) {
-            e.appendChild(content[i2]);
+          for (var i3 = 0; i3 < content.length; ++i3) {
+            e2.appendChild(content[i3]);
           }
         }
-        return e;
+        return e2;
       }
       function eltP(tag, content, className, style) {
-        var e = elt(tag, content, className, style);
-        e.setAttribute("role", "presentation");
-        return e;
+        var e2 = elt(tag, content, className, style);
+        e2.setAttribute("role", "presentation");
+        return e2;
       }
       var range;
       if (document.createRange) {
         range = function(node, start, end, endNode) {
-          var r = document.createRange();
-          r.setEnd(endNode || node, end);
-          r.setStart(node, start);
-          return r;
+          var r2 = document.createRange();
+          r2.setEnd(endNode || node, end);
+          r2.setStart(node, start);
+          return r2;
         };
       } else {
         range = function(node, start, end) {
-          var r = document.body.createTextRange();
+          var r2 = document.body.createTextRange();
           try {
-            r.moveToElementText(node.parentNode);
-          } catch (e) {
-            return r;
+            r2.moveToElementText(node.parentNode);
+          } catch (e2) {
+            return r2;
           }
-          r.collapse(true);
-          r.moveEnd("character", end);
-          r.moveStart("character", start);
-          return r;
+          r2.collapse(true);
+          r2.moveEnd("character", end);
+          r2.moveStart("character", start);
+          return r2;
         };
       }
       function contains(parent, child) {
@@ -178,7 +178,7 @@ function requireCodemirror() {
         var activeElement;
         try {
           activeElement = rootNode2.activeElement;
-        } catch (e) {
+        } catch (e2) {
           activeElement = doc2.body || null;
         }
         while (activeElement && activeElement.shadowRoot && activeElement.shadowRoot.activeElement) {
@@ -192,11 +192,11 @@ function requireCodemirror() {
           node.className += (current ? " " : "") + cls;
         }
       }
-      function joinClasses(a, b) {
-        var as = a.split(" ");
-        for (var i2 = 0; i2 < as.length; i2++) {
-          if (as[i2] && !classTest(as[i2]).test(b)) {
-            b += " " + as[i2];
+      function joinClasses(a2, b) {
+        var as = a2.split(" ");
+        for (var i3 = 0; i3 < as.length; i3++) {
+          if (as[i3] && !classTest(as[i3]).test(b)) {
+            b += " " + as[i3];
           }
         }
         return b;
@@ -253,14 +253,14 @@ function requireCodemirror() {
             end = string.length;
           }
         }
-        for (var i2 = startIndex || 0, n2 = startValue || 0; ; ) {
-          var nextTab = string.indexOf("	", i2);
+        for (var i3 = startIndex || 0, n2 = startValue || 0; ; ) {
+          var nextTab = string.indexOf("	", i3);
           if (nextTab < 0 || nextTab >= end) {
-            return n2 + (end - i2);
+            return n2 + (end - i3);
           }
-          n2 += nextTab - i2;
+          n2 += nextTab - i3;
           n2 += tabSize - n2 % tabSize;
-          i2 = nextTab + 1;
+          i3 = nextTab + 1;
         }
       }
       var Delayed = function() {
@@ -287,9 +287,9 @@ function requireCodemirror() {
         }
       };
       function indexOf(array, elt2) {
-        for (var i2 = 0; i2 < array.length; ++i2) {
-          if (array[i2] == elt2) {
-            return i2;
+        for (var i3 = 0; i3 < array.length; ++i3) {
+          if (array[i3] == elt2) {
+            return i3;
           }
         }
         return -1;
@@ -329,8 +329,8 @@ function requireCodemirror() {
       }
       function map(array, f2) {
         var out = [];
-        for (var i2 = 0; i2 < array.length; i2++) {
-          out[i2] = f2(array[i2], i2);
+        for (var i3 = 0; i3 < array.length; i3++) {
+          out[i3] = f2(array[i3], i3);
         }
         return out;
       }
@@ -409,10 +409,10 @@ function requireCodemirror() {
           return f2(from, to, "ltr", 0);
         }
         var found = false;
-        for (var i2 = 0; i2 < order.length; ++i2) {
-          var part = order[i2];
+        for (var i3 = 0; i3 < order.length; ++i3) {
+          var part = order[i3];
           if (part.from < to && part.to > from || from == to && part.to == from) {
-            f2(Math.max(part.from, from), Math.min(part.to, to), part.level == 1 ? "rtl" : "ltr", i2);
+            f2(Math.max(part.from, from), Math.min(part.to, to), part.level == 1 ? "rtl" : "ltr", i3);
             found = true;
           }
         }
@@ -424,23 +424,23 @@ function requireCodemirror() {
       function getBidiPartAt(order, ch, sticky) {
         var found;
         bidiOther = null;
-        for (var i2 = 0; i2 < order.length; ++i2) {
-          var cur = order[i2];
+        for (var i3 = 0; i3 < order.length; ++i3) {
+          var cur = order[i3];
           if (cur.from < ch && cur.to > ch) {
-            return i2;
+            return i3;
           }
           if (cur.to == ch) {
             if (cur.from != cur.to && sticky == "before") {
-              found = i2;
+              found = i3;
             } else {
-              bidiOther = i2;
+              bidiOther = i3;
             }
           }
           if (cur.from == ch) {
             if (cur.from != cur.to && sticky != "before") {
-              found = i2;
+              found = i3;
             } else {
-              bidiOther = i2;
+              bidiOther = i3;
             }
           }
         }
@@ -479,8 +479,8 @@ function requireCodemirror() {
             return false;
           }
           var len = str.length, types = [];
-          for (var i2 = 0; i2 < len; ++i2) {
-            types.push(charType(str.charCodeAt(i2)));
+          for (var i3 = 0; i3 < len; ++i3) {
+            types.push(charType(str.charCodeAt(i3)));
           }
           for (var i$12 = 0, prev = outerType; i$12 < len; ++i$12) {
             var type = types[i$12];
@@ -634,18 +634,18 @@ function requireCodemirror() {
           return;
         }
         var args = Array.prototype.slice.call(arguments, 2);
-        for (var i2 = 0; i2 < handlers.length; ++i2) {
-          handlers[i2].apply(null, args);
+        for (var i3 = 0; i3 < handlers.length; ++i3) {
+          handlers[i3].apply(null, args);
         }
       }
-      function signalDOMEvent(cm, e, override) {
-        if (typeof e == "string") {
-          e = { type: e, preventDefault: function() {
+      function signalDOMEvent(cm, e2, override) {
+        if (typeof e2 == "string") {
+          e2 = { type: e2, preventDefault: function() {
             this.defaultPrevented = true;
           } };
         }
-        signal(cm, override || e.type, cm, e);
-        return e_defaultPrevented(e) || e.codemirrorIgnore;
+        signal(cm, override || e2.type, cm, e2);
+        return e_defaultPrevented(e2) || e2.codemirrorIgnore;
       }
       function signalCursorActivity(cm) {
         var arr = cm._handlers && cm._handlers.cursorActivity;
@@ -653,9 +653,9 @@ function requireCodemirror() {
           return;
         }
         var set = cm.curOp.cursorActivityHandlers || (cm.curOp.cursorActivityHandlers = []);
-        for (var i2 = 0; i2 < arr.length; ++i2) {
-          if (indexOf(set, arr[i2]) == -1) {
-            set.push(arr[i2]);
+        for (var i3 = 0; i3 < arr.length; ++i3) {
+          if (indexOf(set, arr[i3]) == -1) {
+            set.push(arr[i3]);
           }
         }
       }
@@ -670,42 +670,42 @@ function requireCodemirror() {
           off(this, type, f2);
         };
       }
-      function e_preventDefault(e) {
-        if (e.preventDefault) {
-          e.preventDefault();
+      function e_preventDefault(e2) {
+        if (e2.preventDefault) {
+          e2.preventDefault();
         } else {
-          e.returnValue = false;
+          e2.returnValue = false;
         }
       }
-      function e_stopPropagation(e) {
-        if (e.stopPropagation) {
-          e.stopPropagation();
+      function e_stopPropagation(e2) {
+        if (e2.stopPropagation) {
+          e2.stopPropagation();
         } else {
-          e.cancelBubble = true;
+          e2.cancelBubble = true;
         }
       }
-      function e_defaultPrevented(e) {
-        return e.defaultPrevented != null ? e.defaultPrevented : e.returnValue == false;
+      function e_defaultPrevented(e2) {
+        return e2.defaultPrevented != null ? e2.defaultPrevented : e2.returnValue == false;
       }
-      function e_stop(e) {
-        e_preventDefault(e);
-        e_stopPropagation(e);
+      function e_stop(e2) {
+        e_preventDefault(e2);
+        e_stopPropagation(e2);
       }
-      function e_target(e) {
-        return e.target || e.srcElement;
+      function e_target(e2) {
+        return e2.target || e2.srcElement;
       }
-      function e_button(e) {
-        var b = e.which;
+      function e_button(e2) {
+        var b = e2.which;
         if (b == null) {
-          if (e.button & 1) {
+          if (e2.button & 1) {
             b = 1;
-          } else if (e.button & 2) {
+          } else if (e2.button & 2) {
             b = 3;
-          } else if (e.button & 4) {
+          } else if (e2.button & 4) {
             b = 2;
           }
         }
-        if (mac && e.ctrlKey && b == 1) {
+        if (mac && e2.ctrlKey && b == 1) {
           b = 3;
         }
         return b;
@@ -745,8 +745,8 @@ function requireCodemirror() {
         return badBidiRects = r1.right - r0.right < 3;
       }
       var splitLinesAuto = "\n\nb".split(/\n/).length != 3 ? function(string) {
-        var pos = 0, result = [], l = string.length;
-        while (pos <= l) {
+        var pos = 0, result = [], l2 = string.length;
+        while (pos <= l2) {
           var nl = string.indexOf("\n", pos);
           if (nl == -1) {
             nl = string.length;
@@ -768,14 +768,14 @@ function requireCodemirror() {
       var hasSelection = window.getSelection ? function(te) {
         try {
           return te.selectionStart != te.selectionEnd;
-        } catch (e) {
+        } catch (e2) {
           return false;
         }
       } : function(te) {
         var range2;
         try {
           range2 = te.ownerDocument.selection.createRange();
-        } catch (e) {
+        } catch (e2) {
         }
         if (!range2 || range2.parentElement() != te) {
           return false;
@@ -783,12 +783,12 @@ function requireCodemirror() {
         return range2.compareEndPoints("StartToEnd", range2) != 0;
       };
       var hasCopyEvent = function() {
-        var e = elt("div");
-        if ("oncopy" in e) {
+        var e2 = elt("div");
+        if ("oncopy" in e2) {
           return true;
         }
-        e.setAttribute("oncopy", "return;");
-        return typeof e.oncopy == "function";
+        e2.setAttribute("oncopy", "return;");
+        return typeof e2.oncopy == "function";
       }();
       var badZoomedRects = null;
       function hasBadZoomedRects(measure) {
@@ -1018,8 +1018,8 @@ function requireCodemirror() {
         }
         var chunk = doc2;
         while (!chunk.lines) {
-          for (var i2 = 0; ; ++i2) {
-            var child = chunk.children[i2], sz = child.chunkSize();
+          for (var i3 = 0; ; ++i3) {
+            var child = chunk.children[i3], sz = child.chunkSize();
             if (n2 < sz) {
               chunk = child;
               break;
@@ -1065,11 +1065,11 @@ function requireCodemirror() {
         }
         var cur = line.parent, no = indexOf(cur.lines, line);
         for (var chunk = cur.parent; chunk; cur = chunk, chunk = chunk.parent) {
-          for (var i2 = 0; ; ++i2) {
-            if (chunk.children[i2] == cur) {
+          for (var i3 = 0; ; ++i3) {
+            if (chunk.children[i3] == cur) {
               break;
             }
-            no += chunk.children[i2].chunkSize();
+            no += chunk.children[i3].chunkSize();
           }
         }
         return no + cur.first;
@@ -1088,21 +1088,21 @@ function requireCodemirror() {
           }
           return n2;
         } while (!chunk.lines);
-        var i2 = 0;
-        for (; i2 < chunk.lines.length; ++i2) {
-          var line = chunk.lines[i2], lh = line.height;
+        var i3 = 0;
+        for (; i3 < chunk.lines.length; ++i3) {
+          var line = chunk.lines[i3], lh = line.height;
           if (h2 < lh) {
             break;
           }
           h2 -= lh;
         }
-        return n2 + i2;
+        return n2 + i3;
       }
-      function isLine(doc2, l) {
-        return l >= doc2.first && l < doc2.first + doc2.size;
+      function isLine(doc2, l2) {
+        return l2 >= doc2.first && l2 < doc2.first + doc2.size;
       }
-      function lineNumberFor(options, i2) {
-        return String(options.lineNumberFormatter(i2 + options.firstLineNumber));
+      function lineNumberFor(options, i3) {
+        return String(options.lineNumberFormatter(i3 + options.firstLineNumber));
       }
       function Pos(line, ch, sticky) {
         if (sticky === void 0) sticky = null;
@@ -1113,20 +1113,20 @@ function requireCodemirror() {
         this.ch = ch;
         this.sticky = sticky;
       }
-      function cmp(a, b) {
-        return a.line - b.line || a.ch - b.ch;
+      function cmp(a2, b) {
+        return a2.line - b.line || a2.ch - b.ch;
       }
-      function equalCursorPos(a, b) {
-        return a.sticky == b.sticky && cmp(a, b) == 0;
+      function equalCursorPos(a2, b) {
+        return a2.sticky == b.sticky && cmp(a2, b) == 0;
       }
       function copyPos(x2) {
         return Pos(x2.line, x2.ch);
       }
-      function maxPos(a, b) {
-        return cmp(a, b) < 0 ? b : a;
+      function maxPos(a2, b) {
+        return cmp(a2, b) < 0 ? b : a2;
       }
-      function minPos(a, b) {
-        return cmp(a, b) < 0 ? a : b;
+      function minPos(a2, b) {
+        return cmp(a2, b) < 0 ? a2 : b;
       }
       function clipLine(doc2, n2) {
         return Math.max(doc2.first, Math.min(n2, doc2.first + doc2.size - 1));
@@ -1153,8 +1153,8 @@ function requireCodemirror() {
       }
       function clipPosArray(doc2, array) {
         var out = [];
-        for (var i2 = 0; i2 < array.length; i2++) {
-          out[i2] = clipPos(doc2, array[i2]);
+        for (var i3 = 0; i3 < array.length; i3++) {
+          out[i3] = clipPos(doc2, array[i3]);
         }
         return out;
       }
@@ -1208,43 +1208,43 @@ function requireCodemirror() {
         return this.maxLookAhead > 0 ? new SavedContext(state, this.maxLookAhead) : state;
       };
       function highlightLine(cm, line, context, forceToEnd) {
-        var st2 = [cm.state.modeGen], lineClasses = {};
+        var st = [cm.state.modeGen], lineClasses = {};
         runMode(
           cm,
           line.text,
           cm.doc.mode,
           context,
           function(end, style) {
-            return st2.push(end, style);
+            return st.push(end, style);
           },
           lineClasses,
           forceToEnd
         );
         var state = context.state;
-        var loop = function(o2) {
-          context.baseTokens = st2;
-          var overlay = cm.state.overlays[o2], i2 = 1, at = 0;
+        var loop = function(o3) {
+          context.baseTokens = st;
+          var overlay = cm.state.overlays[o3], i3 = 1, at = 0;
           context.state = true;
           runMode(cm, line.text, overlay.mode, context, function(end, style) {
-            var start = i2;
+            var start = i3;
             while (at < end) {
-              var i_end = st2[i2];
+              var i_end = st[i3];
               if (i_end > end) {
-                st2.splice(i2, 1, end, st2[i2 + 1], i_end);
+                st.splice(i3, 1, end, st[i3 + 1], i_end);
               }
-              i2 += 2;
+              i3 += 2;
               at = Math.min(end, i_end);
             }
             if (!style) {
               return;
             }
             if (overlay.opaque) {
-              st2.splice(start, i2 - start, end, "overlay " + style);
-              i2 = start + 2;
+              st.splice(start, i3 - start, end, "overlay " + style);
+              i3 = start + 2;
             } else {
-              for (; start < i2; start += 2) {
-                var cur = st2[start + 1];
-                st2[start + 1] = (cur ? cur + " " : "") + "overlay " + style;
+              for (; start < i3; start += 2) {
+                var cur = st[start + 1];
+                st[start + 1] = (cur ? cur + " " : "") + "overlay " + style;
               }
             }
           }, lineClasses);
@@ -1252,8 +1252,8 @@ function requireCodemirror() {
           context.baseTokens = null;
           context.baseTokenPos = 1;
         };
-        for (var o = 0; o < cm.state.overlays.length; ++o) loop(o);
-        return { styles: st2, classes: lineClasses.bgClass || lineClasses.textClass ? lineClasses : null };
+        for (var o2 = 0; o2 < cm.state.overlays.length; ++o2) loop(o2);
+        return { styles: st, classes: lineClasses.bgClass || lineClasses.textClass ? lineClasses : null };
       }
       function getLineStyles(cm, line, updateFrontier) {
         if (!line.styles || line.styles[0] != cm.state.modeGen) {
@@ -1320,7 +1320,7 @@ function requireCodemirror() {
         }
       }
       function readToken(mode, stream, state, inner) {
-        for (var i2 = 0; i2 < 10; i2++) {
+        for (var i3 = 0; i3 < 10; i3++) {
           if (inner) {
             inner[0] = innerMode(mode, state).mode;
           }
@@ -1464,8 +1464,8 @@ function requireCodemirror() {
       }
       function getMarkedSpanFor(spans, marker) {
         if (spans) {
-          for (var i2 = 0; i2 < spans.length; ++i2) {
-            var span = spans[i2];
+          for (var i3 = 0; i3 < spans.length; ++i3) {
+            var span = spans[i3];
             if (span.marker == marker) {
               return span;
             }
@@ -1473,13 +1473,13 @@ function requireCodemirror() {
         }
       }
       function removeMarkedSpan(spans, span) {
-        var r;
-        for (var i2 = 0; i2 < spans.length; ++i2) {
-          if (spans[i2] != span) {
-            (r || (r = [])).push(spans[i2]);
+        var r2;
+        for (var i3 = 0; i3 < spans.length; ++i3) {
+          if (spans[i3] != span) {
+            (r2 || (r2 = [])).push(spans[i3]);
           }
         }
-        return r;
+        return r2;
       }
       function addMarkedSpan(line, span, op) {
         var inThisOp = op && window.WeakSet && (op.markedSpans || (op.markedSpans = /* @__PURE__ */ new WeakSet()));
@@ -1496,8 +1496,8 @@ function requireCodemirror() {
       function markedSpansBefore(old, startCh, isInsert) {
         var nw;
         if (old) {
-          for (var i2 = 0; i2 < old.length; ++i2) {
-            var span = old[i2], marker = span.marker;
+          for (var i3 = 0; i3 < old.length; ++i3) {
+            var span = old[i3], marker = span.marker;
             var startsBefore = span.from == null || (marker.inclusiveLeft ? span.from <= startCh : span.from < startCh);
             if (startsBefore || span.from == startCh && marker.type == "bookmark" && (!isInsert || !span.marker.insertLeft)) {
               var endsAfter = span.to == null || (marker.inclusiveRight ? span.to >= startCh : span.to > startCh);
@@ -1510,8 +1510,8 @@ function requireCodemirror() {
       function markedSpansAfter(old, endCh, isInsert) {
         var nw;
         if (old) {
-          for (var i2 = 0; i2 < old.length; ++i2) {
-            var span = old[i2], marker = span.marker;
+          for (var i3 = 0; i3 < old.length; ++i3) {
+            var span = old[i3], marker = span.marker;
             var endsAfter = span.to == null || (marker.inclusiveRight ? span.to >= endCh : span.to > endCh);
             if (endsAfter || span.from == endCh && marker.type == "bookmark" && (!isInsert || span.marker.insertLeft)) {
               var startsBefore = span.from == null || (marker.inclusiveLeft ? span.from <= endCh : span.from < endCh);
@@ -1539,8 +1539,8 @@ function requireCodemirror() {
         var last = markedSpansAfter(oldLast, endCh, isInsert);
         var sameLine = change.text.length == 1, offset = lst(change.text).length + (sameLine ? startCh : 0);
         if (first) {
-          for (var i2 = 0; i2 < first.length; ++i2) {
-            var span = first[i2];
+          for (var i3 = 0; i3 < first.length; ++i3) {
+            var span = first[i3];
             if (span.to == null) {
               var found = getMarkedSpanFor(last, span.marker);
               if (!found) {
@@ -1597,10 +1597,10 @@ function requireCodemirror() {
         return newMarkers;
       }
       function clearEmptySpans(spans) {
-        for (var i2 = 0; i2 < spans.length; ++i2) {
-          var span = spans[i2];
+        for (var i3 = 0; i3 < spans.length; ++i3) {
+          var span = spans[i3];
           if (span.from != null && span.from == span.to && span.marker.clearWhenEmpty !== false) {
-            spans.splice(i2--, 1);
+            spans.splice(i3--, 1);
           }
         }
         if (!spans.length) {
@@ -1612,8 +1612,8 @@ function requireCodemirror() {
         var markers = null;
         doc2.iter(from.line, to.line + 1, function(line) {
           if (line.markedSpans) {
-            for (var i3 = 0; i3 < line.markedSpans.length; ++i3) {
-              var mark = line.markedSpans[i3].marker;
+            for (var i4 = 0; i4 < line.markedSpans.length; ++i4) {
+              var mark = line.markedSpans[i4].marker;
               if (mark.readOnly && (!markers || indexOf(markers, mark) == -1)) {
                 (markers || (markers = [])).push(mark);
               }
@@ -1624,19 +1624,19 @@ function requireCodemirror() {
           return null;
         }
         var parts = [{ from, to }];
-        for (var i2 = 0; i2 < markers.length; ++i2) {
-          var mk = markers[i2], m2 = mk.find(0);
+        for (var i3 = 0; i3 < markers.length; ++i3) {
+          var mk = markers[i3], m2 = mk.find(0);
           for (var j2 = 0; j2 < parts.length; ++j2) {
-            var p = parts[j2];
-            if (cmp(p.to, m2.from) < 0 || cmp(p.from, m2.to) > 0) {
+            var p2 = parts[j2];
+            if (cmp(p2.to, m2.from) < 0 || cmp(p2.from, m2.to) > 0) {
               continue;
             }
-            var newParts = [j2, 1], dfrom = cmp(p.from, m2.from), dto = cmp(p.to, m2.to);
+            var newParts = [j2, 1], dfrom = cmp(p2.from, m2.from), dto = cmp(p2.to, m2.to);
             if (dfrom < 0 || !mk.inclusiveLeft && !dfrom) {
-              newParts.push({ from: p.from, to: m2.from });
+              newParts.push({ from: p2.from, to: m2.from });
             }
             if (dto > 0 || !mk.inclusiveRight && !dto) {
-              newParts.push({ from: m2.to, to: p.to });
+              newParts.push({ from: m2.to, to: p2.to });
             }
             parts.splice.apply(parts, newParts);
             j2 += newParts.length - 3;
@@ -1649,8 +1649,8 @@ function requireCodemirror() {
         if (!spans) {
           return;
         }
-        for (var i2 = 0; i2 < spans.length; ++i2) {
-          spans[i2].marker.detachLine(line);
+        for (var i3 = 0; i3 < spans.length; ++i3) {
+          spans[i3].marker.detachLine(line);
         }
         line.markedSpans = null;
       }
@@ -1658,8 +1658,8 @@ function requireCodemirror() {
         if (!spans) {
           return;
         }
-        for (var i2 = 0; i2 < spans.length; ++i2) {
-          spans[i2].marker.attachLine(line);
+        for (var i3 = 0; i3 < spans.length; ++i3) {
+          spans[i3].marker.attachLine(line);
         }
         line.markedSpans = spans;
       }
@@ -1669,27 +1669,27 @@ function requireCodemirror() {
       function extraRight(marker) {
         return marker.inclusiveRight ? 1 : 0;
       }
-      function compareCollapsedMarkers(a, b) {
-        var lenDiff = a.lines.length - b.lines.length;
+      function compareCollapsedMarkers(a2, b) {
+        var lenDiff = a2.lines.length - b.lines.length;
         if (lenDiff != 0) {
           return lenDiff;
         }
-        var aPos = a.find(), bPos = b.find();
-        var fromCmp = cmp(aPos.from, bPos.from) || extraLeft(a) - extraLeft(b);
+        var aPos = a2.find(), bPos = b.find();
+        var fromCmp = cmp(aPos.from, bPos.from) || extraLeft(a2) - extraLeft(b);
         if (fromCmp) {
           return -fromCmp;
         }
-        var toCmp = cmp(aPos.to, bPos.to) || extraRight(a) - extraRight(b);
+        var toCmp = cmp(aPos.to, bPos.to) || extraRight(a2) - extraRight(b);
         if (toCmp) {
           return toCmp;
         }
-        return b.id - a.id;
+        return b.id - a2.id;
       }
       function collapsedSpanAtSide(line, start) {
         var sps = sawCollapsedSpans && line.markedSpans, found;
         if (sps) {
-          for (var sp = void 0, i2 = 0; i2 < sps.length; ++i2) {
-            sp = sps[i2];
+          for (var sp = void 0, i3 = 0; i3 < sps.length; ++i3) {
+            sp = sps[i3];
             if (sp.marker.collapsed && (start ? sp.from : sp.to) == null && (!found || compareCollapsedMarkers(found, sp.marker) < 0)) {
               found = sp.marker;
             }
@@ -1706,8 +1706,8 @@ function requireCodemirror() {
       function collapsedSpanAround(line, ch) {
         var sps = sawCollapsedSpans && line.markedSpans, found;
         if (sps) {
-          for (var i2 = 0; i2 < sps.length; ++i2) {
-            var sp = sps[i2];
+          for (var i3 = 0; i3 < sps.length; ++i3) {
+            var sp = sps[i3];
             if (sp.marker.collapsed && (sp.from == null || sp.from < ch) && (sp.to == null || sp.to > ch) && (!found || compareCollapsedMarkers(found, sp.marker) < 0)) {
               found = sp.marker;
             }
@@ -1719,8 +1719,8 @@ function requireCodemirror() {
         var line = getLine(doc2, lineNo2);
         var sps = sawCollapsedSpans && line.markedSpans;
         if (sps) {
-          for (var i2 = 0; i2 < sps.length; ++i2) {
-            var sp = sps[i2];
+          for (var i3 = 0; i3 < sps.length; ++i3) {
+            var sp = sps[i3];
             if (!sp.marker.collapsed) {
               continue;
             }
@@ -1781,8 +1781,8 @@ function requireCodemirror() {
       function lineIsHidden(doc2, line) {
         var sps = sawCollapsedSpans && line.markedSpans;
         if (sps) {
-          for (var sp = void 0, i2 = 0; i2 < sps.length; ++i2) {
-            sp = sps[i2];
+          for (var sp = void 0, i3 = 0; i3 < sps.length; ++i3) {
+            sp = sps[i3];
             if (!sp.marker.collapsed) {
               continue;
             }
@@ -1806,8 +1806,8 @@ function requireCodemirror() {
         if (span.marker.inclusiveRight && span.to == line.text.length) {
           return true;
         }
-        for (var sp = void 0, i2 = 0; i2 < line.markedSpans.length; ++i2) {
-          sp = line.markedSpans[i2];
+        for (var sp = void 0, i3 = 0; i3 < line.markedSpans.length; ++i3) {
+          sp = line.markedSpans[i3];
           if (sp.marker.collapsed && !sp.marker.widgetNode && sp.from == span.to && (sp.to == null || sp.to != span.from) && (sp.marker.inclusiveLeft || span.marker.inclusiveRight) && lineIsHiddenInner(doc2, line, sp)) {
             return true;
           }
@@ -1816,17 +1816,17 @@ function requireCodemirror() {
       function heightAtLine(lineObj) {
         lineObj = visualLine(lineObj);
         var h2 = 0, chunk = lineObj.parent;
-        for (var i2 = 0; i2 < chunk.lines.length; ++i2) {
-          var line = chunk.lines[i2];
+        for (var i3 = 0; i3 < chunk.lines.length; ++i3) {
+          var line = chunk.lines[i3];
           if (line == lineObj) {
             break;
           } else {
             h2 += line.height;
           }
         }
-        for (var p = chunk.parent; p; chunk = p, p = chunk.parent) {
-          for (var i$12 = 0; i$12 < p.children.length; ++i$12) {
-            var cur = p.children[i$12];
+        for (var p2 = chunk.parent; p2; chunk = p2, p2 = chunk.parent) {
+          for (var i$12 = 0; i$12 < p2.children.length; ++i$12) {
+            var cur = p2.children[i$12];
             if (cur == chunk) {
               break;
             } else {
@@ -1856,15 +1856,15 @@ function requireCodemirror() {
         return len;
       }
       function findMaxLine(cm) {
-        var d = cm.display, doc2 = cm.doc;
-        d.maxLine = getLine(doc2, doc2.first);
-        d.maxLineLength = lineLength(d.maxLine);
-        d.maxLineChanged = true;
+        var d2 = cm.display, doc2 = cm.doc;
+        d2.maxLine = getLine(doc2, doc2.first);
+        d2.maxLineLength = lineLength(d2.maxLine);
+        d2.maxLineChanged = true;
         doc2.iter(function(line) {
           var len = lineLength(line);
-          if (len > d.maxLineLength) {
-            d.maxLineLength = len;
-            d.maxLine = line;
+          if (len > d2.maxLineLength) {
+            d2.maxLineLength = len;
+            d2.maxLine = line;
           }
         });
       }
@@ -1919,8 +1919,8 @@ function requireCodemirror() {
           splitSpaces: cm.getOption("lineWrapping")
         };
         lineView.measure = {};
-        for (var i2 = 0; i2 <= (lineView.rest ? lineView.rest.length : 0); i2++) {
-          var line = i2 ? lineView.rest[i2 - 1] : lineView.line, order = void 0;
+        for (var i3 = 0; i3 <= (lineView.rest ? lineView.rest.length : 0); i3++) {
+          var line = i3 ? lineView.rest[i3 - 1] : lineView.line, order = void 0;
           builder.pos = 0;
           builder.addToken = buildToken;
           if (hasBadBidiRects(cm.display.measure) && (order = getOrder(line, cm.doc.direction))) {
@@ -1940,7 +1940,7 @@ function requireCodemirror() {
           if (builder.map.length == 0) {
             builder.map.push(0, 0, builder.content.appendChild(zeroWidthElement(cm.display.measure)));
           }
-          if (i2 == 0) {
+          if (i3 == 0) {
             lineView.measure.map = builder.map;
             lineView.measure.cache = {};
           } else {
@@ -2054,9 +2054,9 @@ function requireCodemirror() {
           return text;
         }
         var spaceBefore = trailingBefore, result = "";
-        for (var i2 = 0; i2 < text.length; i2++) {
-          var ch = text.charAt(i2);
-          if (ch == " " && spaceBefore && (i2 == text.length - 1 || text.charCodeAt(i2 + 1) == 32)) {
+        for (var i3 = 0; i3 < text.length; i3++) {
+          var ch = text.charAt(i3);
+          if (ch == " " && spaceBefore && (i3 == text.length - 1 || text.charCodeAt(i3 + 1) == 32)) {
             ch = " ";
           }
           result += ch;
@@ -2070,8 +2070,8 @@ function requireCodemirror() {
           var start = builder.pos, end = start + text.length;
           for (; ; ) {
             var part = void 0;
-            for (var i2 = 0; i2 < order.length; i2++) {
-              part = order[i2];
+            for (var i3 = 0; i3 < order.length; i3++) {
+              part = order[i3];
               if (part.to > start && part.from <= start) {
                 break;
               }
@@ -2112,7 +2112,7 @@ function requireCodemirror() {
           }
           return;
         }
-        var len = allText.length, pos = 0, i2 = 1, text = "", style, css;
+        var len = allText.length, pos = 0, i3 = 1, text = "", style, css;
         var nextChange = 0, spanStyle, spanEndStyle, spanStartStyle, collapsed, attributes;
         for (; ; ) {
           if (nextChange == pos) {
@@ -2211,8 +2211,8 @@ function requireCodemirror() {
               pos = end;
               spanStartStyle = "";
             }
-            text = allText.slice(at, at = styles[i2++]);
-            style = interpretTokenStyle(styles[i2++], builder.cm.options);
+            text = allText.slice(at, at = styles[i3++]);
+            style = interpretTokenStyle(styles[i3++], builder.cm.options);
           }
         }
       }
@@ -2244,10 +2244,10 @@ function requireCodemirror() {
         }
       }
       function fireCallbacksForOps(group) {
-        var callbacks = group.delayedCallbacks, i2 = 0;
+        var callbacks = group.delayedCallbacks, i3 = 0;
         do {
-          for (; i2 < callbacks.length; i2++) {
-            callbacks[i2].call(null);
+          for (; i3 < callbacks.length; i3++) {
+            callbacks[i3].call(null);
           }
           for (var j2 = 0; j2 < group.ops.length; j2++) {
             var op = group.ops[j2];
@@ -2257,7 +2257,7 @@ function requireCodemirror() {
               }
             }
           }
-        } while (i2 < callbacks.length);
+        } while (i3 < callbacks.length);
       }
       function finishOperation(op, endCb) {
         var group = op.ownsGroup;
@@ -2286,19 +2286,19 @@ function requireCodemirror() {
           list = orphanDelayedCallbacks = [];
           setTimeout(fireOrphanDelayed, 0);
         }
-        var loop = function(i3) {
+        var loop = function(i4) {
           list.push(function() {
-            return arr[i3].apply(null, args);
+            return arr[i4].apply(null, args);
           });
         };
-        for (var i2 = 0; i2 < arr.length; ++i2)
-          loop(i2);
+        for (var i3 = 0; i3 < arr.length; ++i3)
+          loop(i3);
       }
       function fireOrphanDelayed() {
         var delayed = orphanDelayedCallbacks;
         orphanDelayedCallbacks = null;
-        for (var i2 = 0; i2 < delayed.length; ++i2) {
-          delayed[i2]();
+        for (var i3 = 0; i3 < delayed.length; ++i3) {
+          delayed[i3]();
         }
       }
       function updateLineForChanges(cm, lineView, lineN, dims) {
@@ -2467,8 +2467,8 @@ function requireCodemirror() {
       function insertLineWidgets(cm, lineView, dims) {
         insertLineWidgetsFor(cm, lineView.line, lineView, dims, true);
         if (lineView.rest) {
-          for (var i2 = 0; i2 < lineView.rest.length; i2++) {
-            insertLineWidgetsFor(cm, lineView.rest[i2], lineView, dims, false);
+          for (var i3 = 0; i3 < lineView.rest.length; i3++) {
+            insertLineWidgetsFor(cm, lineView.rest[i3], lineView, dims, false);
           }
         }
       }
@@ -2477,8 +2477,8 @@ function requireCodemirror() {
           return;
         }
         var wrap = ensureLineWrapped(lineView);
-        for (var i2 = 0, ws = line.widgets; i2 < ws.length; ++i2) {
-          var widget = ws[i2], node = elt("div", [widget.node], "CodeMirror-linewidget" + (widget.className ? " " + widget.className : ""));
+        for (var i3 = 0, ws = line.widgets; i3 < ws.length; ++i3) {
+          var widget = ws[i3], node = elt("div", [widget.node], "CodeMirror-linewidget" + (widget.className ? " " + widget.className : ""));
           if (!widget.handleMouseEvents) {
             node.setAttribute("cm-ignore-events", "true");
           }
@@ -2531,8 +2531,8 @@ function requireCodemirror() {
         }
         return widget.height = widget.node.parentNode.offsetHeight;
       }
-      function eventInWidget(display, e) {
-        for (var n2 = e_target(e); n2 != display.wrapper; n2 = n2.parentNode) {
+      function eventInWidget(display, e2) {
+        for (var n2 = e_target(e2); n2 != display.wrapper; n2 = n2.parentNode) {
           if (!n2 || n2.nodeType == 1 && n2.getAttribute("cm-ignore-events") == "true" || n2.parentNode == display.sizer && n2 != display.mover) {
             return true;
           }
@@ -2548,8 +2548,8 @@ function requireCodemirror() {
         if (display.cachedPaddingH) {
           return display.cachedPaddingH;
         }
-        var e = removeChildrenAndAdd(display.measure, elt("pre", "x", "CodeMirror-line-like"));
-        var style = window.getComputedStyle ? window.getComputedStyle(e) : e.currentStyle;
+        var e2 = removeChildrenAndAdd(display.measure, elt("pre", "x", "CodeMirror-line-like"));
+        var style = window.getComputedStyle ? window.getComputedStyle(e2) : e2.currentStyle;
         var data = { left: parseInt(style.paddingLeft), right: parseInt(style.paddingRight) };
         if (!isNaN(data.left) && !isNaN(data.right)) {
           display.cachedPaddingH = data;
@@ -2573,8 +2573,8 @@ function requireCodemirror() {
           if (wrapping) {
             lineView.measure.width = curWidth;
             var rects = lineView.text.firstChild.getClientRects();
-            for (var i2 = 0; i2 < rects.length - 1; i2++) {
-              var cur = rects[i2], next = rects[i2 + 1];
+            for (var i3 = 0; i3 < rects.length - 1; i3++) {
+              var cur = rects[i3], next = rects[i3 + 1];
               if (Math.abs(cur.bottom - next.bottom) > 2) {
                 heights.push((cur.bottom + next.top) / 2 - rect.top);
               }
@@ -2588,9 +2588,9 @@ function requireCodemirror() {
           return { map: lineView.measure.map, cache: lineView.measure.cache };
         }
         if (lineView.rest) {
-          for (var i2 = 0; i2 < lineView.rest.length; i2++) {
-            if (lineView.rest[i2] == line) {
-              return { map: lineView.measure.maps[i2], cache: lineView.measure.caches[i2] };
+          for (var i3 = 0; i3 < lineView.rest.length; i3++) {
+            if (lineView.rest[i3] == line) {
+              return { map: lineView.measure.maps[i3], cache: lineView.measure.caches[i3] };
             }
           }
           for (var i$12 = 0; i$12 < lineView.rest.length; i$12++) {
@@ -2675,9 +2675,9 @@ function requireCodemirror() {
       var nullRect = { left: 0, right: 0, top: 0, bottom: 0 };
       function nodeAndOffsetInLineMap(map2, ch, bias) {
         var node, start, end, collapse, mStart, mEnd;
-        for (var i2 = 0; i2 < map2.length; i2 += 3) {
-          mStart = map2[i2];
-          mEnd = map2[i2 + 1];
+        for (var i3 = 0; i3 < map2.length; i3 += 3) {
+          mStart = map2[i3];
+          mEnd = map2[i3 + 1];
           if (ch < mStart) {
             start = 0;
             end = 1;
@@ -2685,7 +2685,7 @@ function requireCodemirror() {
           } else if (ch < mEnd) {
             start = ch - mStart;
             end = start + 1;
-          } else if (i2 == map2.length - 3 || ch == mEnd && map2[i2 + 3] > ch) {
+          } else if (i3 == map2.length - 3 || ch == mEnd && map2[i3 + 3] > ch) {
             end = mEnd - mStart;
             start = end - 1;
             if (ch >= mEnd) {
@@ -2693,19 +2693,19 @@ function requireCodemirror() {
             }
           }
           if (start != null) {
-            node = map2[i2 + 2];
+            node = map2[i3 + 2];
             if (mStart == mEnd && bias == (node.insertLeft ? "left" : "right")) {
               collapse = bias;
             }
             if (bias == "left" && start == 0) {
-              while (i2 && map2[i2 - 2] == map2[i2 - 3] && map2[i2 - 1].insertLeft) {
-                node = map2[(i2 -= 3) + 2];
+              while (i3 && map2[i3 - 2] == map2[i3 - 3] && map2[i3 - 1].insertLeft) {
+                node = map2[(i3 -= 3) + 2];
                 collapse = "left";
               }
             }
             if (bias == "right" && start == mEnd - mStart) {
-              while (i2 < map2.length - 3 && map2[i2 + 3] == map2[i2 + 4] && !map2[i2 + 5].insertLeft) {
-                node = map2[(i2 += 3) + 2];
+              while (i3 < map2.length - 3 && map2[i3 + 3] == map2[i3 + 4] && !map2[i3 + 5].insertLeft) {
+                node = map2[(i3 += 3) + 2];
                 collapse = "right";
               }
             }
@@ -2717,8 +2717,8 @@ function requireCodemirror() {
       function getUsefulRect(rects, bias) {
         var rect = nullRect;
         if (bias == "left") {
-          for (var i2 = 0; i2 < rects.length; i2++) {
-            if ((rect = rects[i2]).left != rect.right) {
+          for (var i3 = 0; i3 < rects.length; i3++) {
+            if ((rect = rects[i3]).left != rect.right) {
               break;
             }
           }
@@ -2780,13 +2780,13 @@ function requireCodemirror() {
         var rtop = rect.top - prepared.rect.top, rbot = rect.bottom - prepared.rect.top;
         var mid = (rtop + rbot) / 2;
         var heights = prepared.view.measure.heights;
-        var i2 = 0;
-        for (; i2 < heights.length - 1; i2++) {
-          if (mid < heights[i2]) {
+        var i3 = 0;
+        for (; i3 < heights.length - 1; i3++) {
+          if (mid < heights[i3]) {
             break;
           }
         }
-        var top = i2 ? heights[i2 - 1] : 0, bot = heights[i2];
+        var top = i3 ? heights[i3 - 1] : 0, bot = heights[i3];
         var result = {
           left: (collapse == "right" ? rect.right : rect.left) - prepared.rect.left,
           right: (collapse == "left" ? rect.left : rect.right) - prepared.rect.left,
@@ -2820,8 +2820,8 @@ function requireCodemirror() {
           lineView.measure.cache = {};
           lineView.measure.heights = null;
           if (lineView.rest) {
-            for (var i2 = 0; i2 < lineView.rest.length; i2++) {
-              lineView.measure.caches[i2] = {};
+            for (var i3 = 0; i3 < lineView.rest.length; i3++) {
+              lineView.measure.caches[i3] = {};
             }
           }
         }
@@ -2829,8 +2829,8 @@ function requireCodemirror() {
       function clearLineMeasurementCache(cm) {
         cm.display.externalMeasure = null;
         removeChildren(cm.display.lineMeasure);
-        for (var i2 = 0; i2 < cm.display.view.length; i2++) {
-          clearLineMeasurementCacheFor(cm.display.view[i2]);
+        for (var i3 = 0; i3 < cm.display.view.length; i3++) {
+          clearLineMeasurementCacheFor(cm.display.view[i3]);
         }
       }
       function clearCaches(cm) {
@@ -2858,9 +2858,9 @@ function requireCodemirror() {
         var widgets = ref.widgets;
         var height = 0;
         if (widgets) {
-          for (var i2 = 0; i2 < widgets.length; ++i2) {
-            if (widgets[i2].above) {
-              height += widgetHeight(widgets[i2]);
+          for (var i3 = 0; i3 < widgets.length; ++i3) {
+            if (widgets[i3].above) {
+              height += widgetHeight(widgets[i3]);
             }
           }
         }
@@ -2972,13 +2972,13 @@ function requireCodemirror() {
         }
         return pos;
       }
-      function coordsChar(cm, x2, y) {
+      function coordsChar(cm, x2, y2) {
         var doc2 = cm.doc;
-        y += cm.display.viewOffset;
-        if (y < 0) {
+        y2 += cm.display.viewOffset;
+        if (y2 < 0) {
           return PosWithInfo(doc2.first, 0, null, -1, -1);
         }
-        var lineN = lineAtHeight(doc2, y), last = doc2.first + doc2.size - 1;
+        var lineN = lineAtHeight(doc2, y2), last = doc2.first + doc2.size - 1;
         if (lineN > last) {
           return PosWithInfo(doc2.first + doc2.size - 1, getLine(doc2, last).text.length, null, 1, 1);
         }
@@ -2987,7 +2987,7 @@ function requireCodemirror() {
         }
         var lineObj = getLine(doc2, lineN);
         for (; ; ) {
-          var found = coordsCharInner(cm, lineObj, lineN, x2, y);
+          var found = coordsCharInner(cm, lineObj, lineN, x2, y2);
           var collapsed = collapsedSpanAround(lineObj, found.ch + (found.xRel > 0 || found.outside > 0 ? 1 : 0));
           if (!collapsed) {
             return found;
@@ -2999,14 +2999,14 @@ function requireCodemirror() {
           lineObj = getLine(doc2, lineN = rangeEnd.line);
         }
       }
-      function wrappedLineExtent(cm, lineObj, preparedMeasure, y) {
-        y -= widgetTopHeight(lineObj);
+      function wrappedLineExtent(cm, lineObj, preparedMeasure, y2) {
+        y2 -= widgetTopHeight(lineObj);
         var end = lineObj.text.length;
         var begin = findFirst(function(ch) {
-          return measureCharPrepared(cm, preparedMeasure, ch - 1).bottom <= y;
+          return measureCharPrepared(cm, preparedMeasure, ch - 1).bottom <= y2;
         }, end, 0);
         end = findFirst(function(ch) {
-          return measureCharPrepared(cm, preparedMeasure, ch).top > y;
+          return measureCharPrepared(cm, preparedMeasure, ch).top > y2;
         }, begin, end);
         return { begin, end };
       }
@@ -3017,17 +3017,17 @@ function requireCodemirror() {
         var targetTop = intoCoordSystem(cm, lineObj, measureCharPrepared(cm, preparedMeasure, target), "line").top;
         return wrappedLineExtent(cm, lineObj, preparedMeasure, targetTop);
       }
-      function boxIsAfter(box, x2, y, left) {
-        return box.bottom <= y ? false : box.top > y ? true : (left ? box.left : box.right) > x2;
+      function boxIsAfter(box, x2, y2, left) {
+        return box.bottom <= y2 ? false : box.top > y2 ? true : (left ? box.left : box.right) > x2;
       }
-      function coordsCharInner(cm, lineObj, lineNo2, x2, y) {
-        y -= heightAtLine(lineObj);
+      function coordsCharInner(cm, lineObj, lineNo2, x2, y2) {
+        y2 -= heightAtLine(lineObj);
         var preparedMeasure = prepareMeasureForLine(cm, lineObj);
         var widgetHeight2 = widgetTopHeight(lineObj);
         var begin = 0, end = lineObj.text.length, ltr = true;
         var order = getOrder(lineObj, cm.doc.direction);
         if (order) {
-          var part = (cm.options.lineWrapping ? coordsBidiPartWrapped : coordsBidiPart)(cm, lineObj, lineNo2, preparedMeasure, order, x2, y);
+          var part = (cm.options.lineWrapping ? coordsBidiPartWrapped : coordsBidiPart)(cm, lineObj, lineNo2, preparedMeasure, order, x2, y2);
           ltr = part.level != 1;
           begin = ltr ? part.from : part.to - 1;
           end = ltr ? part.to : part.from - 1;
@@ -3037,10 +3037,10 @@ function requireCodemirror() {
           var box = measureCharPrepared(cm, preparedMeasure, ch2);
           box.top += widgetHeight2;
           box.bottom += widgetHeight2;
-          if (!boxIsAfter(box, x2, y, false)) {
+          if (!boxIsAfter(box, x2, y2, false)) {
             return false;
           }
-          if (box.top <= y && box.left <= x2) {
+          if (box.top <= y2 && box.left <= x2) {
             chAround = ch2;
             boxAround = box;
           }
@@ -3056,24 +3056,24 @@ function requireCodemirror() {
           if (!ltr && (ch == end || ch == begin)) {
             ch++;
           }
-          sticky = ch == 0 ? "after" : ch == lineObj.text.length ? "before" : measureCharPrepared(cm, preparedMeasure, ch - (ltr ? 1 : 0)).bottom + widgetHeight2 <= y == ltr ? "after" : "before";
+          sticky = ch == 0 ? "after" : ch == lineObj.text.length ? "before" : measureCharPrepared(cm, preparedMeasure, ch - (ltr ? 1 : 0)).bottom + widgetHeight2 <= y2 == ltr ? "after" : "before";
           var coords = cursorCoords(cm, Pos(lineNo2, ch, sticky), "line", lineObj, preparedMeasure);
           baseX = coords.left;
-          outside = y < coords.top ? -1 : y >= coords.bottom ? 1 : 0;
+          outside = y2 < coords.top ? -1 : y2 >= coords.bottom ? 1 : 0;
         }
         ch = skipExtendingChars(lineObj.text, ch, 1);
         return PosWithInfo(lineNo2, ch, sticky, outside, x2 - baseX);
       }
-      function coordsBidiPart(cm, lineObj, lineNo2, preparedMeasure, order, x2, y) {
-        var index = findFirst(function(i2) {
-          var part2 = order[i2], ltr2 = part2.level != 1;
+      function coordsBidiPart(cm, lineObj, lineNo2, preparedMeasure, order, x2, y2) {
+        var index = findFirst(function(i3) {
+          var part2 = order[i3], ltr2 = part2.level != 1;
           return boxIsAfter(cursorCoords(
             cm,
             Pos(lineNo2, ltr2 ? part2.to : part2.from, ltr2 ? "before" : "after"),
             "line",
             lineObj,
             preparedMeasure
-          ), x2, y, true);
+          ), x2, y2, true);
         }, 0, order.length - 1);
         var part = order[index];
         if (index > 0) {
@@ -3085,30 +3085,30 @@ function requireCodemirror() {
             lineObj,
             preparedMeasure
           );
-          if (boxIsAfter(start, x2, y, true) && start.top > y) {
+          if (boxIsAfter(start, x2, y2, true) && start.top > y2) {
             part = order[index - 1];
           }
         }
         return part;
       }
-      function coordsBidiPartWrapped(cm, lineObj, _lineNo, preparedMeasure, order, x2, y) {
-        var ref = wrappedLineExtent(cm, lineObj, preparedMeasure, y);
+      function coordsBidiPartWrapped(cm, lineObj, _lineNo, preparedMeasure, order, x2, y2) {
+        var ref = wrappedLineExtent(cm, lineObj, preparedMeasure, y2);
         var begin = ref.begin;
         var end = ref.end;
         if (/\s/.test(lineObj.text.charAt(end - 1))) {
           end--;
         }
         var part = null, closestDist = null;
-        for (var i2 = 0; i2 < order.length; i2++) {
-          var p = order[i2];
-          if (p.from >= end || p.to <= begin) {
+        for (var i3 = 0; i3 < order.length; i3++) {
+          var p2 = order[i3];
+          if (p2.from >= end || p2.to <= begin) {
             continue;
           }
-          var ltr = p.level != 1;
-          var endX = measureCharPrepared(cm, preparedMeasure, ltr ? Math.min(end, p.to) - 1 : Math.max(begin, p.from)).right;
+          var ltr = p2.level != 1;
+          var endX = measureCharPrepared(cm, preparedMeasure, ltr ? Math.min(end, p2.to) - 1 : Math.max(begin, p2.from)).right;
           var dist = endX < x2 ? x2 - endX + 1e9 : endX - x2;
           if (!part || closestDist > dist) {
-            part = p;
+            part = p2;
             closestDist = dist;
           }
         }
@@ -3130,7 +3130,7 @@ function requireCodemirror() {
         }
         if (measureText == null) {
           measureText = elt("pre", null, "CodeMirror-line-like");
-          for (var i2 = 0; i2 < 49; ++i2) {
+          for (var i3 = 0; i3 < 49; ++i3) {
             measureText.appendChild(document.createTextNode("x"));
             measureText.appendChild(elt("br"));
           }
@@ -3158,19 +3158,19 @@ function requireCodemirror() {
         return width || 10;
       }
       function getDimensions(cm) {
-        var d = cm.display, left = {}, width = {};
-        var gutterLeft = d.gutters.clientLeft;
-        for (var n2 = d.gutters.firstChild, i2 = 0; n2; n2 = n2.nextSibling, ++i2) {
-          var id = cm.display.gutterSpecs[i2].className;
+        var d2 = cm.display, left = {}, width = {};
+        var gutterLeft = d2.gutters.clientLeft;
+        for (var n2 = d2.gutters.firstChild, i3 = 0; n2; n2 = n2.nextSibling, ++i3) {
+          var id = cm.display.gutterSpecs[i3].className;
           left[id] = n2.offsetLeft + n2.clientLeft + gutterLeft;
           width[id] = n2.clientWidth;
         }
         return {
-          fixedPos: compensateForHScroll(d),
-          gutterTotalWidth: d.gutters.offsetWidth,
+          fixedPos: compensateForHScroll(d2),
+          gutterTotalWidth: d2.gutters.offsetWidth,
           gutterLeft: left,
           gutterWidth: width,
-          wrapperWidth: d.wrapper.clientWidth
+          wrapperWidth: d2.wrapper.clientWidth
         };
       }
       function compensateForHScroll(display) {
@@ -3185,9 +3185,9 @@ function requireCodemirror() {
           }
           var widgetsHeight = 0;
           if (line.widgets) {
-            for (var i2 = 0; i2 < line.widgets.length; i2++) {
-              if (line.widgets[i2].height) {
-                widgetsHeight += line.widgets[i2].height;
+            for (var i3 = 0; i3 < line.widgets.length; i3++) {
+              if (line.widgets[i3].height) {
+                widgetsHeight += line.widgets[i3].height;
               }
             }
           }
@@ -3207,19 +3207,19 @@ function requireCodemirror() {
           }
         });
       }
-      function posFromMouse(cm, e, liberal, forRect) {
+      function posFromMouse(cm, e2, liberal, forRect) {
         var display = cm.display;
-        if (!liberal && e_target(e).getAttribute("cm-not-content") == "true") {
+        if (!liberal && e_target(e2).getAttribute("cm-not-content") == "true") {
           return null;
         }
-        var x2, y, space = display.lineSpace.getBoundingClientRect();
+        var x2, y2, space = display.lineSpace.getBoundingClientRect();
         try {
-          x2 = e.clientX - space.left;
-          y = e.clientY - space.top;
+          x2 = e2.clientX - space.left;
+          y2 = e2.clientY - space.top;
         } catch (e$1) {
           return null;
         }
-        var coords = coordsChar(cm, x2, y), line;
+        var coords = coordsChar(cm, x2, y2), line;
         if (forRect && coords.xRel > 0 && (line = getLine(cm.doc, coords.line).text).length == coords.ch) {
           var colDiff = countColumn(line, line.length, cm.options.tabSize) - line.length;
           coords = Pos(coords.line, Math.max(0, Math.round((x2 - paddingH(cm.display).left) / charWidth(cm.display)) - colDiff));
@@ -3235,10 +3235,10 @@ function requireCodemirror() {
           return null;
         }
         var view = cm.display.view;
-        for (var i2 = 0; i2 < view.length; i2++) {
-          n2 -= view[i2].size;
+        for (var i3 = 0; i3 < view.length; i3++) {
+          n2 -= view[i3].size;
           if (n2 < 0) {
-            return i2;
+            return i3;
           }
         }
       }
@@ -3335,8 +3335,8 @@ function requireCodemirror() {
           return { index, lineN: newN };
         }
         var n2 = cm.display.viewFrom;
-        for (var i2 = 0; i2 < index; i2++) {
-          n2 += view[i2].size;
+        for (var i3 = 0; i3 < index; i3++) {
+          n2 += view[i3].size;
         }
         if (n2 != oldN) {
           if (dir > 0) {
@@ -3382,8 +3382,8 @@ function requireCodemirror() {
       }
       function countDirtyView(cm) {
         var view = cm.display.view, dirty = 0;
-        for (var i2 = 0; i2 < view.length; i2++) {
-          var lineView = view[i2];
+        for (var i3 = 0; i3 < view.length; i3++) {
+          var lineView = view[i3];
           if (!lineView.hidden && (!lineView.node || lineView.changes)) {
             ++dirty;
           }
@@ -3402,11 +3402,11 @@ function requireCodemirror() {
         if (customCursor) {
           primary = true;
         }
-        for (var i2 = 0; i2 < doc2.sel.ranges.length; i2++) {
-          if (!primary && i2 == doc2.sel.primIndex) {
+        for (var i3 = 0; i3 < doc2.sel.ranges.length; i3++) {
+          if (!primary && i3 == doc2.sel.primIndex) {
             continue;
           }
-          var range2 = doc2.sel.ranges[i2];
+          var range2 = doc2.sel.ranges[i3];
           if (range2.from().line >= cm.display.viewTo || range2.to().line < cm.display.viewFrom) {
             continue;
           }
@@ -3444,8 +3444,8 @@ function requireCodemirror() {
           otherCursor.style.height = (pos.other.bottom - pos.other.top) * 0.85 + "px";
         }
       }
-      function cmpCoords(a, b) {
-        return a.top - b.top || a.left - b.left;
+      function cmpCoords(a2, b) {
+        return a2.top - b.top || a2.left - b.left;
       }
       function drawSelectionRange(cm, range2, output) {
         var display = cm.display, doc2 = cm.doc;
@@ -3475,12 +3475,12 @@ function requireCodemirror() {
             return coords(ch, prop2)[prop2];
           }
           var order = getOrder(lineObj, doc2.direction);
-          iterateBidiSections(order, fromArg || 0, toArg == null ? lineLen : toArg, function(from, to, dir, i2) {
+          iterateBidiSections(order, fromArg || 0, toArg == null ? lineLen : toArg, function(from, to, dir, i3) {
             var ltr = dir == "ltr";
             var fromPos = coords(from, ltr ? "left" : "right");
             var toPos = coords(to - 1, ltr ? "right" : "left");
             var openStart = fromArg == null && from == 0, openEnd = toArg == null && to == lineLen;
-            var first = i2 == 0, last = !order || i2 == order.length - 1;
+            var first = i3 == 0, last = !order || i3 == order.length - 1;
             if (toPos.top - fromPos.top <= 3) {
               var openLeft = (docLTR ? openStart : openEnd) && first;
               var openRight = (docLTR ? openEnd : openStart) && last;
@@ -3581,7 +3581,7 @@ function requireCodemirror() {
           }
         }, 100);
       }
-      function onFocus(cm, e) {
+      function onFocus(cm, e2) {
         if (cm.state.delayingBlurEvent && !cm.state.draggingText) {
           cm.state.delayingBlurEvent = false;
         }
@@ -3589,7 +3589,7 @@ function requireCodemirror() {
           return;
         }
         if (!cm.state.focused) {
-          signal(cm, "focus", cm, e);
+          signal(cm, "focus", cm, e2);
           cm.state.focused = true;
           addClass(cm.display.wrapper, "CodeMirror-focused");
           if (!cm.curOp && cm.display.selForContextMenu != cm.doc.sel) {
@@ -3604,12 +3604,12 @@ function requireCodemirror() {
         }
         restartBlink(cm);
       }
-      function onBlur(cm, e) {
+      function onBlur(cm, e2) {
         if (cm.state.delayingBlurEvent) {
           return;
         }
         if (cm.state.focused) {
-          signal(cm, "blur", cm, e);
+          signal(cm, "blur", cm, e2);
           cm.state.focused = false;
           rmClass(cm.display.wrapper, "CodeMirror-focused");
         }
@@ -3626,8 +3626,8 @@ function requireCodemirror() {
         var viewTop = Math.max(0, display.scroller.getBoundingClientRect().top);
         var oldHeight = display.lineDiv.getBoundingClientRect().top;
         var mustScroll = 0;
-        for (var i2 = 0; i2 < display.view.length; i2++) {
-          var cur = display.view[i2], wrapping = cm.options.lineWrapping;
+        for (var i3 = 0; i3 < display.view.length; i3++) {
+          var cur = display.view[i3], wrapping = cm.options.lineWrapping;
           var height = void 0, width = 0;
           if (cur.hidden) {
             continue;
@@ -3672,10 +3672,10 @@ function requireCodemirror() {
       }
       function updateWidgetHeight(line) {
         if (line.widgets) {
-          for (var i2 = 0; i2 < line.widgets.length; ++i2) {
-            var w2 = line.widgets[i2], parent = w2.node.parentNode;
+          for (var i3 = 0; i3 < line.widgets.length; ++i3) {
+            var w = line.widgets[i3], parent = w.node.parentNode;
             if (parent) {
-              w2.height = parent.offsetHeight;
+              w.height = parent.offsetHeight;
             }
           }
         }
@@ -3811,15 +3811,15 @@ function requireCodemirror() {
         var cur = cm.getCursor();
         cm.curOp.scrollToPos = { from: cur, to: cur, margin: cm.options.cursorScrollMargin };
       }
-      function scrollToCoords(cm, x2, y) {
-        if (x2 != null || y != null) {
+      function scrollToCoords(cm, x2, y2) {
+        if (x2 != null || y2 != null) {
           resolveScrollToPos(cm);
         }
         if (x2 != null) {
           cm.curOp.scrollLeft = x2;
         }
-        if (y != null) {
-          cm.curOp.scrollTop = y;
+        if (y2 != null) {
+          cm.curOp.scrollTop = y2;
         }
       }
       function scrollToRange(cm, range2) {
@@ -3880,18 +3880,18 @@ function requireCodemirror() {
         cm.display.scrollbars.setScrollLeft(val);
       }
       function measureForScrollbars(cm) {
-        var d = cm.display, gutterW = d.gutters.offsetWidth;
+        var d2 = cm.display, gutterW = d2.gutters.offsetWidth;
         var docH = Math.round(cm.doc.height + paddingVert(cm.display));
         return {
-          clientHeight: d.scroller.clientHeight,
-          viewHeight: d.wrapper.clientHeight,
-          scrollWidth: d.scroller.scrollWidth,
-          clientWidth: d.scroller.clientWidth,
-          viewWidth: d.wrapper.clientWidth,
+          clientHeight: d2.scroller.clientHeight,
+          viewHeight: d2.wrapper.clientHeight,
+          scrollWidth: d2.scroller.scrollWidth,
+          clientWidth: d2.scroller.clientWidth,
+          viewWidth: d2.wrapper.clientWidth,
           barLeft: cm.options.fixedGutter ? gutterW : 0,
           docHeight: docH,
-          scrollHeight: docH + scrollGap(cm) + d.barHeight,
-          nativeBarWidth: d.nativeBarWidth,
+          scrollHeight: docH + scrollGap(cm) + d2.barHeight,
+          nativeBarWidth: d2.nativeBarWidth,
           gutterWidth: gutterW
         };
       }
@@ -3966,8 +3966,8 @@ function requireCodemirror() {
         }
       };
       NativeScrollbars.prototype.zeroWidthHack = function() {
-        var w2 = mac && !mac_geMountainLion ? "12px" : "18px";
-        this.horiz.style.height = this.vert.style.width = w2;
+        var w = mac && !mac_geMountainLion ? "12px" : "18px";
+        this.horiz.style.height = this.vert.style.width = w;
         this.horiz.style.visibility = this.vert.style.visibility = "hidden";
         this.disableHoriz = new Delayed();
         this.disableVert = new Delayed();
@@ -4007,7 +4007,7 @@ function requireCodemirror() {
         }
         var startWidth = cm.display.barWidth, startHeight = cm.display.barHeight;
         updateScrollbarsInner(cm, measure);
-        for (var i2 = 0; i2 < 4 && startWidth != cm.display.barWidth || startHeight != cm.display.barHeight; i2++) {
+        for (var i3 = 0; i3 < 4 && startWidth != cm.display.barWidth || startHeight != cm.display.barHeight; i3++) {
           if (startWidth != cm.display.barWidth && cm.options.lineWrapping) {
             updateHeightsInViewport(cm);
           }
@@ -4017,24 +4017,24 @@ function requireCodemirror() {
         }
       }
       function updateScrollbarsInner(cm, measure) {
-        var d = cm.display;
-        var sizes = d.scrollbars.update(measure);
-        d.sizer.style.paddingRight = (d.barWidth = sizes.right) + "px";
-        d.sizer.style.paddingBottom = (d.barHeight = sizes.bottom) + "px";
-        d.heightForcer.style.borderBottom = sizes.bottom + "px solid transparent";
+        var d2 = cm.display;
+        var sizes = d2.scrollbars.update(measure);
+        d2.sizer.style.paddingRight = (d2.barWidth = sizes.right) + "px";
+        d2.sizer.style.paddingBottom = (d2.barHeight = sizes.bottom) + "px";
+        d2.heightForcer.style.borderBottom = sizes.bottom + "px solid transparent";
         if (sizes.right && sizes.bottom) {
-          d.scrollbarFiller.style.display = "block";
-          d.scrollbarFiller.style.height = sizes.bottom + "px";
-          d.scrollbarFiller.style.width = sizes.right + "px";
+          d2.scrollbarFiller.style.display = "block";
+          d2.scrollbarFiller.style.height = sizes.bottom + "px";
+          d2.scrollbarFiller.style.width = sizes.right + "px";
         } else {
-          d.scrollbarFiller.style.display = "";
+          d2.scrollbarFiller.style.display = "";
         }
         if (sizes.bottom && cm.options.coverGutterNextToScrollbar && cm.options.fixedGutter) {
-          d.gutterFiller.style.display = "block";
-          d.gutterFiller.style.height = sizes.bottom + "px";
-          d.gutterFiller.style.width = measure.gutterWidth + "px";
+          d2.gutterFiller.style.display = "block";
+          d2.gutterFiller.style.height = sizes.bottom + "px";
+          d2.gutterFiller.style.width = measure.gutterWidth + "px";
         } else {
-          d.gutterFiller.style.display = "";
+          d2.gutterFiller.style.display = "";
         }
       }
       var scrollbarModel = { "native": NativeScrollbars, "null": NullScrollbars };
@@ -4107,8 +4107,8 @@ function requireCodemirror() {
         var op = cm.curOp;
         if (op) {
           finishOperation(op, function(group) {
-            for (var i2 = 0; i2 < group.ops.length; i2++) {
-              group.ops[i2].cm.curOp = null;
+            for (var i3 = 0; i3 < group.ops.length; i3++) {
+              group.ops[i3].cm.curOp = null;
             }
             endOperations(group);
           });
@@ -4116,8 +4116,8 @@ function requireCodemirror() {
       }
       function endOperations(group) {
         var ops = group.ops;
-        for (var i2 = 0; i2 < ops.length; i2++) {
-          endOperation_R1(ops[i2]);
+        for (var i3 = 0; i3 < ops.length; i3++) {
+          endOperation_R1(ops[i3]);
         }
         for (var i$12 = 0; i$12 < ops.length; i$12++) {
           endOperation_W1(ops[i$12]);
@@ -4214,9 +4214,9 @@ function requireCodemirror() {
         }
         var hidden = op.maybeHiddenMarkers, unhidden = op.maybeUnhiddenMarkers;
         if (hidden) {
-          for (var i2 = 0; i2 < hidden.length; ++i2) {
-            if (!hidden[i2].lines.length) {
-              signal(hidden[i2], "hide");
+          for (var i3 = 0; i3 < hidden.length; ++i3) {
+            if (!hidden[i3].lines.length) {
+              signal(hidden[i3], "hide");
             }
           }
         }
@@ -4317,8 +4317,8 @@ function requireCodemirror() {
               line.styleClasses = null;
             }
             var ischange = !oldStyles || oldStyles.length != line.styles.length || oldCls != newCls && (!oldCls || !newCls || oldCls.bgClass != newCls.bgClass || oldCls.textClass != newCls.textClass);
-            for (var i2 = 0; !ischange && i2 < oldStyles.length; ++i2) {
-              ischange = oldStyles[i2] != line.styles[i2];
+            for (var i3 = 0; !ischange && i3 < oldStyles.length; ++i3) {
+              ischange = oldStyles[i3] != line.styles[i3];
             }
             if (ischange) {
               changedLines.push(context.line);
@@ -4341,8 +4341,8 @@ function requireCodemirror() {
         doc2.modeFrontier = Math.max(doc2.modeFrontier, context.line);
         if (changedLines.length) {
           runInOp(cm, function() {
-            for (var i2 = 0; i2 < changedLines.length; i2++) {
-              regLineChange(cm, changedLines[i2], "text");
+            for (var i3 = 0; i3 < changedLines.length; i3++) {
+              regLineChange(cm, changedLines[i3], "text");
             }
           });
         }
@@ -4365,8 +4365,8 @@ function requireCodemirror() {
         }
       };
       DisplayUpdate.prototype.finish = function() {
-        for (var i2 = 0; i2 < this.events.length; i2++) {
-          signal.apply(null, this.events[i2]);
+        for (var i3 = 0; i3 < this.events.length; i3++) {
+          signal.apply(null, this.events[i3]);
         }
       };
       function maybeClipScrollbars(cm) {
@@ -4525,8 +4525,8 @@ function requireCodemirror() {
           return next;
         }
         var view = display.view, lineN = display.viewFrom;
-        for (var i2 = 0; i2 < view.length; i2++) {
-          var lineView = view[i2];
+        for (var i3 = 0; i3 < view.length; i3++) {
+          var lineView = view[i3];
           if (lineView.hidden) ;
           else if (!lineView.node || lineView.node.parentNode != container) {
             var node = buildLineElement(cm, lineView, lineN, dims);
@@ -4571,17 +4571,17 @@ function requireCodemirror() {
         }
         var comp = compensateForHScroll(display) - display.scroller.scrollLeft + cm.doc.scrollLeft;
         var gutterW = display.gutters.offsetWidth, left = comp + "px";
-        for (var i2 = 0; i2 < view.length; i2++) {
-          if (!view[i2].hidden) {
+        for (var i3 = 0; i3 < view.length; i3++) {
+          if (!view[i3].hidden) {
             if (cm.options.fixedGutter) {
-              if (view[i2].gutter) {
-                view[i2].gutter.style.left = left;
+              if (view[i3].gutter) {
+                view[i3].gutter.style.left = left;
               }
-              if (view[i2].gutterBackground) {
-                view[i2].gutterBackground.style.left = left;
+              if (view[i3].gutterBackground) {
+                view[i3].gutterBackground.style.left = left;
               }
             }
-            var align = view[i2].alignable;
+            var align = view[i3].alignable;
             if (align) {
               for (var j2 = 0; j2 < align.length; j2++) {
                 align[j2].style.left = left;
@@ -4617,8 +4617,8 @@ function requireCodemirror() {
       }
       function getGutters(gutters, lineNumbers) {
         var result = [], sawLineNumbers = false;
-        for (var i2 = 0; i2 < gutters.length; i2++) {
-          var name = gutters[i2], style = null;
+        for (var i3 = 0; i3 < gutters.length; i3++) {
+          var name = gutters[i3], style = null;
           if (typeof name != "string") {
             style = name.style;
             name = name.className;
@@ -4641,8 +4641,8 @@ function requireCodemirror() {
         var gutters = display.gutters, specs = display.gutterSpecs;
         removeChildren(gutters);
         display.lineGutter = null;
-        for (var i2 = 0; i2 < specs.length; ++i2) {
-          var ref = specs[i2];
+        for (var i3 = 0; i3 < specs.length; ++i3) {
+          var ref = specs[i3];
           var className = ref.className;
           var style = ref.style;
           var gElt = gutters.appendChild(elt("div", null, "CodeMirror-gutter " + className));
@@ -4663,74 +4663,74 @@ function requireCodemirror() {
         alignHorizontally(cm);
       }
       function Display(place, doc2, input, options) {
-        var d = this;
+        var d2 = this;
         this.input = input;
-        d.scrollbarFiller = elt("div", null, "CodeMirror-scrollbar-filler");
-        d.scrollbarFiller.setAttribute("cm-not-content", "true");
-        d.gutterFiller = elt("div", null, "CodeMirror-gutter-filler");
-        d.gutterFiller.setAttribute("cm-not-content", "true");
-        d.lineDiv = eltP("div", null, "CodeMirror-code");
-        d.selectionDiv = elt("div", null, null, "position: relative; z-index: 1");
-        d.cursorDiv = elt("div", null, "CodeMirror-cursors");
-        d.measure = elt("div", null, "CodeMirror-measure");
-        d.lineMeasure = elt("div", null, "CodeMirror-measure");
-        d.lineSpace = eltP(
+        d2.scrollbarFiller = elt("div", null, "CodeMirror-scrollbar-filler");
+        d2.scrollbarFiller.setAttribute("cm-not-content", "true");
+        d2.gutterFiller = elt("div", null, "CodeMirror-gutter-filler");
+        d2.gutterFiller.setAttribute("cm-not-content", "true");
+        d2.lineDiv = eltP("div", null, "CodeMirror-code");
+        d2.selectionDiv = elt("div", null, null, "position: relative; z-index: 1");
+        d2.cursorDiv = elt("div", null, "CodeMirror-cursors");
+        d2.measure = elt("div", null, "CodeMirror-measure");
+        d2.lineMeasure = elt("div", null, "CodeMirror-measure");
+        d2.lineSpace = eltP(
           "div",
-          [d.measure, d.lineMeasure, d.selectionDiv, d.cursorDiv, d.lineDiv],
+          [d2.measure, d2.lineMeasure, d2.selectionDiv, d2.cursorDiv, d2.lineDiv],
           null,
           "position: relative; outline: none"
         );
-        var lines = eltP("div", [d.lineSpace], "CodeMirror-lines");
-        d.mover = elt("div", [lines], null, "position: relative");
-        d.sizer = elt("div", [d.mover], "CodeMirror-sizer");
-        d.sizerWidth = null;
-        d.heightForcer = elt("div", null, null, "position: absolute; height: " + scrollerGap + "px; width: 1px;");
-        d.gutters = elt("div", null, "CodeMirror-gutters");
-        d.lineGutter = null;
-        d.scroller = elt("div", [d.sizer, d.heightForcer, d.gutters], "CodeMirror-scroll");
-        d.scroller.setAttribute("tabIndex", "-1");
-        d.wrapper = elt("div", [d.scrollbarFiller, d.gutterFiller, d.scroller], "CodeMirror");
+        var lines = eltP("div", [d2.lineSpace], "CodeMirror-lines");
+        d2.mover = elt("div", [lines], null, "position: relative");
+        d2.sizer = elt("div", [d2.mover], "CodeMirror-sizer");
+        d2.sizerWidth = null;
+        d2.heightForcer = elt("div", null, null, "position: absolute; height: " + scrollerGap + "px; width: 1px;");
+        d2.gutters = elt("div", null, "CodeMirror-gutters");
+        d2.lineGutter = null;
+        d2.scroller = elt("div", [d2.sizer, d2.heightForcer, d2.gutters], "CodeMirror-scroll");
+        d2.scroller.setAttribute("tabIndex", "-1");
+        d2.wrapper = elt("div", [d2.scrollbarFiller, d2.gutterFiller, d2.scroller], "CodeMirror");
         if (chrome && chrome_version >= 105) {
-          d.wrapper.style.clipPath = "inset(0px)";
+          d2.wrapper.style.clipPath = "inset(0px)";
         }
-        d.wrapper.setAttribute("translate", "no");
+        d2.wrapper.setAttribute("translate", "no");
         if (ie && ie_version < 8) {
-          d.gutters.style.zIndex = -1;
-          d.scroller.style.paddingRight = 0;
+          d2.gutters.style.zIndex = -1;
+          d2.scroller.style.paddingRight = 0;
         }
         if (!webkit && !(gecko && mobile)) {
-          d.scroller.draggable = true;
+          d2.scroller.draggable = true;
         }
         if (place) {
           if (place.appendChild) {
-            place.appendChild(d.wrapper);
+            place.appendChild(d2.wrapper);
           } else {
-            place(d.wrapper);
+            place(d2.wrapper);
           }
         }
-        d.viewFrom = d.viewTo = doc2.first;
-        d.reportedViewFrom = d.reportedViewTo = doc2.first;
-        d.view = [];
-        d.renderedView = null;
-        d.externalMeasured = null;
-        d.viewOffset = 0;
-        d.lastWrapHeight = d.lastWrapWidth = 0;
-        d.updateLineNumbers = null;
-        d.nativeBarWidth = d.barHeight = d.barWidth = 0;
-        d.scrollbarsClipped = false;
-        d.lineNumWidth = d.lineNumInnerWidth = d.lineNumChars = null;
-        d.alignWidgets = false;
-        d.cachedCharWidth = d.cachedTextHeight = d.cachedPaddingH = null;
-        d.maxLine = null;
-        d.maxLineLength = 0;
-        d.maxLineChanged = false;
-        d.wheelDX = d.wheelDY = d.wheelStartX = d.wheelStartY = null;
-        d.shift = false;
-        d.selForContextMenu = null;
-        d.activeTouch = null;
-        d.gutterSpecs = getGutters(options.gutters, options.lineNumbers);
-        renderGutters(d);
-        input.init(d);
+        d2.viewFrom = d2.viewTo = doc2.first;
+        d2.reportedViewFrom = d2.reportedViewTo = doc2.first;
+        d2.view = [];
+        d2.renderedView = null;
+        d2.externalMeasured = null;
+        d2.viewOffset = 0;
+        d2.lastWrapHeight = d2.lastWrapWidth = 0;
+        d2.updateLineNumbers = null;
+        d2.nativeBarWidth = d2.barHeight = d2.barWidth = 0;
+        d2.scrollbarsClipped = false;
+        d2.lineNumWidth = d2.lineNumInnerWidth = d2.lineNumChars = null;
+        d2.alignWidgets = false;
+        d2.cachedCharWidth = d2.cachedTextHeight = d2.cachedPaddingH = null;
+        d2.maxLine = null;
+        d2.maxLineLength = 0;
+        d2.maxLineChanged = false;
+        d2.wheelDX = d2.wheelDY = d2.wheelStartX = d2.wheelStartY = null;
+        d2.shift = false;
+        d2.selForContextMenu = null;
+        d2.activeTouch = null;
+        d2.gutterSpecs = getGutters(options.gutters, options.lineNumbers);
+        renderGutters(d2);
+        input.init(d2);
       }
       var wheelSamples = 0, wheelPixelsPerUnit = null;
       if (ie) {
@@ -4742,25 +4742,25 @@ function requireCodemirror() {
       } else if (safari) {
         wheelPixelsPerUnit = -1 / 3;
       }
-      function wheelEventDelta(e) {
-        var dx = e.wheelDeltaX, dy = e.wheelDeltaY;
-        if (dx == null && e.detail && e.axis == e.HORIZONTAL_AXIS) {
-          dx = e.detail;
+      function wheelEventDelta(e2) {
+        var dx = e2.wheelDeltaX, dy = e2.wheelDeltaY;
+        if (dx == null && e2.detail && e2.axis == e2.HORIZONTAL_AXIS) {
+          dx = e2.detail;
         }
-        if (dy == null && e.detail && e.axis == e.VERTICAL_AXIS) {
-          dy = e.detail;
+        if (dy == null && e2.detail && e2.axis == e2.VERTICAL_AXIS) {
+          dy = e2.detail;
         } else if (dy == null) {
-          dy = e.wheelDelta;
+          dy = e2.wheelDelta;
         }
         return { x: dx, y: dy };
       }
-      function wheelEventPixels(e) {
-        var delta = wheelEventDelta(e);
+      function wheelEventPixels(e2) {
+        var delta = wheelEventDelta(e2);
         delta.x *= wheelPixelsPerUnit;
         delta.y *= wheelPixelsPerUnit;
         return delta;
       }
-      function onScrollWheel(cm, e) {
+      function onScrollWheel(cm, e2) {
         if (chrome && chrome_version == 102) {
           if (cm.display.chromeScrollHack == null) {
             cm.display.sizer.style.pointerEvents = "none";
@@ -4772,11 +4772,11 @@ function requireCodemirror() {
             cm.display.sizer.style.pointerEvents = "";
           }, 100);
         }
-        var delta = wheelEventDelta(e), dx = delta.x, dy = delta.y;
+        var delta = wheelEventDelta(e2), dx = delta.x, dy = delta.y;
         var pixelsPerUnit = wheelPixelsPerUnit;
-        if (e.deltaMode === 0) {
-          dx = e.deltaX;
-          dy = e.deltaY;
+        if (e2.deltaMode === 0) {
+          dx = e2.deltaX;
+          dy = e2.deltaY;
           pixelsPerUnit = 1;
         }
         var display = cm.display, scroll = display.scroller;
@@ -4786,9 +4786,9 @@ function requireCodemirror() {
           return;
         }
         if (dy && mac && webkit) {
-          outer: for (var cur = e.target, view = display.view; cur != scroll; cur = cur.parentNode) {
-            for (var i2 = 0; i2 < view.length; i2++) {
-              if (view[i2].node == cur) {
+          outer: for (var cur = e2.target, view = display.view; cur != scroll; cur = cur.parentNode) {
+            for (var i3 = 0; i3 < view.length; i3++) {
+              if (view[i3].node == cur) {
                 cm.display.currentWheelTarget = cur;
                 break outer;
               }
@@ -4801,7 +4801,7 @@ function requireCodemirror() {
           }
           setScrollLeft(cm, Math.max(0, scroll.scrollLeft + dx * pixelsPerUnit));
           if (!dy || dy && canScrollY) {
-            e_preventDefault(e);
+            e_preventDefault(e2);
           }
           display.wheelStartX = null;
           return;
@@ -4816,7 +4816,7 @@ function requireCodemirror() {
           }
           updateDisplaySimple(cm, { top, bottom: bot });
         }
-        if (wheelSamples < 20 && e.deltaMode !== 0) {
+        if (wheelSamples < 20 && e2.deltaMode !== 0) {
           if (display.wheelStartX == null) {
             display.wheelStartX = scroll.scrollLeft;
             display.wheelStartY = scroll.scrollTop;
@@ -4856,8 +4856,8 @@ function requireCodemirror() {
         if (other.primIndex != this.primIndex || other.ranges.length != this.ranges.length) {
           return false;
         }
-        for (var i2 = 0; i2 < this.ranges.length; i2++) {
-          var here = this.ranges[i2], there = other.ranges[i2];
+        for (var i3 = 0; i3 < this.ranges.length; i3++) {
+          var here = this.ranges[i3], there = other.ranges[i3];
           if (!equalCursorPos(here.anchor, there.anchor) || !equalCursorPos(here.head, there.head)) {
             return false;
           }
@@ -4866,14 +4866,14 @@ function requireCodemirror() {
       };
       Selection.prototype.deepCopy = function() {
         var out = [];
-        for (var i2 = 0; i2 < this.ranges.length; i2++) {
-          out[i2] = new Range(copyPos(this.ranges[i2].anchor), copyPos(this.ranges[i2].head));
+        for (var i3 = 0; i3 < this.ranges.length; i3++) {
+          out[i3] = new Range(copyPos(this.ranges[i3].anchor), copyPos(this.ranges[i3].head));
         }
         return new Selection(out, this.primIndex);
       };
       Selection.prototype.somethingSelected = function() {
-        for (var i2 = 0; i2 < this.ranges.length; i2++) {
-          if (!this.ranges[i2].empty()) {
+        for (var i3 = 0; i3 < this.ranges.length; i3++) {
+          if (!this.ranges[i3].empty()) {
             return true;
           }
         }
@@ -4883,10 +4883,10 @@ function requireCodemirror() {
         if (!end) {
           end = pos;
         }
-        for (var i2 = 0; i2 < this.ranges.length; i2++) {
-          var range2 = this.ranges[i2];
+        for (var i3 = 0; i3 < this.ranges.length; i3++) {
+          var range2 = this.ranges[i3];
           if (cmp(end, range2.from()) >= 0 && cmp(pos, range2.to()) <= 0) {
-            return i2;
+            return i3;
           }
         }
         return -1;
@@ -4907,20 +4907,20 @@ function requireCodemirror() {
       function normalizeSelection(cm, ranges, primIndex) {
         var mayTouch = cm && cm.options.selectionsMayTouch;
         var prim = ranges[primIndex];
-        ranges.sort(function(a, b) {
-          return cmp(a.from(), b.from());
+        ranges.sort(function(a2, b) {
+          return cmp(a2.from(), b.from());
         });
         primIndex = indexOf(ranges, prim);
-        for (var i2 = 1; i2 < ranges.length; i2++) {
-          var cur = ranges[i2], prev = ranges[i2 - 1];
+        for (var i3 = 1; i3 < ranges.length; i3++) {
+          var cur = ranges[i3], prev = ranges[i3 - 1];
           var diff = cmp(prev.to(), cur.from());
           if (mayTouch && !cur.empty() ? diff > 0 : diff >= 0) {
             var from = minPos(prev.from(), cur.from()), to = maxPos(prev.to(), cur.to());
             var inv = prev.empty() ? cur.from() == cur.head : prev.from() == prev.head;
-            if (i2 <= primIndex) {
+            if (i3 <= primIndex) {
               --primIndex;
             }
-            ranges.splice(--i2, 2, new Range(inv ? to : from, inv ? from : to));
+            ranges.splice(--i3, 2, new Range(inv ? to : from, inv ? from : to));
           }
         }
         return new Selection(ranges, primIndex);
@@ -4952,8 +4952,8 @@ function requireCodemirror() {
       }
       function computeSelAfterChange(doc2, change) {
         var out = [];
-        for (var i2 = 0; i2 < doc2.sel.ranges.length; i2++) {
-          var range2 = doc2.sel.ranges[i2];
+        for (var i3 = 0; i3 < doc2.sel.ranges.length; i3++) {
+          var range2 = doc2.sel.ranges[i3];
           out.push(new Range(
             adjustForChange(range2.anchor, change),
             adjustForChange(range2.head, change)
@@ -4971,17 +4971,17 @@ function requireCodemirror() {
       function computeReplacedSel(doc2, changes, hint) {
         var out = [];
         var oldPrev = Pos(doc2.first, 0), newPrev = oldPrev;
-        for (var i2 = 0; i2 < changes.length; i2++) {
-          var change = changes[i2];
+        for (var i3 = 0; i3 < changes.length; i3++) {
+          var change = changes[i3];
           var from = offsetPos(change.from, oldPrev, newPrev);
           var to = offsetPos(changeEnd(change), oldPrev, newPrev);
           oldPrev = change.to;
           newPrev = to;
           if (hint == "around") {
-            var range2 = doc2.sel.ranges[i2], inv = cmp(range2.head, range2.anchor) < 0;
-            out[i2] = new Range(inv ? to : from, inv ? from : to);
+            var range2 = doc2.sel.ranges[i3], inv = cmp(range2.head, range2.anchor) < 0;
+            out[i3] = new Range(inv ? to : from, inv ? from : to);
           } else {
-            out[i2] = new Range(from, from);
+            out[i3] = new Range(from, from);
           }
         }
         return new Selection(out, doc2.sel.primIndex);
@@ -5019,8 +5019,8 @@ function requireCodemirror() {
         }
         function linesFor(start, end) {
           var result = [];
-          for (var i2 = start; i2 < end; ++i2) {
-            result.push(new Line(text[i2], spansFor(i2), estimateHeight2));
+          for (var i3 = start; i3 < end; ++i3) {
+            result.push(new Line(text[i3], spansFor(i3), estimateHeight2));
           }
           return result;
         }
@@ -5065,8 +5065,8 @@ function requireCodemirror() {
       function linkedDocs(doc2, f2, sharedHistOnly) {
         function propagate(doc3, skip, sharedHist) {
           if (doc3.linked) {
-            for (var i2 = 0; i2 < doc3.linked.length; ++i2) {
-              var rel = doc3.linked[i2];
+            for (var i3 = 0; i3 < doc3.linked.length; ++i3) {
+              var rel = doc3.linked[i3];
               if (rel.doc == skip) {
                 continue;
               }
@@ -5220,13 +5220,13 @@ function requireCodemirror() {
           return null;
         }
         var out;
-        for (var i2 = 0; i2 < spans.length; ++i2) {
-          if (spans[i2].marker.explicitlyCleared) {
+        for (var i3 = 0; i3 < spans.length; ++i3) {
+          if (spans[i3].marker.explicitlyCleared) {
             if (!out) {
-              out = spans.slice(0, i2);
+              out = spans.slice(0, i3);
             }
           } else if (out) {
-            out.push(spans[i2]);
+            out.push(spans[i3]);
           }
         }
         return !out ? spans : out.length ? out : null;
@@ -5237,8 +5237,8 @@ function requireCodemirror() {
           return null;
         }
         var nw = [];
-        for (var i2 = 0; i2 < change.text.length; ++i2) {
-          nw.push(removeClearedSpans(found[i2]));
+        for (var i3 = 0; i3 < change.text.length; ++i3) {
+          nw.push(removeClearedSpans(found[i3]));
         }
         return nw;
       }
@@ -5251,8 +5251,8 @@ function requireCodemirror() {
         if (!stretched) {
           return old;
         }
-        for (var i2 = 0; i2 < old.length; ++i2) {
-          var oldCur = old[i2], stretchCur = stretched[i2];
+        for (var i3 = 0; i3 < old.length; ++i3) {
+          var oldCur = old[i3], stretchCur = stretched[i3];
           if (oldCur && stretchCur) {
             spans: for (var j2 = 0; j2 < stretchCur.length; ++j2) {
               var span = stretchCur[j2];
@@ -5264,15 +5264,15 @@ function requireCodemirror() {
               oldCur.push(span);
             }
           } else if (stretchCur) {
-            old[i2] = stretchCur;
+            old[i3] = stretchCur;
           }
         }
         return old;
       }
       function copyHistoryArray(events, newGroup, instantiateSel) {
         var copy = [];
-        for (var i2 = 0; i2 < events.length; ++i2) {
-          var event = events[i2];
+        for (var i3 = 0; i3 < events.length; ++i3) {
+          var event = events[i3];
           if (event.ranges) {
             copy.push(instantiateSel ? Selection.prototype.deepCopy.call(event) : event);
             continue;
@@ -5322,15 +5322,15 @@ function requireCodemirror() {
       function extendSelections(doc2, heads, options) {
         var out = [];
         var extend = doc2.cm && (doc2.cm.display.shift || doc2.extend);
-        for (var i2 = 0; i2 < doc2.sel.ranges.length; i2++) {
-          out[i2] = extendRange(doc2.sel.ranges[i2], heads[i2], null, extend);
+        for (var i3 = 0; i3 < doc2.sel.ranges.length; i3++) {
+          out[i3] = extendRange(doc2.sel.ranges[i3], heads[i3], null, extend);
         }
         var newSel = normalizeSelection(doc2.cm, out, doc2.sel.primIndex);
         setSelection(doc2, newSel, options);
       }
-      function replaceOneSelection(doc2, i2, range2, options) {
+      function replaceOneSelection(doc2, i3, range2, options) {
         var ranges = doc2.sel.ranges.slice(0);
-        ranges[i2] = range2;
+        ranges[i3] = range2;
         setSelection(doc2, normalizeSelection(doc2.cm, ranges, doc2.sel.primIndex), options);
       }
       function setSimpleSelection(doc2, anchor, head, options) {
@@ -5341,10 +5341,10 @@ function requireCodemirror() {
           ranges: sel.ranges,
           update: function(ranges) {
             this.ranges = [];
-            for (var i2 = 0; i2 < ranges.length; i2++) {
-              this.ranges[i2] = new Range(
-                clipPos(doc2, ranges[i2].anchor),
-                clipPos(doc2, ranges[i2].head)
+            for (var i3 = 0; i3 < ranges.length; i3++) {
+              this.ranges[i3] = new Range(
+                clipPos(doc2, ranges[i3].anchor),
+                clipPos(doc2, ranges[i3].head)
               );
             }
           },
@@ -5400,16 +5400,16 @@ function requireCodemirror() {
       }
       function skipAtomicInSelection(doc2, sel, bias, mayClear) {
         var out;
-        for (var i2 = 0; i2 < sel.ranges.length; i2++) {
-          var range2 = sel.ranges[i2];
-          var old = sel.ranges.length == doc2.sel.ranges.length && doc2.sel.ranges[i2];
+        for (var i3 = 0; i3 < sel.ranges.length; i3++) {
+          var range2 = sel.ranges[i3];
+          var old = sel.ranges.length == doc2.sel.ranges.length && doc2.sel.ranges[i3];
           var newAnchor = skipAtomic(doc2, range2.anchor, old && old.anchor, bias, mayClear);
           var newHead = range2.head == range2.anchor ? newAnchor : skipAtomic(doc2, range2.head, old && old.head, bias, mayClear);
           if (out || newAnchor != range2.anchor || newHead != range2.head) {
             if (!out) {
-              out = sel.ranges.slice(0, i2);
+              out = sel.ranges.slice(0, i3);
             }
-            out[i2] = new Range(newAnchor, newHead);
+            out[i3] = new Range(newAnchor, newHead);
           }
         }
         return out ? normalizeSelection(doc2.cm, out, sel.primIndex) : sel;
@@ -5417,8 +5417,8 @@ function requireCodemirror() {
       function skipAtomicInner(doc2, pos, oldPos, dir, mayClear) {
         var line = getLine(doc2, pos.line);
         if (line.markedSpans) {
-          for (var i2 = 0; i2 < line.markedSpans.length; ++i2) {
-            var sp = line.markedSpans[i2], m2 = sp.marker;
+          for (var i3 = 0; i3 < line.markedSpans.length; ++i3) {
+            var sp = line.markedSpans[i3], m2 = sp.marker;
             var preventCursorLeft = "selectLeft" in m2 ? !m2.selectLeft : m2.inclusiveLeft;
             var preventCursorRight = "selectRight" in m2 ? !m2.selectRight : m2.inclusiveRight;
             if ((sp.from == null || (preventCursorLeft ? sp.from <= pos.ch : sp.from < pos.ch)) && (sp.to == null || (preventCursorRight ? sp.to >= pos.ch : sp.to > pos.ch))) {
@@ -5428,7 +5428,7 @@ function requireCodemirror() {
                   if (!line.markedSpans) {
                     break;
                   } else {
-                    --i2;
+                    --i3;
                     continue;
                   }
                 }
@@ -5540,8 +5540,8 @@ function requireCodemirror() {
         }
         var split = sawReadOnlySpans && !ignoreReadOnly && removeReadOnlyRanges(doc2, change.from, change.to);
         if (split) {
-          for (var i2 = split.length - 1; i2 >= 0; --i2) {
-            makeChangeInner(doc2, { from: split[i2].from, to: split[i2].to, text: i2 ? [""] : change.text, origin: change.origin });
+          for (var i3 = split.length - 1; i3 >= 0; --i3) {
+            makeChangeInner(doc2, { from: split[i3].from, to: split[i3].to, text: i3 ? [""] : change.text, origin: change.origin });
           }
         } else {
           makeChangeInner(doc2, change);
@@ -5570,14 +5570,14 @@ function requireCodemirror() {
         }
         var hist = doc2.history, event, selAfter = doc2.sel;
         var source = type == "undo" ? hist.done : hist.undone, dest = type == "undo" ? hist.undone : hist.done;
-        var i2 = 0;
-        for (; i2 < source.length; i2++) {
-          event = source[i2];
+        var i3 = 0;
+        for (; i3 < source.length; i3++) {
+          event = source[i3];
           if (allowSelectionOnly ? event.ranges && !event.equals(doc2.sel) : !event.ranges) {
             break;
           }
         }
-        if (i2 == source.length) {
+        if (i3 == source.length) {
           return;
         }
         hist.lastOrigin = hist.lastSelOrigin = null;
@@ -5602,17 +5602,17 @@ function requireCodemirror() {
         dest.push({ changes: antiChanges, generation: hist.generation });
         hist.generation = event.generation || ++hist.maxGeneration;
         var filter = hasHandler(doc2, "beforeChange") || doc2.cm && hasHandler(doc2.cm, "beforeChange");
-        var loop = function(i3) {
-          var change = event.changes[i3];
+        var loop = function(i4) {
+          var change = event.changes[i4];
           change.origin = type;
           if (filter && !filterChange(doc2, change, false)) {
             source.length = 0;
             return {};
           }
           antiChanges.push(historyChangeFromChange(doc2, change));
-          var after = i3 ? computeSelAfterChange(doc2, change) : lst(source);
+          var after = i4 ? computeSelAfterChange(doc2, change) : lst(source);
           makeChangeSingleDoc(doc2, change, after, mergeOldSpans(doc2, change));
-          if (!i3 && doc2.cm) {
+          if (!i4 && doc2.cm) {
             doc2.cm.scrollIntoView({ from: change.from, to: changeEnd(change) });
           }
           var rebased = [];
@@ -5642,8 +5642,8 @@ function requireCodemirror() {
         }), doc2.sel.primIndex);
         if (doc2.cm) {
           regChange(doc2.cm, doc2.first, doc2.first - distance, distance);
-          for (var d = doc2.cm.display, l = d.viewFrom; l < d.viewTo; l++) {
-            regLineChange(doc2.cm, l, "gutter");
+          for (var d2 = doc2.cm.display, l2 = d2.viewFrom; l2 < d2.viewTo; l2++) {
+            regLineChange(doc2.cm, l2, "gutter");
           }
         }
       }
@@ -5771,11 +5771,11 @@ function requireCodemirror() {
         }
       }
       function rebaseHistArray(array, from, to, diff) {
-        for (var i2 = 0; i2 < array.length; ++i2) {
-          var sub = array[i2], ok = true;
+        for (var i3 = 0; i3 < array.length; ++i3) {
+          var sub = array[i3], ok = true;
           if (sub.ranges) {
             if (!sub.copied) {
-              sub = array[i2] = sub.deepCopy();
+              sub = array[i3] = sub.deepCopy();
               sub.copied = true;
             }
             for (var j2 = 0; j2 < sub.ranges.length; j2++) {
@@ -5795,8 +5795,8 @@ function requireCodemirror() {
             }
           }
           if (!ok) {
-            array.splice(0, i2 + 1);
-            i2 = 0;
+            array.splice(0, i3 + 1);
+            i3 = 0;
           }
         }
       }
@@ -5824,9 +5824,9 @@ function requireCodemirror() {
         this.lines = lines;
         this.parent = null;
         var height = 0;
-        for (var i2 = 0; i2 < lines.length; ++i2) {
-          lines[i2].parent = this;
-          height += lines[i2].height;
+        for (var i3 = 0; i3 < lines.length; ++i3) {
+          lines[i3].parent = this;
+          height += lines[i3].height;
         }
         this.height = height;
       }
@@ -5836,8 +5836,8 @@ function requireCodemirror() {
         },
         // Remove the n lines at offset 'at'.
         removeInner: function(at, n2) {
-          for (var i2 = at, e = at + n2; i2 < e; ++i2) {
-            var line = this.lines[i2];
+          for (var i3 = at, e2 = at + n2; i3 < e2; ++i3) {
+            var line = this.lines[i3];
             this.height -= line.height;
             cleanUpLine(line);
             signalLater(line, "delete");
@@ -5853,13 +5853,13 @@ function requireCodemirror() {
         insertInner: function(at, lines, height) {
           this.height += height;
           this.lines = this.lines.slice(0, at).concat(lines).concat(this.lines.slice(at));
-          for (var i2 = 0; i2 < lines.length; ++i2) {
-            lines[i2].parent = this;
+          for (var i3 = 0; i3 < lines.length; ++i3) {
+            lines[i3].parent = this;
           }
         },
         // Used to iterate over a part of the tree.
         iterN: function(at, n2, op) {
-          for (var e = at + n2; at < e; ++at) {
+          for (var e2 = at + n2; at < e2; ++at) {
             if (op(this.lines[at])) {
               return true;
             }
@@ -5869,8 +5869,8 @@ function requireCodemirror() {
       function BranchChunk(children) {
         this.children = children;
         var size = 0, height = 0;
-        for (var i2 = 0; i2 < children.length; ++i2) {
-          var ch = children[i2];
+        for (var i3 = 0; i3 < children.length; ++i3) {
+          var ch = children[i3];
           size += ch.chunkSize();
           height += ch.height;
           ch.parent = this;
@@ -5885,14 +5885,14 @@ function requireCodemirror() {
         },
         removeInner: function(at, n2) {
           this.size -= n2;
-          for (var i2 = 0; i2 < this.children.length; ++i2) {
-            var child = this.children[i2], sz = child.chunkSize();
+          for (var i3 = 0; i3 < this.children.length; ++i3) {
+            var child = this.children[i3], sz = child.chunkSize();
             if (at < sz) {
               var rm = Math.min(n2, sz - at), oldHeight = child.height;
               child.removeInner(at, rm);
               this.height -= oldHeight - child.height;
               if (sz == rm) {
-                this.children.splice(i2--, 1);
+                this.children.splice(i3--, 1);
                 child.parent = null;
               }
               if ((n2 -= rm) == 0) {
@@ -5911,15 +5911,15 @@ function requireCodemirror() {
           }
         },
         collapse: function(lines) {
-          for (var i2 = 0; i2 < this.children.length; ++i2) {
-            this.children[i2].collapse(lines);
+          for (var i3 = 0; i3 < this.children.length; ++i3) {
+            this.children[i3].collapse(lines);
           }
         },
         insertInner: function(at, lines, height) {
           this.size += lines.length;
           this.height += height;
-          for (var i2 = 0; i2 < this.children.length; ++i2) {
-            var child = this.children[i2], sz = child.chunkSize();
+          for (var i3 = 0; i3 < this.children.length; ++i3) {
+            var child = this.children[i3], sz = child.chunkSize();
             if (at <= sz) {
               child.insertInner(at, lines, height);
               if (child.lines && child.lines.length > 50) {
@@ -5927,7 +5927,7 @@ function requireCodemirror() {
                 for (var pos = remaining; pos < child.lines.length; ) {
                   var leaf = new LeafChunk(child.lines.slice(pos, pos += 25));
                   child.height -= leaf.height;
-                  this.children.splice(++i2, 0, leaf);
+                  this.children.splice(++i3, 0, leaf);
                   leaf.parent = this;
                 }
                 child.lines = child.lines.slice(0, remaining);
@@ -5963,8 +5963,8 @@ function requireCodemirror() {
           me.parent.maybeSpill();
         },
         iterN: function(at, n2, op) {
-          for (var i2 = 0; i2 < this.children.length; ++i2) {
-            var child = this.children[i2], sz = child.chunkSize();
+          for (var i3 = 0; i3 < this.children.length; ++i3) {
+            var child = this.children[i3], sz = child.chunkSize();
             if (at < sz) {
               var used = Math.min(n2, sz - at);
               if (child.iterN(at, used, op)) {
@@ -5996,9 +5996,9 @@ function requireCodemirror() {
         if (no == null || !ws) {
           return;
         }
-        for (var i2 = 0; i2 < ws.length; ++i2) {
-          if (ws[i2] == this) {
-            ws.splice(i2--, 1);
+        for (var i3 = 0; i3 < ws.length; ++i3) {
+          if (ws[i3] == this) {
+            ws.splice(i3--, 1);
           }
         }
         if (!ws.length) {
@@ -6090,8 +6090,8 @@ function requireCodemirror() {
           }
         }
         var min = null, max = null;
-        for (var i2 = 0; i2 < this.lines.length; ++i2) {
-          var line = this.lines[i2];
+        for (var i3 = 0; i3 < this.lines.length; ++i3) {
+          var line = this.lines[i3];
           var span = getMarkedSpanFor(line.markedSpans, this);
           if (cm && !this.collapsed) {
             regLineChange(cm, lineNo(line), "text");
@@ -6144,8 +6144,8 @@ function requireCodemirror() {
           side = 1;
         }
         var from, to;
-        for (var i2 = 0; i2 < this.lines.length; ++i2) {
-          var line = this.lines[i2];
+        for (var i3 = 0; i3 < this.lines.length; ++i3) {
+          var line = this.lines[i3];
           var span = getMarkedSpanFor(line.markedSpans, this);
           if (span.from != null) {
             from = Pos(lineObj ? line : lineNo(line), span.from);
@@ -6281,8 +6281,8 @@ function requireCodemirror() {
           if (marker.collapsed) {
             regChange(cm, from.line, to.line + 1);
           } else if (marker.className || marker.startStyle || marker.endStyle || marker.css || marker.attributes || marker.title) {
-            for (var i2 = from.line; i2 <= to.line; i2++) {
-              regLineChange(cm, i2, "text");
+            for (var i3 = from.line; i3 <= to.line; i3++) {
+              regLineChange(cm, i3, "text");
             }
           }
           if (marker.atomic) {
@@ -6295,8 +6295,8 @@ function requireCodemirror() {
       var SharedTextMarker = function(markers, primary) {
         this.markers = markers;
         this.primary = primary;
-        for (var i2 = 0; i2 < markers.length; ++i2) {
-          markers[i2].parent = this;
+        for (var i3 = 0; i3 < markers.length; ++i3) {
+          markers[i3].parent = this;
         }
       };
       SharedTextMarker.prototype.clear = function() {
@@ -6304,8 +6304,8 @@ function requireCodemirror() {
           return;
         }
         this.explicitlyCleared = true;
-        for (var i2 = 0; i2 < this.markers.length; ++i2) {
-          this.markers[i2].clear();
+        for (var i3 = 0; i3 < this.markers.length; ++i3) {
+          this.markers[i3].clear();
         }
         signalLater(this, "clear");
       };
@@ -6323,8 +6323,8 @@ function requireCodemirror() {
             options.widgetNode = widget.cloneNode(true);
           }
           markers.push(markText(doc3, clipPos(doc3, from), clipPos(doc3, to), options, type));
-          for (var i2 = 0; i2 < doc3.linked.length; ++i2) {
-            if (doc3.linked[i2].isParent) {
+          for (var i3 = 0; i3 < doc3.linked.length; ++i3) {
+            if (doc3.linked[i3].isParent) {
               return;
             }
           }
@@ -6338,8 +6338,8 @@ function requireCodemirror() {
         });
       }
       function copySharedMarkers(doc2, markers) {
-        for (var i2 = 0; i2 < markers.length; i2++) {
-          var marker = markers[i2], pos = marker.find();
+        for (var i3 = 0; i3 < markers.length; i3++) {
+          var marker = markers[i3], pos = marker.find();
           var mFrom = doc2.clipPos(pos.from), mTo = doc2.clipPos(pos.to);
           if (cmp(mFrom, mTo)) {
             var subMark = markText(doc2, mFrom, mTo, marker.primary, marker.primary.type);
@@ -6349,10 +6349,10 @@ function requireCodemirror() {
         }
       }
       function detachSharedMarkers(markers) {
-        var loop = function(i3) {
-          var marker = markers[i3], linked = [marker.primary.doc];
-          linkedDocs(marker.primary.doc, function(d) {
-            return linked.push(d);
+        var loop = function(i4) {
+          var marker = markers[i4], linked = [marker.primary.doc];
+          linkedDocs(marker.primary.doc, function(d2) {
+            return linked.push(d2);
           });
           for (var j2 = 0; j2 < marker.markers.length; j2++) {
             var subMarker = marker.markers[j2];
@@ -6362,7 +6362,7 @@ function requireCodemirror() {
             }
           }
         };
-        for (var i2 = 0; i2 < markers.length; i2++) loop(i2);
+        for (var i3 = 0; i3 < markers.length; i3++) loop(i3);
       }
       var nextDocId = 0;
       var Doc = function(text, mode, firstLine, lineSep, direction) {
@@ -6408,8 +6408,8 @@ function requireCodemirror() {
         // Non-public interface for adding and removing lines.
         insert: function(at, lines) {
           var height = 0;
-          for (var i2 = 0; i2 < lines.length; ++i2) {
-            height += lines[i2].height;
+          for (var i3 = 0; i3 < lines.length; ++i3) {
+            height += lines[i3].height;
           }
           this.insertInner(at - this.first, lines, height);
         },
@@ -6455,8 +6455,8 @@ function requireCodemirror() {
           return lines.join(lineSep || this.lineSeparator());
         },
         getLine: function(line) {
-          var l = this.getLineHandle(line);
-          return l && l.text;
+          var l2 = this.getLineHandle(line);
+          return l2 && l2.text;
         },
         getLineHandle: function(line) {
           if (isLine(this, line)) {
@@ -6524,10 +6524,10 @@ function requireCodemirror() {
             return;
           }
           var out = [];
-          for (var i2 = 0; i2 < ranges.length; i2++) {
-            out[i2] = new Range(
-              clipPos(this, ranges[i2].anchor),
-              clipPos(this, ranges[i2].head || ranges[i2].anchor)
+          for (var i3 = 0; i3 < ranges.length; i3++) {
+            out[i3] = new Range(
+              clipPos(this, ranges[i3].anchor),
+              clipPos(this, ranges[i3].head || ranges[i3].anchor)
             );
           }
           if (primary == null) {
@@ -6542,8 +6542,8 @@ function requireCodemirror() {
         }),
         getSelection: function(lineSep) {
           var ranges = this.sel.ranges, lines;
-          for (var i2 = 0; i2 < ranges.length; i2++) {
-            var sel = getBetween(this, ranges[i2].from(), ranges[i2].to());
+          for (var i3 = 0; i3 < ranges.length; i3++) {
+            var sel = getBetween(this, ranges[i3].from(), ranges[i3].to());
             lines = lines ? lines.concat(sel) : sel;
           }
           if (lineSep === false) {
@@ -6554,27 +6554,27 @@ function requireCodemirror() {
         },
         getSelections: function(lineSep) {
           var parts = [], ranges = this.sel.ranges;
-          for (var i2 = 0; i2 < ranges.length; i2++) {
-            var sel = getBetween(this, ranges[i2].from(), ranges[i2].to());
+          for (var i3 = 0; i3 < ranges.length; i3++) {
+            var sel = getBetween(this, ranges[i3].from(), ranges[i3].to());
             if (lineSep !== false) {
               sel = sel.join(lineSep || this.lineSeparator());
             }
-            parts[i2] = sel;
+            parts[i3] = sel;
           }
           return parts;
         },
         replaceSelection: function(code, collapse, origin) {
           var dup = [];
-          for (var i2 = 0; i2 < this.sel.ranges.length; i2++) {
-            dup[i2] = code;
+          for (var i3 = 0; i3 < this.sel.ranges.length; i3++) {
+            dup[i3] = code;
           }
           this.replaceSelections(dup, collapse, origin || "+input");
         },
         replaceSelections: docMethodOp(function(code, collapse, origin) {
           var changes = [], sel = this.sel;
-          for (var i2 = 0; i2 < sel.ranges.length; i2++) {
-            var range2 = sel.ranges[i2];
-            changes[i2] = { from: range2.from(), to: range2.to(), text: this.splitLines(code[i2]), origin };
+          for (var i3 = 0; i3 < sel.ranges.length; i3++) {
+            var range2 = sel.ranges[i3];
+            changes[i3] = { from: range2.from(), to: range2.to(), text: this.splitLines(code[i3]), origin };
           }
           var newSel = collapse && collapse != "end" && computeReplacedSel(this, changes, collapse);
           for (var i$12 = changes.length - 1; i$12 >= 0; i$12--) {
@@ -6606,8 +6606,8 @@ function requireCodemirror() {
         },
         historySize: function() {
           var hist = this.history, done = 0, undone = 0;
-          for (var i2 = 0; i2 < hist.done.length; i2++) {
-            if (!hist.done[i2].ranges) {
+          for (var i3 = 0; i3 < hist.done.length; i3++) {
+            if (!hist.done[i3].ranges) {
               ++done;
             }
           }
@@ -6756,8 +6756,8 @@ function requireCodemirror() {
           pos = clipPos(this, pos);
           var markers = [], spans = getLine(this, pos.line).markedSpans;
           if (spans) {
-            for (var i2 = 0; i2 < spans.length; ++i2) {
-              var span = spans[i2];
+            for (var i3 = 0; i3 < spans.length; ++i3) {
+              var span = spans[i3];
               if ((span.from == null || span.from <= pos.ch) && (span.to == null || span.to >= pos.ch)) {
                 markers.push(span.marker.parent || span.marker);
               }
@@ -6772,8 +6772,8 @@ function requireCodemirror() {
           this.iter(from.line, to.line + 1, function(line) {
             var spans = line.markedSpans;
             if (spans) {
-              for (var i2 = 0; i2 < spans.length; i2++) {
-                var span = spans[i2];
+              for (var i3 = 0; i3 < spans.length; i3++) {
+                var span = spans[i3];
                 if (!(span.to != null && lineNo2 == from.line && from.ch >= span.to || span.from == null && lineNo2 != from.line || span.from != null && lineNo2 == to.line && span.from >= to.ch) && (!filter || filter(span.marker))) {
                   found.push(span.marker.parent || span.marker);
                 }
@@ -6788,9 +6788,9 @@ function requireCodemirror() {
           this.iter(function(line) {
             var sps = line.markedSpans;
             if (sps) {
-              for (var i2 = 0; i2 < sps.length; ++i2) {
-                if (sps[i2].from != null) {
-                  markers.push(sps[i2].marker);
+              for (var i3 = 0; i3 < sps.length; ++i3) {
+                if (sps[i3].from != null) {
+                  markers.push(sps[i3].marker);
                 }
               }
             }
@@ -6865,12 +6865,12 @@ function requireCodemirror() {
             other = other.doc;
           }
           if (this.linked) {
-            for (var i2 = 0; i2 < this.linked.length; ++i2) {
-              var link = this.linked[i2];
+            for (var i3 = 0; i3 < this.linked.length; ++i3) {
+              var link = this.linked[i3];
               if (link.doc != other) {
                 continue;
               }
-              this.linked.splice(i2, 1);
+              this.linked.splice(i3, 1);
               other.unlinkDoc(this);
               detachSharedMarkers(findSharedMarkers(this));
               break;
@@ -6922,17 +6922,17 @@ function requireCodemirror() {
       });
       Doc.prototype.eachLine = Doc.prototype.iter;
       var lastDrop = 0;
-      function onDrop(e) {
+      function onDrop(e2) {
         var cm = this;
         clearDragCursor(cm);
-        if (signalDOMEvent(cm, e) || eventInWidget(cm.display, e)) {
+        if (signalDOMEvent(cm, e2) || eventInWidget(cm.display, e2)) {
           return;
         }
-        e_preventDefault(e);
+        e_preventDefault(e2);
         if (ie) {
           lastDrop = +/* @__PURE__ */ new Date();
         }
-        var pos = posFromMouse(cm, e, true), files = e.dataTransfer.files;
+        var pos = posFromMouse(cm, e2, true), files = e2.dataTransfer.files;
         if (!pos || cm.isReadOnly()) {
           return;
         }
@@ -6946,8 +6946,8 @@ function requireCodemirror() {
                   from: pos,
                   to: pos,
                   text: cm.doc.splitLines(
-                    text.filter(function(t) {
-                      return t != null;
+                    text.filter(function(t2) {
+                      return t2 != null;
                     }).join(cm.doc.lineSeparator())
                   ),
                   origin: "paste"
@@ -6957,7 +6957,7 @@ function requireCodemirror() {
               })();
             }
           };
-          var readTextFromFile = function(file, i3) {
+          var readTextFromFile = function(file, i4) {
             if (cm.options.allowDropFileTypes && indexOf(cm.options.allowDropFileTypes, file.type) == -1) {
               markAsReadAndPasteIfAllFilesAreRead();
               return;
@@ -6972,24 +6972,24 @@ function requireCodemirror() {
                 markAsReadAndPasteIfAllFilesAreRead();
                 return;
               }
-              text[i3] = content;
+              text[i4] = content;
               markAsReadAndPasteIfAllFilesAreRead();
             };
             reader.readAsText(file);
           };
-          for (var i2 = 0; i2 < files.length; i2++) {
-            readTextFromFile(files[i2], i2);
+          for (var i3 = 0; i3 < files.length; i3++) {
+            readTextFromFile(files[i3], i3);
           }
         } else {
           if (cm.state.draggingText && cm.doc.sel.contains(pos) > -1) {
-            cm.state.draggingText(e);
+            cm.state.draggingText(e2);
             setTimeout(function() {
               return cm.display.input.focus();
             }, 20);
             return;
           }
           try {
-            var text$1 = e.dataTransfer.getData("Text");
+            var text$1 = e2.dataTransfer.getData("Text");
             if (text$1) {
               var selected;
               if (cm.state.draggingText && !cm.state.draggingText.copy) {
@@ -7008,17 +7008,17 @@ function requireCodemirror() {
           }
         }
       }
-      function onDragStart(cm, e) {
+      function onDragStart(cm, e2) {
         if (ie && (!cm.state.draggingText || +/* @__PURE__ */ new Date() - lastDrop < 100)) {
-          e_stop(e);
+          e_stop(e2);
           return;
         }
-        if (signalDOMEvent(cm, e) || eventInWidget(cm.display, e)) {
+        if (signalDOMEvent(cm, e2) || eventInWidget(cm.display, e2)) {
           return;
         }
-        e.dataTransfer.setData("Text", cm.getSelection());
-        e.dataTransfer.effectAllowed = "copyMove";
-        if (e.dataTransfer.setDragImage && !safari) {
+        e2.dataTransfer.setData("Text", cm.getSelection());
+        e2.dataTransfer.effectAllowed = "copyMove";
+        if (e2.dataTransfer.setDragImage && !safari) {
           var img = elt("img", null, null, "position: fixed; left: 0; top: 0;");
           img.src = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
           if (presto) {
@@ -7026,14 +7026,14 @@ function requireCodemirror() {
             cm.display.wrapper.appendChild(img);
             img._top = img.offsetTop;
           }
-          e.dataTransfer.setDragImage(img, 0, 0);
+          e2.dataTransfer.setDragImage(img, 0, 0);
           if (presto) {
             img.parentNode.removeChild(img);
           }
         }
       }
-      function onDragOver(cm, e) {
-        var pos = posFromMouse(cm, e);
+      function onDragOver(cm, e2) {
+        var pos = posFromMouse(cm, e2);
         if (!pos) {
           return;
         }
@@ -7056,16 +7056,16 @@ function requireCodemirror() {
           return;
         }
         var byClass = document.getElementsByClassName("CodeMirror"), editors = [];
-        for (var i2 = 0; i2 < byClass.length; i2++) {
-          var cm = byClass[i2].CodeMirror;
+        for (var i3 = 0; i3 < byClass.length; i3++) {
+          var cm = byClass[i3].CodeMirror;
           if (cm) {
             editors.push(cm);
           }
         }
         if (editors.length) {
           editors[0].operation(function() {
-            for (var i3 = 0; i3 < editors.length; i3++) {
-              f2(editors[i3]);
+            for (var i4 = 0; i4 < editors.length; i4++) {
+              f2(editors[i4]);
             }
           });
         }
@@ -7093,9 +7093,9 @@ function requireCodemirror() {
         });
       }
       function onResize(cm) {
-        var d = cm.display;
-        d.cachedCharWidth = d.cachedTextHeight = d.cachedPaddingH = null;
-        d.scrollbarsClipped = false;
+        var d2 = cm.display;
+        d2.cachedCharWidth = d2.cachedTextHeight = d2.cachedPaddingH = null;
+        d2.scrollbarsClipped = false;
         cm.setSize();
       }
       var keyNames = {
@@ -7156,8 +7156,8 @@ function requireCodemirror() {
         63277: "PageDown",
         63302: "Insert"
       };
-      for (var i = 0; i < 10; i++) {
-        keyNames[i + 48] = keyNames[i + 96] = String(i);
+      for (var i2 = 0; i2 < 10; i2++) {
+        keyNames[i2 + 48] = keyNames[i2 + 96] = String(i2);
       }
       for (var i$1 = 65; i$1 <= 90; i$1++) {
         keyNames[i$1] = String.fromCharCode(i$1);
@@ -7267,8 +7267,8 @@ function requireCodemirror() {
         var parts = name.split(/-(?!$)/);
         name = parts[parts.length - 1];
         var alt, ctrl, shift, cmd;
-        for (var i2 = 0; i2 < parts.length - 1; i2++) {
-          var mod = parts[i2];
+        for (var i3 = 0; i3 < parts.length - 1; i3++) {
+          var mod = parts[i3];
           if (/^(cmd|meta|m)$/i.test(mod)) {
             cmd = true;
           } else if (/^a(lt)?$/i.test(mod)) {
@@ -7308,13 +7308,13 @@ function requireCodemirror() {
               continue;
             }
             var keys = map(keyname.split(" "), normalizeKeyName);
-            for (var i2 = 0; i2 < keys.length; i2++) {
+            for (var i3 = 0; i3 < keys.length; i3++) {
               var val = void 0, name = void 0;
-              if (i2 == keys.length - 1) {
+              if (i3 == keys.length - 1) {
                 name = keys.join(" ");
                 val = value;
               } else {
-                name = keys.slice(0, i2 + 1).join(" ");
+                name = keys.slice(0, i3 + 1).join(" ");
                 val = "...";
               }
               var prev = copy[name];
@@ -7348,8 +7348,8 @@ function requireCodemirror() {
           if (Object.prototype.toString.call(map2.fallthrough) != "[object Array]") {
             return lookupKey(key, map2.fallthrough, handle, context);
           }
-          for (var i2 = 0; i2 < map2.fallthrough.length; i2++) {
-            var result = lookupKey(key, map2.fallthrough[i2], handle, context);
+          for (var i3 = 0; i3 < map2.fallthrough.length; i3++) {
+            var result = lookupKey(key, map2.fallthrough[i3], handle, context);
             if (result) {
               return result;
             }
@@ -7394,8 +7394,8 @@ function requireCodemirror() {
       }
       function deleteNearSelection(cm, compute) {
         var ranges = cm.doc.sel.ranges, kill = [];
-        for (var i2 = 0; i2 < ranges.length; i2++) {
-          var toKill = compute(ranges[i2]);
+        for (var i3 = 0; i3 < ranges.length; i3++) {
+          var toKill = compute(ranges[i3]);
           while (kill.length && cmp(toKill.from, lst(kill).to) <= 0) {
             var replaced = kill.pop();
             if (cmp(replaced.from, toKill.from) < 0) {
@@ -7406,8 +7406,8 @@ function requireCodemirror() {
           kill.push(toKill);
         }
         runInOp(cm, function() {
-          for (var i3 = kill.length - 1; i3 >= 0; i3--) {
-            replaceRange(cm.doc, "", kill[i3].from, kill[i3].to, "+delete");
+          for (var i4 = kill.length - 1; i4 >= 0; i4--) {
+            replaceRange(cm.doc, "", kill[i4].from, kill[i4].to, "+delete");
           }
           ensureCursorVisible(cm);
         });
@@ -7696,8 +7696,8 @@ function requireCodemirror() {
         },
         insertSoftTab: function(cm) {
           var spaces = [], ranges = cm.listSelections(), tabSize = cm.options.tabSize;
-          for (var i2 = 0; i2 < ranges.length; i2++) {
-            var pos = ranges[i2].from();
+          for (var i3 = 0; i3 < ranges.length; i3++) {
+            var pos = ranges[i3].from();
             var col = countColumn(cm.getLine(pos.line), pos.ch, tabSize);
             spaces.push(spaceStr(tabSize - col % tabSize));
           }
@@ -7720,11 +7720,11 @@ function requireCodemirror() {
         transposeChars: function(cm) {
           return runInOp(cm, function() {
             var ranges = cm.listSelections(), newSel = [];
-            for (var i2 = 0; i2 < ranges.length; i2++) {
-              if (!ranges[i2].empty()) {
+            for (var i3 = 0; i3 < ranges.length; i3++) {
+              if (!ranges[i3].empty()) {
                 continue;
               }
-              var cur = ranges[i2].head, line = getLine(cm.doc, cur.line).text;
+              var cur = ranges[i3].head, line = getLine(cm.doc, cur.line).text;
               if (line) {
                 if (cur.ch == line.length) {
                   cur = new Pos(cur.line, cur.ch - 1);
@@ -7758,8 +7758,8 @@ function requireCodemirror() {
         newlineAndIndent: function(cm) {
           return runInOp(cm, function() {
             var sels = cm.listSelections();
-            for (var i2 = sels.length - 1; i2 >= 0; i2--) {
-              cm.replaceRange(cm.doc.lineSeparator(), sels[i2].anchor, sels[i2].head, "+input");
+            for (var i3 = sels.length - 1; i3 >= 0; i3--) {
+              cm.replaceRange(cm.doc.lineSeparator(), sels[i3].anchor, sels[i3].head, "+input");
             }
             sels = cm.listSelections();
             for (var i$12 = 0; i$12 < sels.length; i$12++) {
@@ -7826,8 +7826,8 @@ function requireCodemirror() {
         return done;
       }
       function lookupKeyForEditor(cm, name, handle) {
-        for (var i2 = 0; i2 < cm.state.keyMaps.length; i2++) {
-          var result = lookupKey(name, cm.state.keyMaps[i2], handle, cm);
+        for (var i3 = 0; i3 < cm.state.keyMaps.length; i3++) {
+          var result = lookupKey(name, cm.state.keyMaps[i3], handle, cm);
           if (result) {
             return result;
           }
@@ -7835,7 +7835,7 @@ function requireCodemirror() {
         return cm.options.extraKeys && lookupKey(name, cm.options.extraKeys, handle, cm) || lookupKey(name, cm.options.keyMap, handle, cm);
       }
       var stopSeq = new Delayed();
-      function dispatchKey(cm, name, e, handle) {
+      function dispatchKey(cm, name, e2, handle) {
         var seq = cm.state.keySeq;
         if (seq) {
           if (isModifierKey(name)) {
@@ -7851,73 +7851,73 @@ function requireCodemirror() {
               }
             });
           }
-          if (dispatchKeyInner(cm, seq + " " + name, e, handle)) {
+          if (dispatchKeyInner(cm, seq + " " + name, e2, handle)) {
             return true;
           }
         }
-        return dispatchKeyInner(cm, name, e, handle);
+        return dispatchKeyInner(cm, name, e2, handle);
       }
-      function dispatchKeyInner(cm, name, e, handle) {
+      function dispatchKeyInner(cm, name, e2, handle) {
         var result = lookupKeyForEditor(cm, name, handle);
         if (result == "multi") {
           cm.state.keySeq = name;
         }
         if (result == "handled") {
-          signalLater(cm, "keyHandled", cm, name, e);
+          signalLater(cm, "keyHandled", cm, name, e2);
         }
         if (result == "handled" || result == "multi") {
-          e_preventDefault(e);
+          e_preventDefault(e2);
           restartBlink(cm);
         }
         return !!result;
       }
-      function handleKeyBinding(cm, e) {
-        var name = keyName(e, true);
+      function handleKeyBinding(cm, e2) {
+        var name = keyName(e2, true);
         if (!name) {
           return false;
         }
-        if (e.shiftKey && !cm.state.keySeq) {
-          return dispatchKey(cm, "Shift-" + name, e, function(b) {
+        if (e2.shiftKey && !cm.state.keySeq) {
+          return dispatchKey(cm, "Shift-" + name, e2, function(b) {
             return doHandleBinding(cm, b, true);
-          }) || dispatchKey(cm, name, e, function(b) {
+          }) || dispatchKey(cm, name, e2, function(b) {
             if (typeof b == "string" ? /^go[A-Z]/.test(b) : b.motion) {
               return doHandleBinding(cm, b);
             }
           });
         } else {
-          return dispatchKey(cm, name, e, function(b) {
+          return dispatchKey(cm, name, e2, function(b) {
             return doHandleBinding(cm, b);
           });
         }
       }
-      function handleCharBinding(cm, e, ch) {
-        return dispatchKey(cm, "'" + ch + "'", e, function(b) {
+      function handleCharBinding(cm, e2, ch) {
+        return dispatchKey(cm, "'" + ch + "'", e2, function(b) {
           return doHandleBinding(cm, b, true);
         });
       }
       var lastStoppedKey = null;
-      function onKeyDown(e) {
+      function onKeyDown(e2) {
         var cm = this;
-        if (e.target && e.target != cm.display.input.getField()) {
+        if (e2.target && e2.target != cm.display.input.getField()) {
           return;
         }
         cm.curOp.focus = activeElt(root(cm));
-        if (signalDOMEvent(cm, e)) {
+        if (signalDOMEvent(cm, e2)) {
           return;
         }
-        if (ie && ie_version < 11 && e.keyCode == 27) {
-          e.returnValue = false;
+        if (ie && ie_version < 11 && e2.keyCode == 27) {
+          e2.returnValue = false;
         }
-        var code = e.keyCode;
-        cm.display.shift = code == 16 || e.shiftKey;
-        var handled = handleKeyBinding(cm, e);
+        var code = e2.keyCode;
+        cm.display.shift = code == 16 || e2.shiftKey;
+        var handled = handleKeyBinding(cm, e2);
         if (presto) {
           lastStoppedKey = handled ? code : null;
-          if (!handled && code == 88 && !hasCopyEvent && (mac ? e.metaKey : e.ctrlKey)) {
+          if (!handled && code == 88 && !hasCopyEvent && (mac ? e2.metaKey : e2.ctrlKey)) {
             cm.replaceSelection("", null, "cut");
           }
         }
-        if (gecko && !mac && !handled && code == 46 && e.shiftKey && !e.ctrlKey && document.execCommand) {
+        if (gecko && !mac && !handled && code == 46 && e2.shiftKey && !e2.ctrlKey && document.execCommand) {
           document.execCommand("cut");
         }
         if (code == 18 && !/\bCodeMirror-crosshair\b/.test(cm.display.lineDiv.className)) {
@@ -7927,8 +7927,8 @@ function requireCodemirror() {
       function showCrossHair(cm) {
         var lineDiv = cm.display.lineDiv;
         addClass(lineDiv, "CodeMirror-crosshair");
-        function up(e) {
-          if (e.keyCode == 18 || !e.altKey) {
+        function up(e2) {
+          if (e2.keyCode == 18 || !e2.altKey) {
             rmClass(lineDiv, "CodeMirror-crosshair");
             off(document, "keyup", up);
             off(document, "mouseover", up);
@@ -7937,37 +7937,37 @@ function requireCodemirror() {
         on(document, "keyup", up);
         on(document, "mouseover", up);
       }
-      function onKeyUp(e) {
-        if (e.keyCode == 16) {
+      function onKeyUp(e2) {
+        if (e2.keyCode == 16) {
           this.doc.sel.shift = false;
         }
-        signalDOMEvent(this, e);
+        signalDOMEvent(this, e2);
       }
-      function onKeyPress(e) {
+      function onKeyPress(e2) {
         var cm = this;
-        if (e.target && e.target != cm.display.input.getField()) {
+        if (e2.target && e2.target != cm.display.input.getField()) {
           return;
         }
-        if (eventInWidget(cm.display, e) || signalDOMEvent(cm, e) || e.ctrlKey && !e.altKey || mac && e.metaKey) {
+        if (eventInWidget(cm.display, e2) || signalDOMEvent(cm, e2) || e2.ctrlKey && !e2.altKey || mac && e2.metaKey) {
           return;
         }
-        var keyCode = e.keyCode, charCode = e.charCode;
+        var keyCode = e2.keyCode, charCode = e2.charCode;
         if (presto && keyCode == lastStoppedKey) {
           lastStoppedKey = null;
-          e_preventDefault(e);
+          e_preventDefault(e2);
           return;
         }
-        if (presto && (!e.which || e.which < 10) && handleKeyBinding(cm, e)) {
+        if (presto && (!e2.which || e2.which < 10) && handleKeyBinding(cm, e2)) {
           return;
         }
         var ch = String.fromCharCode(charCode == null ? keyCode : charCode);
         if (ch == "\b") {
           return;
         }
-        if (handleCharBinding(cm, e, ch)) {
+        if (handleCharBinding(cm, e2, ch)) {
           return;
         }
-        cm.display.input.onKeyPress(e);
+        cm.display.input.onKeyPress(e2);
       }
       var DOUBLECLICK_DELAY = 400;
       var PastClick = function(time, pos, button) {
@@ -7994,14 +7994,14 @@ function requireCodemirror() {
           return "single";
         }
       }
-      function onMouseDown(e) {
+      function onMouseDown(e2) {
         var cm = this, display = cm.display;
-        if (signalDOMEvent(cm, e) || display.activeTouch && display.input.supportsTouch()) {
+        if (signalDOMEvent(cm, e2) || display.activeTouch && display.input.supportsTouch()) {
           return;
         }
         display.input.ensurePolled();
-        display.shift = e.shiftKey;
-        if (eventInWidget(display, e)) {
+        display.shift = e2.shiftKey;
+        if (eventInWidget(display, e2)) {
           if (!webkit) {
             display.scroller.draggable = false;
             setTimeout(function() {
@@ -8010,22 +8010,22 @@ function requireCodemirror() {
           }
           return;
         }
-        if (clickInGutter(cm, e)) {
+        if (clickInGutter(cm, e2)) {
           return;
         }
-        var pos = posFromMouse(cm, e), button = e_button(e), repeat = pos ? clickRepeat(pos, button) : "single";
+        var pos = posFromMouse(cm, e2), button = e_button(e2), repeat = pos ? clickRepeat(pos, button) : "single";
         win(cm).focus();
         if (button == 1 && cm.state.selectingText) {
-          cm.state.selectingText(e);
+          cm.state.selectingText(e2);
         }
-        if (pos && handleMappedButton(cm, button, pos, repeat, e)) {
+        if (pos && handleMappedButton(cm, button, pos, repeat, e2)) {
           return;
         }
         if (button == 1) {
           if (pos) {
-            leftButtonDown(cm, pos, repeat, e);
-          } else if (e_target(e) == display.scroller) {
-            e_preventDefault(e);
+            leftButtonDown(cm, pos, repeat, e2);
+          } else if (e_target(e2) == display.scroller) {
+            e_preventDefault(e2);
           }
         } else if (button == 2) {
           if (pos) {
@@ -8036,7 +8036,7 @@ function requireCodemirror() {
           }, 20);
         } else if (button == 3) {
           if (captureRightClick) {
-            cm.display.input.onContextMenu(e);
+            cm.display.input.onContextMenu(e2);
           } else {
             delayBlurEvent(cm);
           }
@@ -8103,7 +8103,7 @@ function requireCodemirror() {
       }
       function leftButtonStartDrag(cm, event, pos, behavior) {
         var display = cm.display, moved = false;
-        var dragEnd = operation(cm, function(e) {
+        var dragEnd = operation(cm, function(e2) {
           if (webkit) {
             display.scroller.draggable = false;
           }
@@ -8120,7 +8120,7 @@ function requireCodemirror() {
           off(display.scroller, "dragstart", dragStart);
           off(display.scroller, "drop", dragEnd);
           if (!moved) {
-            e_preventDefault(e);
+            e_preventDefault(e2);
             if (!behavior.addNew) {
               extendSelection(cm.doc, pos, null, null, behavior.extend);
             }
@@ -8269,9 +8269,9 @@ function requireCodemirror() {
         }
         var editorSize = display.wrapper.getBoundingClientRect();
         var counter = 0;
-        function extend(e) {
+        function extend(e2) {
           var curCount = ++counter;
-          var cur = posFromMouse(cm, e, true, behavior.unit == "rectangle");
+          var cur = posFromMouse(cm, e2, true, behavior.unit == "rectangle");
           if (!cur) {
             return;
           }
@@ -8282,39 +8282,39 @@ function requireCodemirror() {
             if (cur.line >= visible.to || cur.line < visible.from) {
               setTimeout(operation(cm, function() {
                 if (counter == curCount) {
-                  extend(e);
+                  extend(e2);
                 }
               }), 150);
             }
           } else {
-            var outside = e.clientY < editorSize.top ? -20 : e.clientY > editorSize.bottom ? 20 : 0;
+            var outside = e2.clientY < editorSize.top ? -20 : e2.clientY > editorSize.bottom ? 20 : 0;
             if (outside) {
               setTimeout(operation(cm, function() {
                 if (counter != curCount) {
                   return;
                 }
                 display.scroller.scrollTop += outside;
-                extend(e);
+                extend(e2);
               }), 50);
             }
           }
         }
-        function done(e) {
+        function done(e2) {
           cm.state.selectingText = false;
           counter = Infinity;
-          if (e) {
-            e_preventDefault(e);
+          if (e2) {
+            e_preventDefault(e2);
             display.input.focus();
           }
           off(display.wrapper.ownerDocument, "mousemove", move);
           off(display.wrapper.ownerDocument, "mouseup", up);
           doc2.history.lastSelOrigin = null;
         }
-        var move = operation(cm, function(e) {
-          if (e.buttons === 0 || !e_button(e)) {
-            done(e);
+        var move = operation(cm, function(e2) {
+          if (e2.buttons === 0 || !e_button(e2)) {
+            done(e2);
           } else {
-            extend(e);
+            extend(e2);
           }
         });
         var up = operation(cm, done);
@@ -8358,15 +8358,15 @@ function requireCodemirror() {
         var ch = from ? usePart.from : usePart.to, sticky = from ? "after" : "before";
         return anchor.ch == ch && anchor.sticky == sticky ? range2 : new Range(new Pos(anchor.line, ch, sticky), head);
       }
-      function gutterEvent(cm, e, type, prevent) {
+      function gutterEvent(cm, e2, type, prevent) {
         var mX, mY;
-        if (e.touches) {
-          mX = e.touches[0].clientX;
-          mY = e.touches[0].clientY;
+        if (e2.touches) {
+          mX = e2.touches[0].clientX;
+          mY = e2.touches[0].clientY;
         } else {
           try {
-            mX = e.clientX;
-            mY = e.clientY;
+            mX = e2.clientX;
+            mY = e2.clientY;
           } catch (e$1) {
             return false;
           }
@@ -8375,43 +8375,43 @@ function requireCodemirror() {
           return false;
         }
         if (prevent) {
-          e_preventDefault(e);
+          e_preventDefault(e2);
         }
         var display = cm.display;
         var lineBox = display.lineDiv.getBoundingClientRect();
         if (mY > lineBox.bottom || !hasHandler(cm, type)) {
-          return e_defaultPrevented(e);
+          return e_defaultPrevented(e2);
         }
         mY -= lineBox.top - display.viewOffset;
-        for (var i2 = 0; i2 < cm.display.gutterSpecs.length; ++i2) {
-          var g2 = display.gutters.childNodes[i2];
+        for (var i3 = 0; i3 < cm.display.gutterSpecs.length; ++i3) {
+          var g2 = display.gutters.childNodes[i3];
           if (g2 && g2.getBoundingClientRect().right >= mX) {
             var line = lineAtHeight(cm.doc, mY);
-            var gutter = cm.display.gutterSpecs[i2];
-            signal(cm, type, cm, line, gutter.className, e);
-            return e_defaultPrevented(e);
+            var gutter = cm.display.gutterSpecs[i3];
+            signal(cm, type, cm, line, gutter.className, e2);
+            return e_defaultPrevented(e2);
           }
         }
       }
-      function clickInGutter(cm, e) {
-        return gutterEvent(cm, e, "gutterClick", true);
+      function clickInGutter(cm, e2) {
+        return gutterEvent(cm, e2, "gutterClick", true);
       }
-      function onContextMenu(cm, e) {
-        if (eventInWidget(cm.display, e) || contextMenuInGutter(cm, e)) {
+      function onContextMenu(cm, e2) {
+        if (eventInWidget(cm.display, e2) || contextMenuInGutter(cm, e2)) {
           return;
         }
-        if (signalDOMEvent(cm, e, "contextmenu")) {
+        if (signalDOMEvent(cm, e2, "contextmenu")) {
           return;
         }
         if (!captureRightClick) {
-          cm.display.input.onContextMenu(e);
+          cm.display.input.onContextMenu(e2);
         }
       }
-      function contextMenuInGutter(cm, e) {
+      function contextMenuInGutter(cm, e2) {
         if (!hasHandler(cm, "gutterContextMenu")) {
           return false;
         }
-        return gutterEvent(cm, e, "gutterContextMenu", false);
+        return gutterEvent(cm, e2, "gutterContextMenu", false);
       }
       function themeChanged(cm) {
         cm.display.wrapper.className = cm.display.wrapper.className.replace(/\s*cm-s-\S+/g, "") + cm.options.theme.replace(/(^|\s)\s*/g, " cm-s-");
@@ -8468,8 +8468,8 @@ function requireCodemirror() {
             }
             lineNo2++;
           });
-          for (var i2 = newBreaks.length - 1; i2 >= 0; i2--) {
-            replaceRange(cm.doc, val, newBreaks[i2], Pos(newBreaks[i2].line, newBreaks[i2].ch + val.length));
+          for (var i3 = newBreaks.length - 1; i3 >= 0; i3--) {
+            replaceRange(cm.doc, val, newBreaks[i3], Pos(newBreaks[i3].line, newBreaks[i3].ch + val.length));
           }
         });
         option("specialChars", /[\u0000-\u001f\u007f-\u009f\u00ad\u061c\u200b\u200e\u200f\u2028\u2029\u202d\u202e\u2066\u2067\u2069\ufeff\ufff9-\ufffc]/g, function(cm, val, old) {
@@ -8696,8 +8696,8 @@ function requireCodemirror() {
         if (options.finishInit) {
           options.finishInit(this);
         }
-        for (var i2 = 0; i2 < initHooks.length; ++i2) {
-          initHooks[i2](this);
+        for (var i3 = 0; i3 < initHooks.length; ++i3) {
+          initHooks[i3](this);
         }
         endOperation(this);
         if (webkit && options.lineWrapping && getComputedStyle(display.lineDiv).textRendering == "optimizelegibility") {
@@ -8707,49 +8707,49 @@ function requireCodemirror() {
       CodeMirror2.defaults = defaults;
       CodeMirror2.optionHandlers = optionHandlers;
       function registerEventHandlers(cm) {
-        var d = cm.display;
-        on(d.scroller, "mousedown", operation(cm, onMouseDown));
+        var d2 = cm.display;
+        on(d2.scroller, "mousedown", operation(cm, onMouseDown));
         if (ie && ie_version < 11) {
-          on(d.scroller, "dblclick", operation(cm, function(e) {
-            if (signalDOMEvent(cm, e)) {
+          on(d2.scroller, "dblclick", operation(cm, function(e2) {
+            if (signalDOMEvent(cm, e2)) {
               return;
             }
-            var pos = posFromMouse(cm, e);
-            if (!pos || clickInGutter(cm, e) || eventInWidget(cm.display, e)) {
+            var pos = posFromMouse(cm, e2);
+            if (!pos || clickInGutter(cm, e2) || eventInWidget(cm.display, e2)) {
               return;
             }
-            e_preventDefault(e);
+            e_preventDefault(e2);
             var word = cm.findWordAt(pos);
             extendSelection(cm.doc, word.anchor, word.head);
           }));
         } else {
-          on(d.scroller, "dblclick", function(e) {
-            return signalDOMEvent(cm, e) || e_preventDefault(e);
+          on(d2.scroller, "dblclick", function(e2) {
+            return signalDOMEvent(cm, e2) || e_preventDefault(e2);
           });
         }
-        on(d.scroller, "contextmenu", function(e) {
-          return onContextMenu(cm, e);
+        on(d2.scroller, "contextmenu", function(e2) {
+          return onContextMenu(cm, e2);
         });
-        on(d.input.getField(), "contextmenu", function(e) {
-          if (!d.scroller.contains(e.target)) {
-            onContextMenu(cm, e);
+        on(d2.input.getField(), "contextmenu", function(e2) {
+          if (!d2.scroller.contains(e2.target)) {
+            onContextMenu(cm, e2);
           }
         });
         var touchFinished, prevTouch = { end: 0 };
         function finishTouch() {
-          if (d.activeTouch) {
+          if (d2.activeTouch) {
             touchFinished = setTimeout(function() {
-              return d.activeTouch = null;
+              return d2.activeTouch = null;
             }, 1e3);
-            prevTouch = d.activeTouch;
+            prevTouch = d2.activeTouch;
             prevTouch.end = +/* @__PURE__ */ new Date();
           }
         }
-        function isMouseLikeTouchEvent(e) {
-          if (e.touches.length != 1) {
+        function isMouseLikeTouchEvent(e2) {
+          if (e2.touches.length != 1) {
             return false;
           }
-          var touch = e.touches[0];
+          var touch = e2.touches[0];
           return touch.radiusX <= 1 && touch.radiusY <= 1;
         }
         function farAway(touch, other) {
@@ -8759,31 +8759,31 @@ function requireCodemirror() {
           var dx = other.left - touch.left, dy = other.top - touch.top;
           return dx * dx + dy * dy > 20 * 20;
         }
-        on(d.scroller, "touchstart", function(e) {
-          if (!signalDOMEvent(cm, e) && !isMouseLikeTouchEvent(e) && !clickInGutter(cm, e)) {
-            d.input.ensurePolled();
+        on(d2.scroller, "touchstart", function(e2) {
+          if (!signalDOMEvent(cm, e2) && !isMouseLikeTouchEvent(e2) && !clickInGutter(cm, e2)) {
+            d2.input.ensurePolled();
             clearTimeout(touchFinished);
             var now = +/* @__PURE__ */ new Date();
-            d.activeTouch = {
+            d2.activeTouch = {
               start: now,
               moved: false,
               prev: now - prevTouch.end <= 300 ? prevTouch : null
             };
-            if (e.touches.length == 1) {
-              d.activeTouch.left = e.touches[0].pageX;
-              d.activeTouch.top = e.touches[0].pageY;
+            if (e2.touches.length == 1) {
+              d2.activeTouch.left = e2.touches[0].pageX;
+              d2.activeTouch.top = e2.touches[0].pageY;
             }
           }
         });
-        on(d.scroller, "touchmove", function() {
-          if (d.activeTouch) {
-            d.activeTouch.moved = true;
+        on(d2.scroller, "touchmove", function() {
+          if (d2.activeTouch) {
+            d2.activeTouch.moved = true;
           }
         });
-        on(d.scroller, "touchend", function(e) {
-          var touch = d.activeTouch;
-          if (touch && !eventInWidget(d, e) && touch.left != null && !touch.moved && /* @__PURE__ */ new Date() - touch.start < 300) {
-            var pos = cm.coordsChar(d.activeTouch, "page"), range2;
+        on(d2.scroller, "touchend", function(e2) {
+          var touch = d2.activeTouch;
+          if (touch && !eventInWidget(d2, e2) && touch.left != null && !touch.moved && /* @__PURE__ */ new Date() - touch.start < 300) {
+            var pos = cm.coordsChar(d2.activeTouch, "page"), range2;
             if (!touch.prev || farAway(touch, touch.prev)) {
               range2 = new Range(pos, pos);
             } else if (!touch.prev.prev || farAway(touch, touch.prev.prev)) {
@@ -8793,60 +8793,60 @@ function requireCodemirror() {
             }
             cm.setSelection(range2.anchor, range2.head);
             cm.focus();
-            e_preventDefault(e);
+            e_preventDefault(e2);
           }
           finishTouch();
         });
-        on(d.scroller, "touchcancel", finishTouch);
-        on(d.scroller, "scroll", function() {
-          if (d.scroller.clientHeight) {
-            updateScrollTop(cm, d.scroller.scrollTop);
-            setScrollLeft(cm, d.scroller.scrollLeft, true);
+        on(d2.scroller, "touchcancel", finishTouch);
+        on(d2.scroller, "scroll", function() {
+          if (d2.scroller.clientHeight) {
+            updateScrollTop(cm, d2.scroller.scrollTop);
+            setScrollLeft(cm, d2.scroller.scrollLeft, true);
             signal(cm, "scroll", cm);
           }
         });
-        on(d.scroller, "mousewheel", function(e) {
-          return onScrollWheel(cm, e);
+        on(d2.scroller, "mousewheel", function(e2) {
+          return onScrollWheel(cm, e2);
         });
-        on(d.scroller, "DOMMouseScroll", function(e) {
-          return onScrollWheel(cm, e);
+        on(d2.scroller, "DOMMouseScroll", function(e2) {
+          return onScrollWheel(cm, e2);
         });
-        on(d.wrapper, "scroll", function() {
-          return d.wrapper.scrollTop = d.wrapper.scrollLeft = 0;
+        on(d2.wrapper, "scroll", function() {
+          return d2.wrapper.scrollTop = d2.wrapper.scrollLeft = 0;
         });
-        d.dragFunctions = {
-          enter: function(e) {
-            if (!signalDOMEvent(cm, e)) {
-              e_stop(e);
+        d2.dragFunctions = {
+          enter: function(e2) {
+            if (!signalDOMEvent(cm, e2)) {
+              e_stop(e2);
             }
           },
-          over: function(e) {
-            if (!signalDOMEvent(cm, e)) {
-              onDragOver(cm, e);
-              e_stop(e);
+          over: function(e2) {
+            if (!signalDOMEvent(cm, e2)) {
+              onDragOver(cm, e2);
+              e_stop(e2);
             }
           },
-          start: function(e) {
-            return onDragStart(cm, e);
+          start: function(e2) {
+            return onDragStart(cm, e2);
           },
           drop: operation(cm, onDrop),
-          leave: function(e) {
-            if (!signalDOMEvent(cm, e)) {
+          leave: function(e2) {
+            if (!signalDOMEvent(cm, e2)) {
               clearDragCursor(cm);
             }
           }
         };
-        var inp = d.input.getField();
-        on(inp, "keyup", function(e) {
-          return onKeyUp.call(cm, e);
+        var inp = d2.input.getField();
+        on(inp, "keyup", function(e2) {
+          return onKeyUp.call(cm, e2);
         });
         on(inp, "keydown", operation(cm, onKeyDown));
         on(inp, "keypress", operation(cm, onKeyPress));
-        on(inp, "focus", function(e) {
-          return onFocus(cm, e);
+        on(inp, "focus", function(e2) {
+          return onFocus(cm, e2);
         });
-        on(inp, "blur", function(e) {
-          return onBlur(cm, e);
+        on(inp, "blur", function(e2) {
+          return onBlur(cm, e2);
         });
       }
       var initHooks = [];
@@ -8899,7 +8899,7 @@ function requireCodemirror() {
         indentation = Math.max(0, indentation);
         var indentString = "", pos = 0;
         if (cm.options.indentWithTabs) {
-          for (var i2 = Math.floor(indentation / tabSize); i2; --i2) {
+          for (var i3 = Math.floor(indentation / tabSize); i3; --i3) {
             pos += tabSize;
             indentString += "	";
           }
@@ -8939,13 +8939,13 @@ function requireCodemirror() {
           if (lastCopied && lastCopied.text.join("\n") == inserted) {
             if (sel.ranges.length % lastCopied.text.length == 0) {
               multiPaste = [];
-              for (var i2 = 0; i2 < lastCopied.text.length; i2++) {
-                multiPaste.push(doc2.splitLines(lastCopied.text[i2]));
+              for (var i3 = 0; i3 < lastCopied.text.length; i3++) {
+                multiPaste.push(doc2.splitLines(lastCopied.text[i3]));
               }
             }
           } else if (textLines.length == sel.ranges.length && cm.options.pasteLinesPerSelection) {
-            multiPaste = map(textLines, function(l) {
-              return [l];
+            multiPaste = map(textLines, function(l2) {
+              return [l2];
             });
           }
         }
@@ -8981,10 +8981,10 @@ function requireCodemirror() {
         cm.curOp.typing = true;
         cm.state.pasteIncoming = cm.state.cutIncoming = -1;
       }
-      function handlePaste(e, cm) {
-        var pasted = e.clipboardData && e.clipboardData.getData("Text");
+      function handlePaste(e2, cm) {
+        var pasted = e2.clipboardData && e2.clipboardData.getData("Text");
         if (pasted) {
-          e.preventDefault();
+          e2.preventDefault();
           if (!cm.isReadOnly() && !cm.options.disableInput && cm.hasFocus()) {
             runInOp(cm, function() {
               return applyTextInput(cm, pasted, 0, null, "paste");
@@ -8998,9 +8998,9 @@ function requireCodemirror() {
           return;
         }
         var sel = cm.doc.sel;
-        for (var i2 = sel.ranges.length - 1; i2 >= 0; i2--) {
-          var range2 = sel.ranges[i2];
-          if (range2.head.ch > 100 || i2 && sel.ranges[i2 - 1].head.line == range2.head.line) {
+        for (var i3 = sel.ranges.length - 1; i3 >= 0; i3--) {
+          var range2 = sel.ranges[i3];
+          if (range2.head.ch > 100 || i3 && sel.ranges[i3 - 1].head.line == range2.head.line) {
             continue;
           }
           var mode = cm.getModeAt(range2.head);
@@ -9024,8 +9024,8 @@ function requireCodemirror() {
       }
       function copyableRanges(cm) {
         var text = [], ranges = [];
-        for (var i2 = 0; i2 < cm.doc.sel.ranges.length; i2++) {
-          var line = cm.doc.sel.ranges[i2].head.line;
+        for (var i3 = 0; i3 < cm.doc.sel.ranges.length; i3++) {
+          var line = cm.doc.sel.ranges[i3].head.line;
           var lineRange = { anchor: Pos(line, 0), head: Pos(line + 1, 0) };
           ranges.push(lineRange);
           text.push(cm.getRange(lineRange.anchor, lineRange.head));
@@ -9081,9 +9081,9 @@ function requireCodemirror() {
           },
           removeKeyMap: function(map2) {
             var maps = this.state.keyMaps;
-            for (var i2 = 0; i2 < maps.length; ++i2) {
-              if (maps[i2] == map2 || maps[i2].name == map2) {
-                maps.splice(i2, 1);
+            for (var i3 = 0; i3 < maps.length; ++i3) {
+              if (maps[i3] == map2 || maps[i3].name == map2) {
+                maps.splice(i3, 1);
                 return true;
               }
             }
@@ -9110,10 +9110,10 @@ function requireCodemirror() {
           }),
           removeOverlay: methodOp(function(spec) {
             var overlays = this.state.overlays;
-            for (var i2 = 0; i2 < overlays.length; ++i2) {
-              var cur = overlays[i2].modeSpec;
+            for (var i3 = 0; i3 < overlays.length; ++i3) {
+              var cur = overlays[i3].modeSpec;
               if (cur == spec || typeof spec == "string" && cur.name == spec) {
-                overlays.splice(i2, 1);
+                overlays.splice(i3, 1);
                 this.state.modeGen++;
                 regChange(this);
                 return;
@@ -9134,8 +9134,8 @@ function requireCodemirror() {
           }),
           indentSelection: methodOp(function(how) {
             var ranges = this.doc.sel.ranges, end = -1;
-            for (var i2 = 0; i2 < ranges.length; i2++) {
-              var range2 = ranges[i2];
+            for (var i3 = 0; i3 < ranges.length; i3++) {
+              var range2 = ranges[i3];
               if (!range2.empty()) {
                 var from = range2.from(), to = range2.to();
                 var start = Math.max(end, from.line);
@@ -9144,13 +9144,13 @@ function requireCodemirror() {
                   indentLine(this, j2, how);
                 }
                 var newRanges = this.doc.sel.ranges;
-                if (from.ch == 0 && ranges.length == newRanges.length && newRanges[i2].from().ch > 0) {
-                  replaceOneSelection(this.doc, i2, new Range(from, newRanges[i2].to()), sel_dontScroll);
+                if (from.ch == 0 && ranges.length == newRanges.length && newRanges[i3].from().ch > 0) {
+                  replaceOneSelection(this.doc, i3, new Range(from, newRanges[i3].to()), sel_dontScroll);
                 }
               } else if (range2.head.line > end) {
                 indentLine(this, range2.head.line, how, true);
                 end = range2.head.line;
-                if (i2 == this.doc.sel.primIndex) {
+                if (i3 == this.doc.sel.primIndex) {
                   ensureCursorVisible(this);
                 }
               }
@@ -9208,8 +9208,8 @@ function requireCodemirror() {
                 found.push(help[mode[type]]);
               }
             } else if (mode[type]) {
-              for (var i2 = 0; i2 < mode[type].length; i2++) {
-                var val = help[mode[type][i2]];
+              for (var i3 = 0; i3 < mode[type].length; i3++) {
+                var val = help[mode[type][i3]];
                 if (val) {
                   found.push(val);
                 }
@@ -9336,7 +9336,7 @@ function requireCodemirror() {
               amount = -amount;
             }
             var cur = clipPos(this.doc, from);
-            for (var i2 = 0; i2 < amount; ++i2) {
+            for (var i3 = 0; i3 < amount; ++i3) {
               cur = findPosH(this.doc, cur, dir, unit, visually);
               if (cur.hitSide) {
                 break;
@@ -9372,7 +9372,7 @@ function requireCodemirror() {
               amount = -amount;
             }
             var cur = clipPos(this.doc, from);
-            for (var i2 = 0; i2 < amount; ++i2) {
+            for (var i3 = 0; i3 < amount; ++i3) {
               var coords = cursorCoords(this, cur, "div");
               if (x2 == null) {
                 x2 = coords.left;
@@ -9406,8 +9406,8 @@ function requireCodemirror() {
               return pos;
             }, sel_move);
             if (goals.length) {
-              for (var i2 = 0; i2 < doc2.sel.ranges.length; i2++) {
-                doc2.sel.ranges[i2].goalColumn = goals[i2];
+              for (var i3 = 0; i3 < doc2.sel.ranges.length; i3++) {
+                doc2.sel.ranges[i3].goalColumn = goals[i3];
               }
             }
           }),
@@ -9456,8 +9456,8 @@ function requireCodemirror() {
           isReadOnly: function() {
             return !!(this.options.readOnly || this.doc.cantEdit);
           },
-          scrollTo: methodOp(function(x2, y) {
-            scrollToCoords(this, x2, y);
+          scrollTo: methodOp(function(x2, y2) {
+            scrollToCoords(this, x2, y2);
           }),
           getScrollInfo: function() {
             var scroller = this.display.scroller;
@@ -9508,8 +9508,8 @@ function requireCodemirror() {
             var lineNo2 = this.display.viewFrom;
             this.doc.iter(lineNo2, this.display.viewTo, function(line) {
               if (line.widgets) {
-                for (var i2 = 0; i2 < line.widgets.length; i2++) {
-                  if (line.widgets[i2].noHScroll) {
+                for (var i3 = 0; i3 < line.widgets.length; i3++) {
+                  if (line.widgets[i3].noHScroll) {
                     regLineChange(this$1$1, lineNo2, "widget");
                     break;
                   }
@@ -9590,12 +9590,12 @@ function requireCodemirror() {
         var lineObj = getLine(doc2, pos.line);
         var lineDir = visually && doc2.direction == "rtl" ? -dir : dir;
         function findNextLine() {
-          var l = pos.line + lineDir;
-          if (l < doc2.first || l >= doc2.first + doc2.size) {
+          var l2 = pos.line + lineDir;
+          if (l2 < doc2.first || l2 >= doc2.first + doc2.size) {
             return false;
           }
-          pos = new Pos(l, pos.ch, pos.sticky);
-          return lineObj = getLine(doc2, l);
+          pos = new Pos(l2, pos.ch, pos.sticky);
+          return lineObj = getLine(doc2, l2);
         }
         function moveOnce(boundToLine) {
           var next;
@@ -9662,25 +9662,25 @@ function requireCodemirror() {
         return result;
       }
       function findPosV(cm, pos, dir, unit) {
-        var doc2 = cm.doc, x2 = pos.left, y;
+        var doc2 = cm.doc, x2 = pos.left, y2;
         if (unit == "page") {
           var pageSize = Math.min(cm.display.wrapper.clientHeight, win(cm).innerHeight || doc2(cm).documentElement.clientHeight);
           var moveAmount = Math.max(pageSize - 0.5 * textHeight(cm.display), 3);
-          y = (dir > 0 ? pos.bottom : pos.top) + dir * moveAmount;
+          y2 = (dir > 0 ? pos.bottom : pos.top) + dir * moveAmount;
         } else if (unit == "line") {
-          y = dir > 0 ? pos.bottom + 3 : pos.top - 3;
+          y2 = dir > 0 ? pos.bottom + 3 : pos.top - 3;
         }
         var target;
         for (; ; ) {
-          target = coordsChar(cm, x2, y);
+          target = coordsChar(cm, x2, y2);
           if (!target.outside) {
             break;
           }
-          if (dir < 0 ? y <= 0 : y >= doc2.height) {
+          if (dir < 0 ? y2 <= 0 : y2 >= doc2.height) {
             target.hitSide = true;
             break;
           }
-          y += dir * 5;
+          y2 += dir * 5;
         }
         return target;
       }
@@ -9698,19 +9698,19 @@ function requireCodemirror() {
         var div = input.div = display.lineDiv;
         div.contentEditable = true;
         disableBrowserMagic(div, cm.options.spellcheck, cm.options.autocorrect, cm.options.autocapitalize);
-        function belongsToInput(e) {
-          for (var t = e.target; t; t = t.parentNode) {
-            if (t == div) {
+        function belongsToInput(e2) {
+          for (var t2 = e2.target; t2; t2 = t2.parentNode) {
+            if (t2 == div) {
               return true;
             }
-            if (/\bCodeMirror-(?:line)?widget\b/.test(t.className)) {
+            if (/\bCodeMirror-(?:line)?widget\b/.test(t2.className)) {
               break;
             }
           }
           return false;
         }
-        on(div, "paste", function(e) {
-          if (!belongsToInput(e) || signalDOMEvent(cm, e) || handlePaste(e, cm)) {
+        on(div, "paste", function(e2) {
+          if (!belongsToInput(e2) || signalDOMEvent(cm, e2) || handlePaste(e2, cm)) {
             return;
           }
           if (ie_version <= 11) {
@@ -9719,17 +9719,17 @@ function requireCodemirror() {
             }), 20);
           }
         });
-        on(div, "compositionstart", function(e) {
-          this$1$1.composing = { data: e.data, done: false };
+        on(div, "compositionstart", function(e2) {
+          this$1$1.composing = { data: e2.data, done: false };
         });
-        on(div, "compositionupdate", function(e) {
+        on(div, "compositionupdate", function(e2) {
           if (!this$1$1.composing) {
-            this$1$1.composing = { data: e.data, done: false };
+            this$1$1.composing = { data: e2.data, done: false };
           }
         });
-        on(div, "compositionend", function(e) {
+        on(div, "compositionend", function(e2) {
           if (this$1$1.composing) {
-            if (e.data != this$1$1.composing.data) {
+            if (e2.data != this$1$1.composing.data) {
               this$1$1.readFromDOMSoon();
             }
             this$1$1.composing.done = true;
@@ -9743,13 +9743,13 @@ function requireCodemirror() {
             this$1$1.readFromDOMSoon();
           }
         });
-        function onCopyCut(e) {
-          if (!belongsToInput(e) || signalDOMEvent(cm, e)) {
+        function onCopyCut(e2) {
+          if (!belongsToInput(e2) || signalDOMEvent(cm, e2)) {
             return;
           }
           if (cm.somethingSelected()) {
             setLastCopied({ lineWise: false, text: cm.getSelections() });
-            if (e.type == "cut") {
+            if (e2.type == "cut") {
               cm.replaceSelection("", null, "cut");
             }
           } else if (!cm.options.lineWiseCopyCut) {
@@ -9757,19 +9757,19 @@ function requireCodemirror() {
           } else {
             var ranges = copyableRanges(cm);
             setLastCopied({ lineWise: true, text: ranges.text });
-            if (e.type == "cut") {
+            if (e2.type == "cut") {
               cm.operation(function() {
                 cm.setSelections(ranges.ranges, 0, sel_dontScroll);
                 cm.replaceSelection("", null, "cut");
               });
             }
           }
-          if (e.clipboardData) {
-            e.clipboardData.clearData();
+          if (e2.clipboardData) {
+            e2.clipboardData.clearData();
             var content = lastCopied.text.join("\n");
-            e.clipboardData.setData("Text", content);
-            if (e.clipboardData.getData("Text") == content) {
-              e.preventDefault();
+            e2.clipboardData.setData("Text", content);
+            if (e2.clipboardData.getData("Text") == content) {
+              e2.preventDefault();
               return;
             }
           }
@@ -9841,7 +9841,7 @@ function requireCodemirror() {
         var old = sel.rangeCount && sel.getRangeAt(0), rng;
         try {
           rng = range(start.node, start.offset, end.offset, end.node);
-        } catch (e) {
+        } catch (e2) {
         }
         if (rng) {
           if (!gecko && cm.state.focused) {
@@ -10083,13 +10083,13 @@ function requireCodemirror() {
       ContentEditableInput.prototype.setUneditable = function(node) {
         node.contentEditable = "false";
       };
-      ContentEditableInput.prototype.onKeyPress = function(e) {
-        if (e.charCode == 0 || this.composing) {
+      ContentEditableInput.prototype.onKeyPress = function(e2) {
+        if (e2.charCode == 0 || this.composing) {
           return;
         }
-        e.preventDefault();
+        e2.preventDefault();
         if (!this.cm.isReadOnly()) {
-          operation(this.cm, applyTextInput)(this.cm, String.fromCharCode(e.charCode == null ? e.keyCode : e.charCode), 0);
+          operation(this.cm, applyTextInput)(this.cm, String.fromCharCode(e2.charCode == null ? e2.keyCode : e2.charCode), 0);
         }
       };
       ContentEditableInput.prototype.readOnlyChanged = function(val) {
@@ -10177,8 +10177,8 @@ function requireCodemirror() {
             if (isBlock) {
               close();
             }
-            for (var i2 = 0; i2 < node.childNodes.length; i2++) {
-              walk(node.childNodes[i2]);
+            for (var i3 = 0; i3 < node.childNodes.length; i3++) {
+              walk(node.childNodes[i3]);
             }
             if (/^(pre|p)$/i.test(node.nodeName)) {
               extraLinebreak = true;
@@ -10219,8 +10219,8 @@ function requireCodemirror() {
             }
           }
         }
-        for (var i2 = 0; i2 < cm.display.view.length; i2++) {
-          var lineView = cm.display.view[i2];
+        for (var i3 = 0; i3 < cm.display.view.length; i3++) {
+          var lineView = cm.display.view[i3];
           if (lineView.node == lineNode) {
             return locateNodeInLineView(lineView, node, offset);
           }
@@ -10252,12 +10252,12 @@ function requireCodemirror() {
         }
         var measure = lineView.measure, maps = measure.maps;
         function find(textNode2, topNode2, offset2) {
-          for (var i2 = -1; i2 < (maps ? maps.length : 0); i2++) {
-            var map2 = i2 < 0 ? measure.map : maps[i2];
+          for (var i3 = -1; i3 < (maps ? maps.length : 0); i3++) {
+            var map2 = i3 < 0 ? measure.map : maps[i3];
             for (var j2 = 0; j2 < map2.length; j2 += 3) {
               var curNode = map2[j2 + 2];
               if (curNode == textNode2 || curNode == topNode2) {
-                var line2 = lineNo(i2 < 0 ? lineView.line : lineView.rest[i2]);
+                var line2 = lineNo(i3 < 0 ? lineView.line : lineView.rest[i3]);
                 var ch = map2[j2] + offset2;
                 if (offset2 < 0 || curNode != textNode2) {
                   ch = map2[j2 + (offset2 ? 1 : 0)];
@@ -10312,15 +10312,15 @@ function requireCodemirror() {
           }
           input.poll();
         });
-        on(te, "paste", function(e) {
-          if (signalDOMEvent(cm, e) || handlePaste(e, cm)) {
+        on(te, "paste", function(e2) {
+          if (signalDOMEvent(cm, e2) || handlePaste(e2, cm)) {
             return;
           }
           cm.state.pasteIncoming = +/* @__PURE__ */ new Date();
           input.fastPoll();
         });
-        function prepareCopyCut(e) {
-          if (signalDOMEvent(cm, e)) {
+        function prepareCopyCut(e2) {
+          if (signalDOMEvent(cm, e2)) {
             return;
           }
           if (cm.somethingSelected()) {
@@ -10330,7 +10330,7 @@ function requireCodemirror() {
           } else {
             var ranges = copyableRanges(cm);
             setLastCopied({ lineWise: true, text: ranges.text });
-            if (e.type == "cut") {
+            if (e2.type == "cut") {
               cm.setSelections(ranges.ranges, null, sel_dontScroll);
             } else {
               input.prevInput = "";
@@ -10338,14 +10338,14 @@ function requireCodemirror() {
               selectInput(te);
             }
           }
-          if (e.type == "cut") {
+          if (e2.type == "cut") {
             cm.state.cutIncoming = +/* @__PURE__ */ new Date();
           }
         }
         on(te, "cut", prepareCopyCut);
         on(te, "copy", prepareCopyCut);
-        on(display.scroller, "paste", function(e) {
-          if (eventInWidget(display, e) || signalDOMEvent(cm, e)) {
+        on(display.scroller, "paste", function(e2) {
+          if (eventInWidget(display, e2) || signalDOMEvent(cm, e2)) {
             return;
           }
           if (!te.dispatchEvent) {
@@ -10354,12 +10354,12 @@ function requireCodemirror() {
             return;
           }
           var event = new Event("paste");
-          event.clipboardData = e.clipboardData;
+          event.clipboardData = e2.clipboardData;
           te.dispatchEvent(event);
         });
-        on(display.lineSpace, "selectstart", function(e) {
-          if (!eventInWidget(display, e)) {
-            e_preventDefault(e);
+        on(display.lineSpace, "selectstart", function(e2) {
+          if (!eventInWidget(display, e2)) {
+            e_preventDefault(e2);
           }
         });
         on(te, "compositionstart", function() {
@@ -10453,7 +10453,7 @@ function requireCodemirror() {
         if (this.cm.options.readOnly != "nocursor" && (!mobile || activeElt(rootNode(this.textarea)) != this.textarea)) {
           try {
             this.textarea.focus();
-          } catch (e) {
+          } catch (e2) {
           }
         }
       };
@@ -10481,17 +10481,17 @@ function requireCodemirror() {
       TextareaInput.prototype.fastPoll = function() {
         var missed = false, input = this;
         input.pollingFast = true;
-        function p() {
+        function p2() {
           var changed = input.poll();
           if (!changed && !missed) {
             missed = true;
-            input.polling.set(60, p);
+            input.polling.set(60, p2);
           } else {
             input.pollingFast = false;
             input.slowPoll();
           }
         }
-        input.polling.set(20, p);
+        input.polling.set(20, p2);
       };
       TextareaInput.prototype.poll = function() {
         var this$1$1 = this;
@@ -10517,8 +10517,8 @@ function requireCodemirror() {
             return this.cm.execCommand("undo");
           }
         }
-        var same = 0, l = Math.min(prevInput.length, text.length);
-        while (same < l && prevInput.charCodeAt(same) == text.charCodeAt(same)) {
+        var same = 0, l2 = Math.min(prevInput.length, text.length);
+        while (same < l2 && prevInput.charCodeAt(same) == text.charCodeAt(same)) {
           ++same;
         }
         runInOp(cm, function() {
@@ -10556,12 +10556,12 @@ function requireCodemirror() {
         }
         this.fastPoll();
       };
-      TextareaInput.prototype.onContextMenu = function(e) {
+      TextareaInput.prototype.onContextMenu = function(e2) {
         var input = this, cm = input.cm, display = cm.display, te = input.textarea;
         if (input.contextMenuPending) {
           input.contextMenuPending();
         }
-        var pos = posFromMouse(cm, e), scrollPos = display.scroller.scrollTop;
+        var pos = posFromMouse(cm, e2), scrollPos = display.scroller.scrollTop;
         if (!pos || presto) {
           return;
         }
@@ -10572,7 +10572,7 @@ function requireCodemirror() {
         var oldCSS = te.style.cssText, oldWrapperCSS = input.wrapper.style.cssText;
         var wrapperBox = input.wrapper.offsetParent.getBoundingClientRect();
         input.wrapper.style.cssText = "position: static";
-        te.style.cssText = "position: absolute; width: 30px; height: 30px;\n      top: " + (e.clientY - wrapperBox.top - 5) + "px; left: " + (e.clientX - wrapperBox.left - 5) + "px;\n      z-index: 1000; background: " + (ie ? "rgba(255, 255, 255, .05)" : "transparent") + ";\n      outline: none; border-width: 0; outline: none; overflow: hidden; opacity: .05; filter: alpha(opacity=5);";
+        te.style.cssText = "position: absolute; width: 30px; height: 30px;\n      top: " + (e2.clientY - wrapperBox.top - 5) + "px; left: " + (e2.clientX - wrapperBox.left - 5) + "px;\n      z-index: 1000; background: " + (ie ? "rgba(255, 255, 255, .05)" : "transparent") + ";\n      outline: none; border-width: 0; outline: none; overflow: hidden; opacity: .05; filter: alpha(opacity=5);";
         var oldScrollY;
         if (webkit) {
           oldScrollY = te.ownerDocument.defaultView.scrollY;
@@ -10614,10 +10614,10 @@ function requireCodemirror() {
             if (!ie || ie && ie_version < 9) {
               prepareSelectAllHack();
             }
-            var i2 = 0, poll = function() {
+            var i3 = 0, poll = function() {
               if (display.selForContextMenu == cm.doc.sel && te.selectionStart == 0 && te.selectionEnd > 0 && input.prevInput == "​") {
                 operation(cm, selectAll)(cm);
-              } else if (i2++ < 10) {
+              } else if (i3++ < 10) {
                 display.detectingSelectAll = setTimeout(poll, 500);
               } else {
                 display.selForContextMenu = null;
@@ -10631,7 +10631,7 @@ function requireCodemirror() {
           prepareSelectAllHack();
         }
         if (captureRightClick) {
-          e_stop(e);
+          e_stop(e2);
           var mouseup = function() {
             off(window, "mouseup", mouseup);
             setTimeout(rehide, 20);
@@ -10680,7 +10680,7 @@ function requireCodemirror() {
                 form.submit();
                 form.submit = wrappedSubmit;
               };
-            } catch (e) {
+            } catch (e2) {
             }
           }
         }
@@ -11002,15 +11002,15 @@ function requireMerge() {
       }
       function removeClass(editor, line, classes) {
         var locs = classes.classLocation;
-        for (var i = 0; i < locs.length; i++) {
-          editor.removeLineClass(line, locs[i], classes.chunk);
-          editor.removeLineClass(line, locs[i], classes.start);
-          editor.removeLineClass(line, locs[i], classes.end);
+        for (var i2 = 0; i2 < locs.length; i2++) {
+          editor.removeLineClass(line, locs[i2], classes.chunk);
+          editor.removeLineClass(line, locs[i2], classes.start);
+          editor.removeLineClass(line, locs[i2], classes.end);
         }
       }
       function clearMarks(editor, arr, classes) {
-        for (var i = 0; i < arr.length; ++i) {
-          var mark = arr[i];
+        for (var i2 = 0; i2 < arr.length; ++i2) {
+          var mark = arr[i2];
           if (mark instanceof CodeMirror2.TextMarker)
             mark.clear();
           else if (mark.parent)
@@ -11040,10 +11040,10 @@ function requireMerge() {
       }
       function addClass(editor, lineNr, classes, main, start, end) {
         var locs = classes.classLocation, line = editor.getLineHandle(lineNr);
-        for (var i = 0; i < locs.length; i++) {
-          if (main) editor.addLineClass(line, locs[i], classes.chunk);
-          if (start) editor.addLineClass(line, locs[i], classes.start);
-          if (end) editor.addLineClass(line, locs[i], classes.end);
+        for (var i2 = 0; i2 < locs.length; i2++) {
+          if (main) editor.addLineClass(line, locs[i2], classes.chunk);
+          if (start) editor.addLineClass(line, locs[i2], classes.start);
+          if (end) editor.addLineClass(line, locs[i2], classes.end);
         }
         return line;
       }
@@ -11053,8 +11053,8 @@ function requireMerge() {
         var cls = type == DIFF_DELETE ? classes.del : classes.insert;
         function markChunk(start, end2) {
           var bfrom = Math.max(from, start), bto = Math.min(to, end2);
-          for (var i2 = bfrom; i2 < bto; ++i2)
-            marks.push(addClass(editor, i2, classes, true, i2 == start, i2 == end2 - 1));
+          for (var i3 = bfrom; i3 < bto; ++i3)
+            marks.push(addClass(editor, i3, classes, true, i3 == start, i3 == end2 - 1));
           if (start == end2 && bfrom == end2 && bto == end2) {
             if (bfrom)
               marks.push(addClass(editor, bfrom - 1, classes, false, false, true));
@@ -11063,12 +11063,12 @@ function requireMerge() {
           }
         }
         var chunkStart = 0, pending = false;
-        for (var i = 0; i < diff.length; ++i) {
-          var part = diff[i], tp = part[0], str = part[1];
+        for (var i2 = 0; i2 < diff.length; ++i2) {
+          var part = diff[i2], tp = part[0], str = part[1];
           if (tp == DIFF_EQUAL) {
-            var cleanFrom = pos.line + (startOfLineClean(diff, i) ? 0 : 1);
+            var cleanFrom = pos.line + (startOfLineClean(diff, i2) ? 0 : 1);
             moveOver(pos, str);
-            var cleanTo = pos.line + (endOfLineClean(diff, i) ? 1 : 0);
+            var cleanTo = pos.line + (endOfLineClean(diff, i2) ? 1 : 0);
             if (cleanTo > cleanFrom) {
               if (pending) {
                 markChunk(chunkStart, cleanFrom);
@@ -11080,9 +11080,9 @@ function requireMerge() {
             pending = true;
             if (tp == type) {
               var end = moveOver(pos, str, true);
-              var a = posMax(top, pos), b = posMin(bot, end);
-              if (!posEq(a, b))
-                marks.push(editor.markText(a, b, { className: cls }));
+              var a2 = posMax(top, pos), b = posMin(bot, end);
+              if (!posEq(a2, b))
+                marks.push(editor.markText(a2, b, { className: cls }));
               pos = end;
             }
           }
@@ -11093,24 +11093,24 @@ function requireMerge() {
         if (!dv.showDifferences) return;
         if (dv.svg) {
           clear(dv.svg);
-          var w2 = dv.gap.offsetWidth;
-          attrs(dv.svg, "width", w2, "height", dv.gap.offsetHeight);
+          var w = dv.gap.offsetWidth;
+          attrs(dv.svg, "width", w, "height", dv.gap.offsetHeight);
         }
         if (dv.copyButtons) clear(dv.copyButtons);
         var vpEdit = dv.edit.getViewport(), vpOrig = dv.orig.getViewport();
         var outerTop = dv.mv.wrap.getBoundingClientRect().top;
         var sTopEdit = outerTop - dv.edit.getScrollerElement().getBoundingClientRect().top + dv.edit.getScrollInfo().top;
         var sTopOrig = outerTop - dv.orig.getScrollerElement().getBoundingClientRect().top + dv.orig.getScrollInfo().top;
-        for (var i = 0; i < dv.chunks.length; i++) {
-          var ch = dv.chunks[i];
+        for (var i2 = 0; i2 < dv.chunks.length; i2++) {
+          var ch = dv.chunks[i2];
           if (ch.editFrom <= vpEdit.to && ch.editTo >= vpEdit.from && ch.origFrom <= vpOrig.to && ch.origTo >= vpOrig.from)
-            drawConnectorsForChunk(dv, ch, sTopOrig, sTopEdit, w2);
+            drawConnectorsForChunk(dv, ch, sTopOrig, sTopEdit, w);
         }
       }
       function getMatchingOrigLine(editLine, chunks) {
         var editStart = 0, origStart = 0;
-        for (var i = 0; i < chunks.length; i++) {
-          var chunk = chunks[i];
+        for (var i2 = 0; i2 < chunks.length; i2++) {
+          var chunk = chunks[i2];
           if (chunk.editTo > editLine && chunk.editFrom <= editLine) return null;
           if (chunk.editFrom > editLine) break;
           editStart = chunk.editTo;
@@ -11122,8 +11122,8 @@ function requireMerge() {
         var tracker = cm.state.trackAlignable;
         var start = cm.firstLine(), trackI = 0;
         var result = [];
-        for (var i = 0; ; i++) {
-          var chunk = chunks[i];
+        for (var i2 = 0; ; i2++) {
+          var chunk = chunks[i2];
           var chunkStart = !chunk ? 1e9 : isOrig ? chunk.origFrom : chunk.editFrom;
           for (; trackI < tracker.alignable.length; trackI += 2) {
             var n2 = tracker.alignable[trackI] + 1;
@@ -11171,13 +11171,13 @@ function requireMerge() {
       }
       function findAlignedLines(dv, other) {
         var alignable = alignableFor(dv.edit, dv.chunks, false), result = [];
-        if (other) for (var i = 0, j2 = 0; i < other.chunks.length; i++) {
-          var n2 = other.chunks[i].editTo;
+        if (other) for (var i2 = 0, j2 = 0; i2 < other.chunks.length; i2++) {
+          var n2 = other.chunks[i2].editTo;
           while (j2 < alignable.length && alignable[j2] < n2) j2++;
           if (j2 == alignable.length || alignable[j2] != n2) alignable.splice(j2++, 0, n2);
         }
-        for (var i = 0; i < alignable.length; i++)
-          result.push([alignable[i], null, null]);
+        for (var i2 = 0; i2 < alignable.length; i2++)
+          result.push([alignable[i2], null, null]);
         mergeAlignable(result, alignableFor(dv.orig, dv.chunks, true), dv.chunks, 1);
         if (other)
           mergeAlignable(result, alignableFor(other.orig, other.chunks, true), other.chunks, 2);
@@ -11196,33 +11196,33 @@ function requireMerge() {
         }
         var linesToAlign = findAlignedLines(dv, other);
         var aligners = dv.mv.aligners;
-        for (var i = 0; i < aligners.length; i++)
-          aligners[i].clear();
+        for (var i2 = 0; i2 < aligners.length; i2++)
+          aligners[i2].clear();
         aligners.length = 0;
         var cm = [dv.edit, dv.orig], scroll = [], offset = [];
         if (other) cm.push(other.orig);
-        for (var i = 0; i < cm.length; i++) {
-          scroll.push(cm[i].getScrollInfo().top);
-          offset.push(-cm[i].getScrollerElement().getBoundingClientRect().top);
+        for (var i2 = 0; i2 < cm.length; i2++) {
+          scroll.push(cm[i2].getScrollInfo().top);
+          offset.push(-cm[i2].getScrollerElement().getBoundingClientRect().top);
         }
         if (offset[0] != offset[1] || cm.length == 3 && offset[1] != offset[2])
           alignLines(cm, offset, [0, 0, 0], aligners);
         for (var ln = 0; ln < linesToAlign.length; ln++)
           alignLines(cm, offset, linesToAlign[ln], aligners);
-        for (var i = 0; i < cm.length; i++)
-          cm[i].scrollTo(null, scroll[i]);
+        for (var i2 = 0; i2 < cm.length; i2++)
+          cm[i2].scrollTo(null, scroll[i2]);
       }
       function alignLines(cm, cmOffset, lines, aligners) {
         var maxOffset = -1e8, offset = [];
-        for (var i = 0; i < cm.length; i++) if (lines[i] != null) {
-          var off = cm[i].heightAtLine(lines[i], "local") - cmOffset[i];
-          offset[i] = off;
+        for (var i2 = 0; i2 < cm.length; i2++) if (lines[i2] != null) {
+          var off = cm[i2].heightAtLine(lines[i2], "local") - cmOffset[i2];
+          offset[i2] = off;
           maxOffset = Math.max(maxOffset, off);
         }
-        for (var i = 0; i < cm.length; i++) if (lines[i] != null) {
-          var diff = maxOffset - offset[i];
+        for (var i2 = 0; i2 < cm.length; i2++) if (lines[i2] != null) {
+          var diff = maxOffset - offset[i2];
           if (diff > 1)
-            aligners.push(padAbove(cm[i], lines[i], diff));
+            aligners.push(padAbove(cm[i2], lines[i2], diff));
         }
       }
       function padAbove(cm, line, size) {
@@ -11237,7 +11237,7 @@ function requireMerge() {
         elt2.style.minWidth = "1px";
         return cm.addLineWidget(line, elt2, { height: size, above, mergeSpacer: true, handleMouseEvents: true });
       }
-      function drawConnectorsForChunk(dv, chunk, sTopOrig, sTopEdit, w2) {
+      function drawConnectorsForChunk(dv, chunk, sTopOrig, sTopEdit, w) {
         var flip2 = dv.type == "left";
         var top = dv.orig.heightAtLine(chunk.origFrom, "local", true) - sTopOrig;
         if (dv.svg) {
@@ -11255,12 +11255,12 @@ function requireMerge() {
             botLpx = botRpx;
             botRpx = tmp;
           }
-          var curveTop = " C " + w2 / 2 + " " + topRpx + " " + w2 / 2 + " " + topLpx + " " + (w2 + 2) + " " + topLpx;
-          var curveBot = " C " + w2 / 2 + " " + botLpx + " " + w2 / 2 + " " + botRpx + " -1 " + botRpx;
+          var curveTop = " C " + w / 2 + " " + topRpx + " " + w / 2 + " " + topLpx + " " + (w + 2) + " " + topLpx;
+          var curveBot = " C " + w / 2 + " " + botLpx + " " + w / 2 + " " + botRpx + " -1 " + botRpx;
           attrs(
             dv.svg.appendChild(document.createElementNS(svgNS, "path")),
             "d",
-            "M -1 " + topRpx + curveTop + " L " + (w2 + 2) + " " + botLpx + curveBot + " z",
+            "M -1 " + topRpx + curveTop + " L " + (w + 2) + " " + botLpx + curveBot + " z",
             "class",
             dv.classes.connect
           );
@@ -11356,9 +11356,9 @@ function requireMerge() {
         };
         CodeMirror2.on(window, "resize", onResize);
         var resizeInterval = setInterval(function() {
-          for (var p = wrapElt.parentNode; p && p != document.body; p = p.parentNode) {
+          for (var p2 = wrapElt.parentNode; p2 && p2 != document.body; p2 = p2.parentNode) {
           }
-          if (!p) {
+          if (!p2) {
             clearInterval(resizeInterval);
             CodeMirror2.off(window, "resize", onResize);
           }
@@ -11372,14 +11372,14 @@ function requireMerge() {
         CodeMirror2.on(lock, "click", function() {
           setScrollLock(dv, !dv.lockScroll);
         });
-        CodeMirror2.on(lock, "keyup", function(e) {
-          (e.key === "Enter" || e.code === "Space") && setScrollLock(dv, !dv.lockScroll);
+        CodeMirror2.on(lock, "keyup", function(e2) {
+          (e2.key === "Enter" || e2.code === "Space") && setScrollLock(dv, !dv.lockScroll);
         });
         var gapElts = [lockWrap];
         if (dv.mv.options.revertButtons !== false) {
           dv.copyButtons = elt("div", null, "CodeMirror-merge-copybuttons-" + dv.type);
-          var copyButtons = function(e) {
-            var node = e.target || e.srcElement;
+          var copyButtons = function(e2) {
+            var node = e2.target || e2.srcElement;
             if (!node.chunk) return;
             if (node.className == "CodeMirror-merge-copy-reverse") {
               copyChunk(dv, dv.orig, dv.edit, node.chunk);
@@ -11388,8 +11388,8 @@ function requireMerge() {
             copyChunk(dv, dv.edit, dv.orig, node.chunk);
           };
           CodeMirror2.on(dv.copyButtons, "click", copyButtons);
-          CodeMirror2.on(dv.copyButtons, "keyup", function(e) {
-            (e.key === "Enter" || e.code === "Space") && copyButtons(e);
+          CodeMirror2.on(dv.copyButtons, "keyup", function(e2) {
+            (e2.key === "Enter" || e2.code === "Space") && copyButtons(e2);
           });
           gapElts.unshift(dv.copyButtons);
         }
@@ -11434,16 +11434,16 @@ function requireMerge() {
         else return obj.getValue();
       }
       var dmp;
-      function getDiff(a, b, ignoreWhitespace) {
+      function getDiff(a2, b, ignoreWhitespace) {
         if (!dmp) dmp = new diff_match_patch();
-        var diff = dmp.diff_main(a, b);
-        for (var i = 0; i < diff.length; ++i) {
-          var part = diff[i];
+        var diff = dmp.diff_main(a2, b);
+        for (var i2 = 0; i2 < diff.length; ++i2) {
+          var part = diff[i2];
           if (ignoreWhitespace ? !/[^ \t]/.test(part[1]) : !part[1]) {
-            diff.splice(i--, 1);
-          } else if (i && diff[i - 1][0] == part[0]) {
-            diff.splice(i--, 1);
-            diff[i][1] += part[1];
+            diff.splice(i2--, 1);
+          } else if (i2 && diff[i2 - 1][0] == part[0]) {
+            diff.splice(i2--, 1);
+            diff[i2][1] += part[1];
           }
         }
         return diff;
@@ -11453,16 +11453,16 @@ function requireMerge() {
         if (!diff.length) return chunks;
         var startEdit = 0, startOrig = 0;
         var edit = Pos(0, 0), orig = Pos(0, 0);
-        for (var i = 0; i < diff.length; ++i) {
-          var part = diff[i], tp = part[0];
+        for (var i2 = 0; i2 < diff.length; ++i2) {
+          var part = diff[i2], tp = part[0];
           if (tp == DIFF_EQUAL) {
-            var startOff = !startOfLineClean(diff, i) || edit.line < startEdit || orig.line < startOrig ? 1 : 0;
+            var startOff = !startOfLineClean(diff, i2) || edit.line < startEdit || orig.line < startOrig ? 1 : 0;
             var cleanFromEdit = edit.line + startOff, cleanFromOrig = orig.line + startOff;
             moveOver(edit, part[1], null, orig);
-            var endOff = endOfLineClean(diff, i) ? 1 : 0;
+            var endOff = endOfLineClean(diff, i2) ? 1 : 0;
             var cleanToEdit = edit.line + endOff, cleanToOrig = orig.line + endOff;
             if (cleanToEdit > cleanFromEdit) {
-              if (i) chunks.push({
+              if (i2) chunks.push({
                 origFrom: startOrig,
                 origTo: cleanFromOrig,
                 editFrom: startEdit,
@@ -11484,26 +11484,26 @@ function requireMerge() {
           });
         return chunks;
       }
-      function endOfLineClean(diff, i) {
-        if (i == diff.length - 1) return true;
-        var next = diff[i + 1][1];
-        if (next.length == 1 && i < diff.length - 2 || next.charCodeAt(0) != 10) return false;
-        if (i == diff.length - 2) return true;
-        next = diff[i + 2][1];
-        return (next.length > 1 || i == diff.length - 3) && next.charCodeAt(0) == 10;
+      function endOfLineClean(diff, i2) {
+        if (i2 == diff.length - 1) return true;
+        var next = diff[i2 + 1][1];
+        if (next.length == 1 && i2 < diff.length - 2 || next.charCodeAt(0) != 10) return false;
+        if (i2 == diff.length - 2) return true;
+        next = diff[i2 + 2][1];
+        return (next.length > 1 || i2 == diff.length - 3) && next.charCodeAt(0) == 10;
       }
-      function startOfLineClean(diff, i) {
-        if (i == 0) return true;
-        var last = diff[i - 1][1];
+      function startOfLineClean(diff, i2) {
+        if (i2 == 0) return true;
+        var last = diff[i2 - 1][1];
         if (last.charCodeAt(last.length - 1) != 10) return false;
-        if (i == 1) return true;
-        last = diff[i - 2][1];
+        if (i2 == 1) return true;
+        last = diff[i2 - 2][1];
         return last.charCodeAt(last.length - 1) == 10;
       }
       function chunkBoundariesAround(chunks, n2, nInEdit) {
         var beforeE, afterE, beforeO, afterO;
-        for (var i = 0; i < chunks.length; i++) {
-          var chunk = chunks[i];
+        for (var i2 = 0; i2 < chunks.length; i2++) {
+          var chunk = chunks[i2];
           var fromLocal = nInEdit ? chunk.editFrom : chunk.origFrom;
           var toLocal = nInEdit ? chunk.editTo : chunk.origTo;
           if (afterE == null) {
@@ -11549,10 +11549,10 @@ function requireMerge() {
       function collapseStretch(size, editors) {
         var marks = [];
         function clear2() {
-          for (var i2 = 0; i2 < marks.length; i2++) marks[i2].clear();
+          for (var i3 = 0; i3 < marks.length; i3++) marks[i3].clear();
         }
-        for (var i = 0; i < editors.length; i++) {
-          var editor = editors[i];
+        for (var i2 = 0; i2 < editors.length; i2++) {
+          var editor = editors[i2];
           var mark = collapseSingle(editor.cm, editor.line, editor.line + size);
           marks.push(mark);
           mark.mark.on("clear", clear2);
@@ -11560,10 +11560,10 @@ function requireMerge() {
         return marks[0].mark;
       }
       function unclearNearChunks(dv, margin, off, clear2) {
-        for (var i = 0; i < dv.chunks.length; i++) {
-          var chunk = dv.chunks[i];
-          for (var l = chunk.editFrom - margin; l < chunk.editTo + margin; l++) {
-            var pos = l + off;
+        for (var i2 = 0; i2 < dv.chunks.length; i2++) {
+          var chunk = dv.chunks[i2];
+          for (var l2 = chunk.editFrom - margin; l2 < chunk.editTo + margin; l2++) {
+            var pos = l2 + off;
             if (pos >= 0 && pos < clear2.length) clear2[pos] = false;
           }
         }
@@ -11571,13 +11571,13 @@ function requireMerge() {
       function collapseIdenticalStretches(mv, margin) {
         if (typeof margin != "number") margin = 2;
         var clear2 = [], edit = mv.editor(), off = edit.firstLine();
-        for (var l = off, e = edit.lastLine(); l <= e; l++) clear2.push(true);
+        for (var l2 = off, e2 = edit.lastLine(); l2 <= e2; l2++) clear2.push(true);
         if (mv.left) unclearNearChunks(mv.left, margin, off, clear2);
         if (mv.right) unclearNearChunks(mv.right, margin, off, clear2);
-        for (var i = 0; i < clear2.length; i++) {
-          if (clear2[i]) {
-            var line = i + off;
-            for (var size = 1; i < clear2.length - 1 && clear2[i + 1]; i++, size++) {
+        for (var i2 = 0; i2 < clear2.length; i2++) {
+          if (clear2[i2]) {
+            var line = i2 + off;
+            for (var size = 1; i2 < clear2.length - 1 && clear2[i2 + 1]; i2++, size++) {
             }
             if (size > margin) {
               var editors = [{ line, cm: edit }];
@@ -11590,20 +11590,20 @@ function requireMerge() {
         }
       }
       function elt(tag, content, className, style) {
-        var e = document.createElement(tag);
-        if (className) e.className = className;
-        if (style) e.style.cssText = style;
-        if (typeof content == "string") e.appendChild(document.createTextNode(content));
-        else if (content) for (var i = 0; i < content.length; ++i) e.appendChild(content[i]);
-        return e;
+        var e2 = document.createElement(tag);
+        if (className) e2.className = className;
+        if (style) e2.style.cssText = style;
+        if (typeof content == "string") e2.appendChild(document.createTextNode(content));
+        else if (content) for (var i2 = 0; i2 < content.length; ++i2) e2.appendChild(content[i2]);
+        return e2;
       }
       function clear(node) {
         for (var count = node.childNodes.length; count > 0; --count)
           node.removeChild(node.firstChild);
       }
       function attrs(elt2) {
-        for (var i = 1; i < arguments.length; i += 2)
-          elt2.setAttribute(arguments[i], arguments[i + 1]);
+        for (var i2 = 1; i2 < arguments.length; i2 += 2)
+          elt2.setAttribute(arguments[i2], arguments[i2 + 1]);
       }
       function copyObj(obj, target) {
         if (!target) target = {};
@@ -11682,8 +11682,8 @@ function requireMerge() {
           this.alignable.splice(pos, 0, n2, flags);
         },
         find: function(n2) {
-          for (var i = 0; i < this.alignable.length; i += 2)
-            if (this.alignable[i] == n2) return i;
+          for (var i2 = 0; i2 < this.alignable.length; i2 += 2)
+            if (this.alignable[i2] == n2) return i2;
           return -1;
         },
         check: function(n2, flag, pred) {
@@ -11699,8 +11699,8 @@ function requireMerge() {
         hasMarker: function(n2) {
           var handle = this.cm.getLineHandle(n2);
           if (handle.markedSpans) {
-            for (var i = 0; i < handle.markedSpans.length; i++)
-              if (handle.markedSpans[i].marker.collapsed && handle.markedSpans[i].to != null)
+            for (var i2 = 0; i2 < handle.markedSpans.length; i2++)
+              if (handle.markedSpans[i2].marker.collapsed && handle.markedSpans[i2].to != null)
                 return true;
           }
           return false;
@@ -11708,8 +11708,8 @@ function requireMerge() {
         hasWidget: function(n2) {
           var handle = this.cm.getLineHandle(n2);
           if (handle.widgets) {
-            for (var i = 0; i < handle.widgets.length; i++)
-              if (!handle.widgets[i].above && !handle.widgets[i].mergeSpacer) return true;
+            for (var i2 = 0; i2 < handle.widgets.length; i2++)
+              if (!handle.widgets[i2].above && !handle.widgets[i2].mergeSpacer) return true;
           }
           return false;
         },
@@ -11717,20 +11717,20 @@ function requireMerge() {
           if (n2 == this.cm.lastLine()) return false;
           var handle = this.cm.getLineHandle(n2 + 1);
           if (handle.widgets) {
-            for (var i = 0; i < handle.widgets.length; i++)
-              if (handle.widgets[i].above && !handle.widgets[i].mergeSpacer) return true;
+            for (var i2 = 0; i2 < handle.widgets.length; i2++)
+              if (handle.widgets[i2].above && !handle.widgets[i2].mergeSpacer) return true;
           }
           return false;
         },
         map: function(from, nBefore, nAfter) {
           var diff = nAfter - nBefore, to = from + nBefore, widgetFrom = -1, widgetTo = -1;
-          for (var i = 0; i < this.alignable.length; i += 2) {
-            var n2 = this.alignable[i];
-            if (n2 == from && this.alignable[i + 1] & F_WIDGET_BELOW) widgetFrom = i;
-            if (n2 == to && this.alignable[i + 1] & F_WIDGET_BELOW) widgetTo = i;
+          for (var i2 = 0; i2 < this.alignable.length; i2 += 2) {
+            var n2 = this.alignable[i2];
+            if (n2 == from && this.alignable[i2 + 1] & F_WIDGET_BELOW) widgetFrom = i2;
+            if (n2 == to && this.alignable[i2 + 1] & F_WIDGET_BELOW) widgetTo = i2;
             if (n2 <= from) continue;
-            else if (n2 < to) this.alignable.splice(i--, 2);
-            else this.alignable[i] += diff;
+            else if (n2 < to) this.alignable.splice(i2--, 2);
+            else this.alignable[i2] += diff;
           }
           if (widgetFrom > -1) {
             var flags = this.alignable[widgetFrom + 1];
@@ -11741,33 +11741,33 @@ function requireMerge() {
             this.set(from + nAfter, F_WIDGET_BELOW);
         }
       };
-      function posMin(a, b) {
-        return (a.line - b.line || a.ch - b.ch) < 0 ? a : b;
+      function posMin(a2, b) {
+        return (a2.line - b.line || a2.ch - b.ch) < 0 ? a2 : b;
       }
-      function posMax(a, b) {
-        return (a.line - b.line || a.ch - b.ch) > 0 ? a : b;
+      function posMax(a2, b) {
+        return (a2.line - b.line || a2.ch - b.ch) > 0 ? a2 : b;
       }
-      function posEq(a, b) {
-        return a.line == b.line && a.ch == b.ch;
+      function posEq(a2, b) {
+        return a2.line == b.line && a2.ch == b.ch;
       }
       function findPrevDiff(chunks, start, isOrig) {
-        for (var i = chunks.length - 1; i >= 0; i--) {
-          var chunk = chunks[i];
+        for (var i2 = chunks.length - 1; i2 >= 0; i2--) {
+          var chunk = chunks[i2];
           var to = (isOrig ? chunk.origTo : chunk.editTo) - 1;
           if (to < start) return to;
         }
       }
       function findNextDiff(chunks, start, isOrig) {
-        for (var i = 0; i < chunks.length; i++) {
-          var chunk = chunks[i];
+        for (var i2 = 0; i2 < chunks.length; i2++) {
+          var chunk = chunks[i2];
           var from = isOrig ? chunk.origFrom : chunk.editFrom;
           if (from > start) return from;
         }
       }
       function goNearbyDiff(cm, dir) {
         var found = null, views = cm.state.diffViews, line = cm.getCursor().line;
-        if (views) for (var i = 0; i < views.length; i++) {
-          var dv = views[i], isOrig = cm == dv.orig;
+        if (views) for (var i2 = 0; i2 < views.length; i2++) {
+          var dv = views[i2], isOrig = cm == dv.orig;
           ensureDiff(dv);
           var pos = dir < 0 ? findPrevDiff(dv.chunks, line, isOrig) : findNextDiff(dv.chunks, line, isOrig);
           if (pos != null && (found == null || (dir < 0 ? pos > found : pos < found)))
@@ -11858,12 +11858,12 @@ function requireDiff_match_patch() {
       }
       var longtext = text1.length > text2.length ? text1 : text2;
       var shorttext = text1.length > text2.length ? text2 : text1;
-      var i = longtext.indexOf(shorttext);
-      if (i != -1) {
+      var i2 = longtext.indexOf(shorttext);
+      if (i2 != -1) {
         diffs = [
-          [DIFF_INSERT2, longtext.substring(0, i)],
+          [DIFF_INSERT2, longtext.substring(0, i2)],
           [DIFF_EQUAL2, shorttext],
-          [DIFF_INSERT2, longtext.substring(i + shorttext.length)]
+          [DIFF_INSERT2, longtext.substring(i2 + shorttext.length)]
         ];
         if (text1.length > text2.length) {
           diffs[0][0] = diffs[2][0] = DIFF_DELETE2;
@@ -11887,10 +11887,10 @@ function requireDiff_match_patch() {
       }
       var linearray;
       if (checklines) {
-        var a = this.diff_linesToChars(text1, text2);
-        text1 = a[0];
-        text2 = a[1];
-        linearray = a[2];
+        var a2 = this.diff_linesToChars(text1, text2);
+        text1 = a2[0];
+        text2 = a2[1];
+        linearray = a2[2];
       }
       diffs = this.diff_map(text1, text2);
       if (!diffs) {
@@ -11917,16 +11917,16 @@ function requireDiff_match_patch() {
               break;
             case DIFF_EQUAL2:
               if (count_delete >= 1 && count_insert >= 1) {
-                var a = this.diff_main(text_delete, text_insert, false);
+                var a2 = this.diff_main(text_delete, text_insert, false);
                 diffs.splice(
                   pointer - count_delete - count_insert,
                   count_delete + count_insert
                 );
                 pointer = pointer - count_delete - count_insert;
-                for (var j2 = a.length - 1; j2 >= 0; j2--) {
-                  diffs.splice(pointer, 0, a[j2]);
+                for (var j2 = a2.length - 1; j2 >= 0; j2--) {
+                  diffs.splice(pointer, 0, a2[j2]);
                 }
-                pointer = pointer + a.length;
+                pointer = pointer + a2.length;
               }
               count_insert = 0;
               count_delete = 0;
@@ -11974,8 +11974,8 @@ function requireDiff_match_patch() {
       for (var x2 = 0; x2 < diffs.length; x2++) {
         var chars = diffs[x2][1];
         var text = [];
-        for (var y = 0; y < chars.length; y++) {
-          text[y] = lineArray[chars.charCodeAt(y)];
+        for (var y2 = 0; y2 < chars.length; y2++) {
+          text[y2] = lineArray[chars.charCodeAt(y2)];
         }
         diffs[x2][1] = text.join("");
       }
@@ -11992,103 +11992,103 @@ function requireDiff_match_patch() {
       var v2 = {};
       v1[1] = 0;
       v2[1] = 0;
-      var x2, y;
+      var x2, y2;
       var footstep;
       var footsteps = {};
       var done = false;
       var front = (text1_length + text2_length) % 2;
-      for (var d = 0; d < max_d; d++) {
+      for (var d2 = 0; d2 < max_d; d2++) {
         if (this.Diff_Timeout > 0 && (/* @__PURE__ */ new Date()).getTime() > ms_end) {
           return null;
         }
-        v_map1[d] = {};
-        for (var k2 = -d; k2 <= d; k2 += 2) {
-          if (k2 == -d || k2 != d && v1[k2 - 1] < v1[k2 + 1]) {
+        v_map1[d2] = {};
+        for (var k2 = -d2; k2 <= d2; k2 += 2) {
+          if (k2 == -d2 || k2 != d2 && v1[k2 - 1] < v1[k2 + 1]) {
             x2 = v1[k2 + 1];
           } else {
             x2 = v1[k2 - 1] + 1;
           }
-          y = x2 - k2;
+          y2 = x2 - k2;
           if (doubleEnd) {
-            footstep = x2 + "," + y;
+            footstep = x2 + "," + y2;
             if (front && footsteps[footstep] !== void 0) {
               done = true;
             }
             if (!front) {
-              footsteps[footstep] = d;
+              footsteps[footstep] = d2;
             }
           }
-          while (!done && x2 < text1_length && y < text2_length && text1.charAt(x2) == text2.charAt(y)) {
+          while (!done && x2 < text1_length && y2 < text2_length && text1.charAt(x2) == text2.charAt(y2)) {
             x2++;
-            y++;
+            y2++;
             if (doubleEnd) {
-              footstep = x2 + "," + y;
+              footstep = x2 + "," + y2;
               if (front && footsteps[footstep] !== void 0) {
                 done = true;
               }
               if (!front) {
-                footsteps[footstep] = d;
+                footsteps[footstep] = d2;
               }
             }
           }
           v1[k2] = x2;
-          v_map1[d][x2 + "," + y] = true;
-          if (x2 == text1_length && y == text2_length) {
+          v_map1[d2][x2 + "," + y2] = true;
+          if (x2 == text1_length && y2 == text2_length) {
             return this.diff_path1(v_map1, text1, text2);
           } else if (done) {
             v_map2 = v_map2.slice(0, footsteps[footstep] + 1);
-            var a = this.diff_path1(
+            var a2 = this.diff_path1(
               v_map1,
               text1.substring(0, x2),
-              text2.substring(0, y)
+              text2.substring(0, y2)
             );
-            return a.concat(this.diff_path2(
+            return a2.concat(this.diff_path2(
               v_map2,
               text1.substring(x2),
-              text2.substring(y)
+              text2.substring(y2)
             ));
           }
         }
         if (doubleEnd) {
-          v_map2[d] = {};
-          for (var k2 = -d; k2 <= d; k2 += 2) {
-            if (k2 == -d || k2 != d && v2[k2 - 1] < v2[k2 + 1]) {
+          v_map2[d2] = {};
+          for (var k2 = -d2; k2 <= d2; k2 += 2) {
+            if (k2 == -d2 || k2 != d2 && v2[k2 - 1] < v2[k2 + 1]) {
               x2 = v2[k2 + 1];
             } else {
               x2 = v2[k2 - 1] + 1;
             }
-            y = x2 - k2;
-            footstep = text1_length - x2 + "," + (text2_length - y);
+            y2 = x2 - k2;
+            footstep = text1_length - x2 + "," + (text2_length - y2);
             if (!front && footsteps[footstep] !== void 0) {
               done = true;
             }
             if (front) {
-              footsteps[footstep] = d;
+              footsteps[footstep] = d2;
             }
-            while (!done && x2 < text1_length && y < text2_length && text1.charAt(text1_length - x2 - 1) == text2.charAt(text2_length - y - 1)) {
+            while (!done && x2 < text1_length && y2 < text2_length && text1.charAt(text1_length - x2 - 1) == text2.charAt(text2_length - y2 - 1)) {
               x2++;
-              y++;
-              footstep = text1_length - x2 + "," + (text2_length - y);
+              y2++;
+              footstep = text1_length - x2 + "," + (text2_length - y2);
               if (!front && footsteps[footstep] !== void 0) {
                 done = true;
               }
               if (front) {
-                footsteps[footstep] = d;
+                footsteps[footstep] = d2;
               }
             }
             v2[k2] = x2;
-            v_map2[d][x2 + "," + y] = true;
+            v_map2[d2][x2 + "," + y2] = true;
             if (done) {
               v_map1 = v_map1.slice(0, footsteps[footstep] + 1);
-              var a = this.diff_path1(
+              var a2 = this.diff_path1(
                 v_map1,
                 text1.substring(0, text1_length - x2),
-                text2.substring(0, text2_length - y)
+                text2.substring(0, text2_length - y2)
               );
-              return a.concat(this.diff_path2(
+              return a2.concat(this.diff_path2(
                 v_map2,
                 text1.substring(text1_length - x2),
-                text2.substring(text2_length - y)
+                text2.substring(text2_length - y2)
               ));
             }
           }
@@ -12099,11 +12099,11 @@ function requireDiff_match_patch() {
     diff_match_patch2.prototype.diff_path1 = function(v_map, text1, text2) {
       var path = [];
       var x2 = text1.length;
-      var y = text2.length;
+      var y2 = text2.length;
       var last_op = null;
-      for (var d = v_map.length - 2; d >= 0; d--) {
+      for (var d2 = v_map.length - 2; d2 >= 0; d2--) {
         while (1) {
-          if (v_map[d][x2 - 1 + "," + y] !== void 0) {
+          if (v_map[d2][x2 - 1 + "," + y2] !== void 0) {
             x2--;
             if (last_op === DIFF_DELETE2) {
               path[0][1] = text1.charAt(x2) + path[0][1];
@@ -12112,19 +12112,19 @@ function requireDiff_match_patch() {
             }
             last_op = DIFF_DELETE2;
             break;
-          } else if (v_map[d][x2 + "," + (y - 1)] !== void 0) {
-            y--;
+          } else if (v_map[d2][x2 + "," + (y2 - 1)] !== void 0) {
+            y2--;
             if (last_op === DIFF_INSERT2) {
-              path[0][1] = text2.charAt(y) + path[0][1];
+              path[0][1] = text2.charAt(y2) + path[0][1];
             } else {
-              path.unshift([DIFF_INSERT2, text2.charAt(y)]);
+              path.unshift([DIFF_INSERT2, text2.charAt(y2)]);
             }
             last_op = DIFF_INSERT2;
             break;
           } else {
             x2--;
-            y--;
-            if (text1.charAt(x2) != text2.charAt(y)) {
+            y2--;
+            if (text1.charAt(x2) != text2.charAt(y2)) {
               throw new Error("No diagonal.  Can't happen. (diff_path1)");
             }
             if (last_op === DIFF_EQUAL2) {
@@ -12142,11 +12142,11 @@ function requireDiff_match_patch() {
       var path = [];
       var pathLength = 0;
       var x2 = text1.length;
-      var y = text2.length;
+      var y2 = text2.length;
       var last_op = null;
-      for (var d = v_map.length - 2; d >= 0; d--) {
+      for (var d2 = v_map.length - 2; d2 >= 0; d2--) {
         while (1) {
-          if (v_map[d][x2 - 1 + "," + y] !== void 0) {
+          if (v_map[d2][x2 - 1 + "," + y2] !== void 0) {
             x2--;
             if (last_op === DIFF_DELETE2) {
               path[pathLength - 1][1] += text1.charAt(text1.length - x2 - 1);
@@ -12155,19 +12155,19 @@ function requireDiff_match_patch() {
             }
             last_op = DIFF_DELETE2;
             break;
-          } else if (v_map[d][x2 + "," + (y - 1)] !== void 0) {
-            y--;
+          } else if (v_map[d2][x2 + "," + (y2 - 1)] !== void 0) {
+            y2--;
             if (last_op === DIFF_INSERT2) {
-              path[pathLength - 1][1] += text2.charAt(text2.length - y - 1);
+              path[pathLength - 1][1] += text2.charAt(text2.length - y2 - 1);
             } else {
-              path[pathLength++] = [DIFF_INSERT2, text2.charAt(text2.length - y - 1)];
+              path[pathLength++] = [DIFF_INSERT2, text2.charAt(text2.length - y2 - 1)];
             }
             last_op = DIFF_INSERT2;
             break;
           } else {
             x2--;
-            y--;
-            if (text1.charAt(text1.length - x2 - 1) != text2.charAt(text2.length - y - 1)) {
+            y2--;
+            if (text1.charAt(text1.length - x2 - 1) != text2.charAt(text2.length - y2 - 1)) {
               throw new Error("No diagonal.  Can't happen. (diff_path2)");
             }
             if (last_op === DIFF_EQUAL2) {
@@ -12226,24 +12226,24 @@ function requireDiff_match_patch() {
         return null;
       }
       var dmp = this;
-      function diff_halfMatchI(longtext2, shorttext2, i) {
-        var seed = longtext2.substring(i, i + Math.floor(longtext2.length / 4));
+      function diff_halfMatchI(longtext2, shorttext2, i2) {
+        var seed = longtext2.substring(i2, i2 + Math.floor(longtext2.length / 4));
         var j2 = -1;
         var best_common = "";
         var best_longtext_a, best_longtext_b, best_shorttext_a, best_shorttext_b;
         while ((j2 = shorttext2.indexOf(seed, j2 + 1)) != -1) {
           var prefixLength = dmp.diff_commonPrefix(
-            longtext2.substring(i),
+            longtext2.substring(i2),
             shorttext2.substring(j2)
           );
           var suffixLength = dmp.diff_commonSuffix(
-            longtext2.substring(0, i),
+            longtext2.substring(0, i2),
             shorttext2.substring(0, j2)
           );
           if (best_common.length < suffixLength + prefixLength) {
             best_common = shorttext2.substring(j2 - suffixLength, j2) + shorttext2.substring(j2, j2 + prefixLength);
-            best_longtext_a = longtext2.substring(0, i - suffixLength);
-            best_longtext_b = longtext2.substring(i + prefixLength);
+            best_longtext_a = longtext2.substring(0, i2 - suffixLength);
+            best_longtext_b = longtext2.substring(i2 + prefixLength);
             best_shorttext_a = shorttext2.substring(0, j2 - suffixLength);
             best_shorttext_b = shorttext2.substring(j2 + prefixLength);
           }
@@ -12590,24 +12590,24 @@ function requireDiff_match_patch() {
     };
     diff_match_patch2.prototype.diff_prettyHtml = function(diffs) {
       var html = [];
-      var i = 0;
+      var i2 = 0;
       for (var x2 = 0; x2 < diffs.length; x2++) {
         var op = diffs[x2][0];
         var data = diffs[x2][1];
         var text = data.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "&para;<BR>");
         switch (op) {
           case DIFF_INSERT2:
-            html[x2] = '<INS STYLE="background:#E6FFE6;" TITLE="i=' + i + '">' + text + "</INS>";
+            html[x2] = '<INS STYLE="background:#E6FFE6;" TITLE="i=' + i2 + '">' + text + "</INS>";
             break;
           case DIFF_DELETE2:
-            html[x2] = '<DEL STYLE="background:#FFE6E6;" TITLE="i=' + i + '">' + text + "</DEL>";
+            html[x2] = '<DEL STYLE="background:#FFE6E6;" TITLE="i=' + i2 + '">' + text + "</DEL>";
             break;
           case DIFF_EQUAL2:
-            html[x2] = '<SPAN TITLE="i=' + i + '">' + text + "</SPAN>";
+            html[x2] = '<SPAN TITLE="i=' + i2 + '">' + text + "</SPAN>";
             break;
         }
         if (op !== DIFF_DELETE2) {
-          i += data.length;
+          i2 += data.length;
         }
       }
       return html.join("");
@@ -12730,10 +12730,10 @@ function requireDiff_match_patch() {
       if (pattern.length > this.Match_MaxBits) {
         throw new Error("Pattern too long for this browser.");
       }
-      var s = this.match_alphabet(pattern);
+      var s2 = this.match_alphabet(pattern);
       var dmp = this;
-      function match_bitapScore(e, x2) {
-        var accuracy = e / pattern.length;
+      function match_bitapScore(e2, x2) {
+        var accuracy = e2 / pattern.length;
         var proximity = Math.abs(loc - x2);
         if (!dmp.Match_Distance) {
           return proximity ? 1 : accuracy;
@@ -12754,11 +12754,11 @@ function requireDiff_match_patch() {
       var bin_min, bin_mid;
       var bin_max = pattern.length + text.length;
       var last_rd;
-      for (var d = 0; d < pattern.length; d++) {
+      for (var d2 = 0; d2 < pattern.length; d2++) {
         bin_min = 0;
         bin_mid = bin_max;
         while (bin_min < bin_mid) {
-          if (match_bitapScore(d, loc + bin_mid) <= score_threshold) {
+          if (match_bitapScore(d2, loc + bin_mid) <= score_threshold) {
             bin_min = bin_mid;
           } else {
             bin_max = bin_mid;
@@ -12769,16 +12769,16 @@ function requireDiff_match_patch() {
         var start = Math.max(1, loc - bin_mid + 1);
         var finish = Math.min(loc + bin_mid, text.length) + pattern.length;
         var rd = Array(finish + 2);
-        rd[finish + 1] = (1 << d) - 1;
+        rd[finish + 1] = (1 << d2) - 1;
         for (var j2 = finish; j2 >= start; j2--) {
-          var charMatch = s[text.charAt(j2 - 1)];
-          if (d === 0) {
+          var charMatch = s2[text.charAt(j2 - 1)];
+          if (d2 === 0) {
             rd[j2] = (rd[j2 + 1] << 1 | 1) & charMatch;
           } else {
             rd[j2] = (rd[j2 + 1] << 1 | 1) & charMatch | ((last_rd[j2 + 1] | last_rd[j2]) << 1 | 1) | last_rd[j2 + 1];
           }
           if (rd[j2] & matchmask) {
-            var score = match_bitapScore(d, j2 - 1);
+            var score = match_bitapScore(d2, j2 - 1);
             if (score <= score_threshold) {
               score_threshold = score;
               best_loc = j2 - 1;
@@ -12790,7 +12790,7 @@ function requireDiff_match_patch() {
             }
           }
         }
-        if (match_bitapScore(d + 1, loc) > score_threshold) {
+        if (match_bitapScore(d2 + 1, loc) > score_threshold) {
           break;
         }
         last_rd = rd;
@@ -12798,14 +12798,14 @@ function requireDiff_match_patch() {
       return best_loc;
     };
     diff_match_patch2.prototype.match_alphabet = function(pattern) {
-      var s = {};
-      for (var i = 0; i < pattern.length; i++) {
-        s[pattern.charAt(i)] = 0;
+      var s2 = {};
+      for (var i2 = 0; i2 < pattern.length; i2++) {
+        s2[pattern.charAt(i2)] = 0;
       }
-      for (var i = 0; i < pattern.length; i++) {
-        s[pattern.charAt(i)] |= 1 << pattern.length - i - 1;
+      for (var i2 = 0; i2 < pattern.length; i2++) {
+        s2[pattern.charAt(i2)] |= 1 << pattern.length - i2 - 1;
       }
-      return s;
+      return s2;
     };
     diff_match_patch2.prototype.patch_addContext = function(patch, text) {
       if (text.length == 0) {
@@ -12837,23 +12837,23 @@ function requireDiff_match_patch() {
       patch.length1 += prefix.length + suffix.length;
       patch.length2 += prefix.length + suffix.length;
     };
-    diff_match_patch2.prototype.patch_make = function(a, opt_b, opt_c) {
+    diff_match_patch2.prototype.patch_make = function(a2, opt_b, opt_c) {
       var text1, diffs;
-      if (typeof a == "string" && typeof opt_b == "string" && typeof opt_c == "undefined") {
-        text1 = a;
+      if (typeof a2 == "string" && typeof opt_b == "string" && typeof opt_c == "undefined") {
+        text1 = a2;
         diffs = this.diff_main(text1, opt_b, true);
         if (diffs.length > 2) {
           this.diff_cleanupSemantic(diffs);
           this.diff_cleanupEfficiency(diffs);
         }
-      } else if (a && typeof a == "object" && typeof opt_b == "undefined" && typeof opt_c == "undefined") {
-        diffs = a;
+      } else if (a2 && typeof a2 == "object" && typeof opt_b == "undefined" && typeof opt_c == "undefined") {
+        diffs = a2;
         text1 = this.diff_text1(diffs);
-      } else if (typeof a == "string" && opt_b && typeof opt_b == "object" && typeof opt_c == "undefined") {
-        text1 = a;
+      } else if (typeof a2 == "string" && opt_b && typeof opt_b == "object" && typeof opt_c == "undefined") {
+        text1 = a2;
         diffs = opt_b;
-      } else if (typeof a == "string" && typeof opt_b == "string" && opt_c && typeof opt_c == "object") {
-        text1 = a;
+      } else if (typeof a2 == "string" && typeof opt_b == "string" && opt_c && typeof opt_c == "object") {
+        text1 = a2;
         diffs = opt_c;
       } else {
         throw new Error("Unknown call format to patch_make.");
@@ -12922,8 +12922,8 @@ function requireDiff_match_patch() {
         var patch = patches[x2];
         var patchCopy = new patch_obj();
         patchCopy.diffs = [];
-        for (var y = 0; y < patch.diffs.length; y++) {
-          patchCopy.diffs[y] = patch.diffs[y].slice();
+        for (var y2 = 0; y2 < patch.diffs.length; y2++) {
+          patchCopy.diffs[y2] = patch.diffs[y2].slice();
         }
         patchCopy.start1 = patch.start1;
         patchCopy.start2 = patch.start2;
@@ -12989,8 +12989,8 @@ function requireDiff_match_patch() {
               this.diff_cleanupSemanticLossless(diffs);
               var index1 = 0;
               var index2;
-              for (var y = 0; y < patches[x2].diffs.length; y++) {
-                var mod = patches[x2].diffs[y];
+              for (var y2 = 0; y2 < patches[x2].diffs.length; y2++) {
+                var mod = patches[x2].diffs[y2];
                 if (mod[0] !== DIFF_EQUAL2) {
                   index2 = this.diff_xIndex(diffs, index1);
                 }
@@ -13249,71 +13249,71 @@ globalThis.DIFF_DELETE = diff_match_patchExports.DIFF_DELETE;
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const n = globalThis, c = n.trustedTypes, h = c ? c.createPolicy("lit-html", { createHTML: (t) => t }) : void 0, f = "$lit$", v = `lit$${Math.random().toFixed(9).slice(2)}$`, m = "?" + v, _ = `<${m}>`, w = document, lt = () => w.createComment(""), st = (t) => null === t || "object" != typeof t && "function" != typeof t, g = Array.isArray, $ = (t) => g(t) || "function" == typeof (t == null ? void 0 : t[Symbol.iterator]), x = "[ 	\n\f\r]", T = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, E = /-->/g, k = />/g, O = RegExp(`>|${x}(?:([^\\s"'>=/]+)(${x}*=${x}*(?:[^ 	
-\f\r"'\`<>=]|("|')|))|$)`, "g"), S = /'/g, j = /"/g, M = /^(?:script|style|textarea|title)$/i, P = (t) => (i, ...s) => ({ _$litType$: t, strings: i, values: s }), ke = P(1), R = Symbol.for("lit-noChange"), D = Symbol.for("lit-nothing"), V = /* @__PURE__ */ new WeakMap(), I = w.createTreeWalker(w, 129);
-function N(t, i) {
-  if (!g(t) || !t.hasOwnProperty("raw")) throw Error("invalid template strings array");
-  return void 0 !== h ? h.createHTML(i) : i;
+const t = globalThis, i = t.trustedTypes, s = i ? i.createPolicy("lit-html", { createHTML: (t2) => t2 }) : void 0, e = "$lit$", h = `lit$${Math.random().toFixed(9).slice(2)}$`, o = "?" + h, n = `<${o}>`, r = document, l = () => r.createComment(""), c = (t2) => null === t2 || "object" != typeof t2 && "function" != typeof t2, a = Array.isArray, u = (t2) => a(t2) || "function" == typeof (t2 == null ? void 0 : t2[Symbol.iterator]), d = "[ 	\n\f\r]", f = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, v = /-->/g, _ = />/g, m = RegExp(`>|${d}(?:([^\\s"'>=/]+)(${d}*=${d}*(?:[^ 	
+\f\r"'\`<>=]|("|')|))|$)`, "g"), p = /'/g, g = /"/g, $ = /^(?:script|style|textarea|title)$/i, y = (t2) => (i2, ...s2) => ({ _$litType$: t2, strings: i2, values: s2 }), x = y(1), T = Symbol.for("lit-noChange"), E = Symbol.for("lit-nothing"), A = /* @__PURE__ */ new WeakMap(), C = r.createTreeWalker(r, 129);
+function P(t2, i2) {
+  if (!a(t2) || !t2.hasOwnProperty("raw")) throw Error("invalid template strings array");
+  return void 0 !== s ? s.createHTML(i2) : i2;
 }
-const U = (t, i) => {
-  const s = t.length - 1, e = [];
-  let h2, o = 2 === i ? "<svg>" : 3 === i ? "<math>" : "", n2 = T;
-  for (let i2 = 0; i2 < s; i2++) {
-    const s2 = t[i2];
-    let r, l, c2 = -1, a = 0;
-    for (; a < s2.length && (n2.lastIndex = a, l = n2.exec(s2), null !== l); ) a = n2.lastIndex, n2 === T ? "!--" === l[1] ? n2 = E : void 0 !== l[1] ? n2 = k : void 0 !== l[2] ? (M.test(l[2]) && (h2 = RegExp("</" + l[2], "g")), n2 = O) : void 0 !== l[3] && (n2 = O) : n2 === O ? ">" === l[0] ? (n2 = h2 ?? T, c2 = -1) : void 0 === l[1] ? c2 = -2 : (c2 = n2.lastIndex - l[2].length, r = l[1], n2 = void 0 === l[3] ? O : '"' === l[3] ? j : S) : n2 === j || n2 === S ? n2 = O : n2 === E || n2 === k ? n2 = T : (n2 = O, h2 = void 0);
-    const u = n2 === O && t[i2 + 1].startsWith("/>") ? " " : "";
-    o += n2 === T ? s2 + _ : c2 >= 0 ? (e.push(r), s2.slice(0, c2) + f + s2.slice(c2) + v + u) : s2 + v + (-2 === c2 ? i2 : u);
+const V = (t2, i2) => {
+  const s2 = t2.length - 1, o2 = [];
+  let r2, l2 = 2 === i2 ? "<svg>" : 3 === i2 ? "<math>" : "", c2 = f;
+  for (let i3 = 0; i3 < s2; i3++) {
+    const s3 = t2[i3];
+    let a2, u2, d2 = -1, y2 = 0;
+    for (; y2 < s3.length && (c2.lastIndex = y2, u2 = c2.exec(s3), null !== u2); ) y2 = c2.lastIndex, c2 === f ? "!--" === u2[1] ? c2 = v : void 0 !== u2[1] ? c2 = _ : void 0 !== u2[2] ? ($.test(u2[2]) && (r2 = RegExp("</" + u2[2], "g")), c2 = m) : void 0 !== u2[3] && (c2 = m) : c2 === m ? ">" === u2[0] ? (c2 = r2 ?? f, d2 = -1) : void 0 === u2[1] ? d2 = -2 : (d2 = c2.lastIndex - u2[2].length, a2 = u2[1], c2 = void 0 === u2[3] ? m : '"' === u2[3] ? g : p) : c2 === g || c2 === p ? c2 = m : c2 === v || c2 === _ ? c2 = f : (c2 = m, r2 = void 0);
+    const x2 = c2 === m && t2[i3 + 1].startsWith("/>") ? " " : "";
+    l2 += c2 === f ? s3 + n : d2 >= 0 ? (o2.push(a2), s3.slice(0, d2) + e + s3.slice(d2) + h + x2) : s3 + h + (-2 === d2 ? i3 : x2);
   }
-  return [N(t, o + (t[s] || "<?>") + (2 === i ? "</svg>" : 3 === i ? "</math>" : "")), e];
+  return [P(t2, l2 + (t2[s2] || "<?>") + (2 === i2 ? "</svg>" : 3 === i2 ? "</math>" : "")), o2];
 };
-class B {
-  constructor({ strings: t, _$litType$: i }, s) {
-    let e;
+class N {
+  constructor({ strings: t2, _$litType$: s2 }, n2) {
+    let r2;
     this.parts = [];
-    let h2 = 0, o = 0;
-    const n2 = t.length - 1, r = this.parts, [l, a] = U(t, i);
-    if (this.el = B.createElement(l, s), I.currentNode = this.el.content, 2 === i || 3 === i) {
-      const t2 = this.el.content.firstChild;
-      t2.replaceWith(...t2.childNodes);
+    let c2 = 0, a2 = 0;
+    const u2 = t2.length - 1, d2 = this.parts, [f2, v2] = V(t2, s2);
+    if (this.el = N.createElement(f2, n2), C.currentNode = this.el.content, 2 === s2 || 3 === s2) {
+      const t3 = this.el.content.firstChild;
+      t3.replaceWith(...t3.childNodes);
     }
-    for (; null !== (e = I.nextNode()) && r.length < n2; ) {
-      if (1 === e.nodeType) {
-        if (e.hasAttributes()) for (const t2 of e.getAttributeNames()) if (t2.endsWith(f)) {
-          const i2 = a[o++], s2 = e.getAttribute(t2).split(v), n3 = /([.?@])?(.*)/.exec(i2);
-          r.push({ type: 1, index: h2, name: n3[2], strings: s2, ctor: "." === n3[1] ? Y : "?" === n3[1] ? Z : "@" === n3[1] ? q : G }), e.removeAttribute(t2);
-        } else t2.startsWith(v) && (r.push({ type: 6, index: h2 }), e.removeAttribute(t2));
-        if (M.test(e.tagName)) {
-          const t2 = e.textContent.split(v), i2 = t2.length - 1;
-          if (i2 > 0) {
-            e.textContent = c ? c.emptyScript : "";
-            for (let s2 = 0; s2 < i2; s2++) e.append(t2[s2], lt()), I.nextNode(), r.push({ type: 2, index: ++h2 });
-            e.append(t2[i2], lt());
+    for (; null !== (r2 = C.nextNode()) && d2.length < u2; ) {
+      if (1 === r2.nodeType) {
+        if (r2.hasAttributes()) for (const t3 of r2.getAttributeNames()) if (t3.endsWith(e)) {
+          const i2 = v2[a2++], s3 = r2.getAttribute(t3).split(h), e2 = /([.?@])?(.*)/.exec(i2);
+          d2.push({ type: 1, index: c2, name: e2[2], strings: s3, ctor: "." === e2[1] ? H : "?" === e2[1] ? I : "@" === e2[1] ? L : k }), r2.removeAttribute(t3);
+        } else t3.startsWith(h) && (d2.push({ type: 6, index: c2 }), r2.removeAttribute(t3));
+        if ($.test(r2.tagName)) {
+          const t3 = r2.textContent.split(h), s3 = t3.length - 1;
+          if (s3 > 0) {
+            r2.textContent = i ? i.emptyScript : "";
+            for (let i2 = 0; i2 < s3; i2++) r2.append(t3[i2], l()), C.nextNode(), d2.push({ type: 2, index: ++c2 });
+            r2.append(t3[s3], l());
           }
         }
-      } else if (8 === e.nodeType) if (e.data === m) r.push({ type: 2, index: h2 });
+      } else if (8 === r2.nodeType) if (r2.data === o) d2.push({ type: 2, index: c2 });
       else {
-        let t2 = -1;
-        for (; -1 !== (t2 = e.data.indexOf(v, t2 + 1)); ) r.push({ type: 7, index: h2 }), t2 += v.length - 1;
+        let t3 = -1;
+        for (; -1 !== (t3 = r2.data.indexOf(h, t3 + 1)); ) d2.push({ type: 7, index: c2 }), t3 += h.length - 1;
       }
-      h2++;
+      c2++;
     }
   }
-  static createElement(t, i) {
-    const s = w.createElement("template");
-    return s.innerHTML = t, s;
+  static createElement(t2, i2) {
+    const s2 = r.createElement("template");
+    return s2.innerHTML = t2, s2;
   }
 }
-function z(t, i, s = t, e) {
+function S(t2, i2, s2 = t2, e2) {
   var _a, _b;
-  if (i === R) return i;
-  let h2 = void 0 !== e ? (_a = s.o) == null ? void 0 : _a[e] : s.l;
-  const o = st(i) ? void 0 : i._$litDirective$;
-  return (h2 == null ? void 0 : h2.constructor) !== o && ((_b = h2 == null ? void 0 : h2._$AO) == null ? void 0 : _b.call(h2, false), void 0 === o ? h2 = void 0 : (h2 = new o(t), h2._$AT(t, s, e)), void 0 !== e ? (s.o ?? (s.o = []))[e] = h2 : s.l = h2), void 0 !== h2 && (i = z(t, h2._$AS(t, i.values), h2, e)), i;
+  if (i2 === T) return i2;
+  let h2 = void 0 !== e2 ? (_a = s2._$Co) == null ? void 0 : _a[e2] : s2._$Cl;
+  const o2 = c(i2) ? void 0 : i2._$litDirective$;
+  return (h2 == null ? void 0 : h2.constructor) !== o2 && ((_b = h2 == null ? void 0 : h2._$AO) == null ? void 0 : _b.call(h2, false), void 0 === o2 ? h2 = void 0 : (h2 = new o2(t2), h2._$AT(t2, s2, e2)), void 0 !== e2 ? (s2._$Co ?? (s2._$Co = []))[e2] = h2 : s2._$Cl = h2), void 0 !== h2 && (i2 = S(t2, h2._$AS(t2, i2.values), h2, e2)), i2;
 }
-class F {
-  constructor(t, i) {
-    this._$AV = [], this._$AN = void 0, this._$AD = t, this._$AM = i;
+class M {
+  constructor(t2, i2) {
+    this._$AV = [], this._$AN = void 0, this._$AD = t2, this._$AM = i2;
   }
   get parentNode() {
     return this._$AM.parentNode;
@@ -13321,36 +13321,36 @@ class F {
   get _$AU() {
     return this._$AM._$AU;
   }
-  u(t) {
-    const { el: { content: i }, parts: s } = this._$AD, e = ((t == null ? void 0 : t.creationScope) ?? w).importNode(i, true);
-    I.currentNode = e;
-    let h2 = I.nextNode(), o = 0, n2 = 0, r = s[0];
-    for (; void 0 !== r; ) {
-      if (o === r.index) {
-        let i2;
-        2 === r.type ? i2 = new et(h2, h2.nextSibling, this, t) : 1 === r.type ? i2 = new r.ctor(h2, r.name, r.strings, this, t) : 6 === r.type && (i2 = new K(h2, this, t)), this._$AV.push(i2), r = s[++n2];
+  u(t2) {
+    const { el: { content: i2 }, parts: s2 } = this._$AD, e2 = ((t2 == null ? void 0 : t2.creationScope) ?? r).importNode(i2, true);
+    C.currentNode = e2;
+    let h2 = C.nextNode(), o2 = 0, n2 = 0, l2 = s2[0];
+    for (; void 0 !== l2; ) {
+      if (o2 === l2.index) {
+        let i3;
+        2 === l2.type ? i3 = new R(h2, h2.nextSibling, this, t2) : 1 === l2.type ? i3 = new l2.ctor(h2, l2.name, l2.strings, this, t2) : 6 === l2.type && (i3 = new z(h2, this, t2)), this._$AV.push(i3), l2 = s2[++n2];
       }
-      o !== (r == null ? void 0 : r.index) && (h2 = I.nextNode(), o++);
+      o2 !== (l2 == null ? void 0 : l2.index) && (h2 = C.nextNode(), o2++);
     }
-    return I.currentNode = w, e;
+    return C.currentNode = r, e2;
   }
-  p(t) {
-    let i = 0;
-    for (const s of this._$AV) void 0 !== s && (void 0 !== s.strings ? (s._$AI(t, s, i), i += s.strings.length - 2) : s._$AI(t[i])), i++;
+  p(t2) {
+    let i2 = 0;
+    for (const s2 of this._$AV) void 0 !== s2 && (void 0 !== s2.strings ? (s2._$AI(t2, s2, i2), i2 += s2.strings.length - 2) : s2._$AI(t2[i2])), i2++;
   }
 }
-class et {
+class R {
   get _$AU() {
     var _a;
-    return ((_a = this._$AM) == null ? void 0 : _a._$AU) ?? this.v;
+    return ((_a = this._$AM) == null ? void 0 : _a._$AU) ?? this._$Cv;
   }
-  constructor(t, i, s, e) {
-    this.type = 2, this._$AH = D, this._$AN = void 0, this._$AA = t, this._$AB = i, this._$AM = s, this.options = e, this.v = (e == null ? void 0 : e.isConnected) ?? true;
+  constructor(t2, i2, s2, e2) {
+    this.type = 2, this._$AH = E, this._$AN = void 0, this._$AA = t2, this._$AB = i2, this._$AM = s2, this.options = e2, this._$Cv = (e2 == null ? void 0 : e2.isConnected) ?? true;
   }
   get parentNode() {
-    let t = this._$AA.parentNode;
-    const i = this._$AM;
-    return void 0 !== i && 11 === (t == null ? void 0 : t.nodeType) && (t = i.parentNode), t;
+    let t2 = this._$AA.parentNode;
+    const i2 = this._$AM;
+    return void 0 !== i2 && 11 === (t2 == null ? void 0 : t2.nodeType) && (t2 = i2.parentNode), t2;
   }
   get startNode() {
     return this._$AA;
@@ -13358,130 +13358,130 @@ class et {
   get endNode() {
     return this._$AB;
   }
-  _$AI(t, i = this) {
-    t = z(this, t, i), st(t) ? t === D || null == t || "" === t ? (this._$AH !== D && this._$AR(), this._$AH = D) : t !== this._$AH && t !== R && this._(t) : void 0 !== t._$litType$ ? this.$(t) : void 0 !== t.nodeType ? this.T(t) : $(t) ? this.k(t) : this._(t);
+  _$AI(t2, i2 = this) {
+    t2 = S(this, t2, i2), c(t2) ? t2 === E || null == t2 || "" === t2 ? (this._$AH !== E && this._$AR(), this._$AH = E) : t2 !== this._$AH && t2 !== T && this._(t2) : void 0 !== t2._$litType$ ? this.$(t2) : void 0 !== t2.nodeType ? this.T(t2) : u(t2) ? this.k(t2) : this._(t2);
   }
-  O(t) {
-    return this._$AA.parentNode.insertBefore(t, this._$AB);
+  O(t2) {
+    return this._$AA.parentNode.insertBefore(t2, this._$AB);
   }
-  T(t) {
-    this._$AH !== t && (this._$AR(), this._$AH = this.O(t));
+  T(t2) {
+    this._$AH !== t2 && (this._$AR(), this._$AH = this.O(t2));
   }
-  _(t) {
-    this._$AH !== D && st(this._$AH) ? this._$AA.nextSibling.data = t : this.T(w.createTextNode(t)), this._$AH = t;
+  _(t2) {
+    this._$AH !== E && c(this._$AH) ? this._$AA.nextSibling.data = t2 : this.T(r.createTextNode(t2)), this._$AH = t2;
   }
-  $(t) {
+  $(t2) {
     var _a;
-    const { values: i, _$litType$: s } = t, e = "number" == typeof s ? this._$AC(t) : (void 0 === s.el && (s.el = B.createElement(N(s.h, s.h[0]), this.options)), s);
-    if (((_a = this._$AH) == null ? void 0 : _a._$AD) === e) this._$AH.p(i);
+    const { values: i2, _$litType$: s2 } = t2, e2 = "number" == typeof s2 ? this._$AC(t2) : (void 0 === s2.el && (s2.el = N.createElement(P(s2.h, s2.h[0]), this.options)), s2);
+    if (((_a = this._$AH) == null ? void 0 : _a._$AD) === e2) this._$AH.p(i2);
     else {
-      const t2 = new F(e, this), s2 = t2.u(this.options);
-      t2.p(i), this.T(s2), this._$AH = t2;
+      const t3 = new M(e2, this), s3 = t3.u(this.options);
+      t3.p(i2), this.T(s3), this._$AH = t3;
     }
   }
-  _$AC(t) {
-    let i = V.get(t.strings);
-    return void 0 === i && V.set(t.strings, i = new B(t)), i;
+  _$AC(t2) {
+    let i2 = A.get(t2.strings);
+    return void 0 === i2 && A.set(t2.strings, i2 = new N(t2)), i2;
   }
-  k(t) {
-    g(this._$AH) || (this._$AH = [], this._$AR());
-    const i = this._$AH;
-    let s, e = 0;
-    for (const h2 of t) e === i.length ? i.push(s = new et(this.O(lt()), this.O(lt()), this, this.options)) : s = i[e], s._$AI(h2), e++;
-    e < i.length && (this._$AR(s && s._$AB.nextSibling, e), i.length = e);
+  k(t2) {
+    a(this._$AH) || (this._$AH = [], this._$AR());
+    const i2 = this._$AH;
+    let s2, e2 = 0;
+    for (const h2 of t2) e2 === i2.length ? i2.push(s2 = new R(this.O(l()), this.O(l()), this, this.options)) : s2 = i2[e2], s2._$AI(h2), e2++;
+    e2 < i2.length && (this._$AR(s2 && s2._$AB.nextSibling, e2), i2.length = e2);
   }
-  _$AR(t = this._$AA.nextSibling, i) {
+  _$AR(t2 = this._$AA.nextSibling, i2) {
     var _a;
-    for ((_a = this._$AP) == null ? void 0 : _a.call(this, false, true, i); t && t !== this._$AB; ) {
-      const i2 = t.nextSibling;
-      t.remove(), t = i2;
+    for ((_a = this._$AP) == null ? void 0 : _a.call(this, false, true, i2); t2 && t2 !== this._$AB; ) {
+      const i3 = t2.nextSibling;
+      t2.remove(), t2 = i3;
     }
   }
-  setConnected(t) {
+  setConnected(t2) {
     var _a;
-    void 0 === this._$AM && (this.v = t, (_a = this._$AP) == null ? void 0 : _a.call(this, t));
+    void 0 === this._$AM && (this._$Cv = t2, (_a = this._$AP) == null ? void 0 : _a.call(this, t2));
   }
 }
-class G {
+class k {
   get tagName() {
     return this.element.tagName;
   }
   get _$AU() {
     return this._$AM._$AU;
   }
-  constructor(t, i, s, e, h2) {
-    this.type = 1, this._$AH = D, this._$AN = void 0, this.element = t, this.name = i, this._$AM = e, this.options = h2, s.length > 2 || "" !== s[0] || "" !== s[1] ? (this._$AH = Array(s.length - 1).fill(new String()), this.strings = s) : this._$AH = D;
+  constructor(t2, i2, s2, e2, h2) {
+    this.type = 1, this._$AH = E, this._$AN = void 0, this.element = t2, this.name = i2, this._$AM = e2, this.options = h2, s2.length > 2 || "" !== s2[0] || "" !== s2[1] ? (this._$AH = Array(s2.length - 1).fill(new String()), this.strings = s2) : this._$AH = E;
   }
-  _$AI(t, i = this, s, e) {
+  _$AI(t2, i2 = this, s2, e2) {
     const h2 = this.strings;
-    let o = false;
-    if (void 0 === h2) t = z(this, t, i, 0), o = !st(t) || t !== this._$AH && t !== R, o && (this._$AH = t);
+    let o2 = false;
+    if (void 0 === h2) t2 = S(this, t2, i2, 0), o2 = !c(t2) || t2 !== this._$AH && t2 !== T, o2 && (this._$AH = t2);
     else {
-      const e2 = t;
-      let n2, r;
-      for (t = h2[0], n2 = 0; n2 < h2.length - 1; n2++) r = z(this, e2[s + n2], i, n2), r === R && (r = this._$AH[n2]), o || (o = !st(r) || r !== this._$AH[n2]), r === D ? t = D : t !== D && (t += (r ?? "") + h2[n2 + 1]), this._$AH[n2] = r;
+      const e3 = t2;
+      let n2, r2;
+      for (t2 = h2[0], n2 = 0; n2 < h2.length - 1; n2++) r2 = S(this, e3[s2 + n2], i2, n2), r2 === T && (r2 = this._$AH[n2]), o2 || (o2 = !c(r2) || r2 !== this._$AH[n2]), r2 === E ? t2 = E : t2 !== E && (t2 += (r2 ?? "") + h2[n2 + 1]), this._$AH[n2] = r2;
     }
-    o && !e && this.j(t);
+    o2 && !e2 && this.j(t2);
   }
-  j(t) {
-    t === D ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, t ?? "");
+  j(t2) {
+    t2 === E ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, t2 ?? "");
   }
 }
-class Y extends G {
+class H extends k {
   constructor() {
     super(...arguments), this.type = 3;
   }
-  j(t) {
-    this.element[this.name] = t === D ? void 0 : t;
+  j(t2) {
+    this.element[this.name] = t2 === E ? void 0 : t2;
   }
 }
-class Z extends G {
+class I extends k {
   constructor() {
     super(...arguments), this.type = 4;
   }
-  j(t) {
-    this.element.toggleAttribute(this.name, !!t && t !== D);
+  j(t2) {
+    this.element.toggleAttribute(this.name, !!t2 && t2 !== E);
   }
 }
-class q extends G {
-  constructor(t, i, s, e, h2) {
-    super(t, i, s, e, h2), this.type = 5;
+class L extends k {
+  constructor(t2, i2, s2, e2, h2) {
+    super(t2, i2, s2, e2, h2), this.type = 5;
   }
-  _$AI(t, i = this) {
-    if ((t = z(this, t, i, 0) ?? D) === R) return;
-    const s = this._$AH, e = t === D && s !== D || t.capture !== s.capture || t.once !== s.once || t.passive !== s.passive, h2 = t !== D && (s === D || e);
-    e && this.element.removeEventListener(this.name, this, s), h2 && this.element.addEventListener(this.name, this, t), this._$AH = t;
+  _$AI(t2, i2 = this) {
+    if ((t2 = S(this, t2, i2, 0) ?? E) === T) return;
+    const s2 = this._$AH, e2 = t2 === E && s2 !== E || t2.capture !== s2.capture || t2.once !== s2.once || t2.passive !== s2.passive, h2 = t2 !== E && (s2 === E || e2);
+    e2 && this.element.removeEventListener(this.name, this, s2), h2 && this.element.addEventListener(this.name, this, t2), this._$AH = t2;
   }
-  handleEvent(t) {
+  handleEvent(t2) {
     var _a;
-    "function" == typeof this._$AH ? this._$AH.call(((_a = this.options) == null ? void 0 : _a.host) ?? this.element, t) : this._$AH.handleEvent(t);
+    "function" == typeof this._$AH ? this._$AH.call(((_a = this.options) == null ? void 0 : _a.host) ?? this.element, t2) : this._$AH.handleEvent(t2);
   }
 }
-class K {
-  constructor(t, i, s) {
-    this.element = t, this.type = 6, this._$AN = void 0, this._$AM = i, this.options = s;
+class z {
+  constructor(t2, i2, s2) {
+    this.element = t2, this.type = 6, this._$AN = void 0, this._$AM = i2, this.options = s2;
   }
   get _$AU() {
     return this._$AM._$AU;
   }
-  _$AI(t) {
-    z(this, t);
+  _$AI(t2) {
+    S(this, t2);
   }
 }
-const Re = n.litHtmlPolyfillSupport;
-Re == null ? void 0 : Re(B, et), (n.litHtmlVersions ?? (n.litHtmlVersions = [])).push("3.2.0");
-const Q = (t, i, s) => {
-  const e = i;
-  let h2 = e._$litPart$;
+const j = t.litHtmlPolyfillSupport;
+j == null ? void 0 : j(N, R), (t.litHtmlVersions ?? (t.litHtmlVersions = [])).push("3.2.1");
+const B = (t2, i2, s2) => {
+  const e2 = i2;
+  let h2 = e2._$litPart$;
   if (void 0 === h2) {
-    const t2 = null;
-    e._$litPart$ = h2 = new et(i.insertBefore(lt(), t2), t2, void 0, {});
+    const t3 = null;
+    e2._$litPart$ = h2 = new R(i2.insertBefore(l(), t3), t3, void 0, {});
   }
-  return h2._$AI(t), h2;
+  return h2._$AI(t2), h2;
 };
 typeof SuppressedError === "function" ? SuppressedError : function(error, suppressed, message) {
-  var e = new Error(message);
-  return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+  var e2 = new Error(message);
+  return e2.name = "SuppressedError", e2.error = error, e2.suppressed = suppressed, e2;
 };
 function transformCallback(callback, once = false) {
   return window.__TAURI_INTERNALS__.transformCallback(callback, once);
@@ -13653,7 +13653,7 @@ class MergeState {
     for (const k2 in merge_input) {
       const error = to_error(merge_input[k2]);
       if (error != null) {
-        templates.push(ke`
+        templates.push(x`
           <details id="details_${k_uid(k2)}" class="merge-view">
             <summary>
               <code>${k2}</code><span class="if-details-closed">: ${error}</span>
@@ -13662,7 +13662,7 @@ class MergeState {
           </details>
         `);
       } else {
-        templates.push(ke`
+        templates.push(x`
           <details open id="details_${k_uid(k2)}" class="merge-view">
             <!-- We will close this details element with javascript shortly. See below. -->
             <summary>
@@ -13752,7 +13752,7 @@ class MergeState {
       }
     }
     let target_element = replaceElementByIdWithNewEmptyDiv(unique_id);
-    Q(ke`${templates}`, target_element);
+    B(x`${templates}`, target_element);
     const parent_window = target_element.closest(".app-window");
     if (!parent_window) {
       throw `Element with id ${unique_id} must be a child of an element with class .app-window`;
@@ -13937,7 +13937,7 @@ function to_error(input) {
   } else if (unsupported_value.file.type != "Unsupported") {
     unreachable();
   }
-  return ke`<b>error</b>: ${unsupported_value.file.value} (occurred on the
+  return x`<b>error</b>: ${unsupported_value.file.value} (occurred on the
     ${unsupported_value.side} side)`;
 }
 const SCROLL_MARGIN = 200;
@@ -13949,27 +13949,27 @@ function cm_prevChange(cm) {
   cm.execCommand("goPrevDiff");
   cm.scrollIntoView(null, SCROLL_MARGIN);
 }
-function show_error_to_user(e) {
-  console.log("Caught error, showing to user:", e);
+function show_error_to_user(e2) {
+  console.log("Caught error, showing to user:", e2);
   const dialogElt = document.getElementById("modal_dialog_with_message");
   const dialogContentsElt = document.getElementById(
     "message_of_modal_dialog_with_message"
   );
-  Q(`${String(e)}`, dialogContentsElt);
+  B(`${String(e2)}`, dialogContentsElt);
   dialogElt.showModal();
   console.log("Done showing error to user.");
 }
 async function run_and_show_any_errors_to_user(f2) {
   try {
     return await f2();
-  } catch (e) {
-    show_error_to_user(e);
+  } catch (e2) {
+    show_error_to_user(e2);
   }
 }
 window.addEventListener("DOMContentLoaded", async () => {
   const loading_elt = replaceElementByIdWithNewEmptyDiv("loading_message");
-  Q(
-    ke`
+  B(
+    x`
       <h2>Loading...</h2>
       <p>Getting the data we want to merge...</p>
     `,
@@ -13978,20 +13978,20 @@ window.addEventListener("DOMContentLoaded", async () => {
   let input;
   try {
     input = await get_merge_data();
-  } catch (e) {
-    show_error_to_user(e);
+  } catch (e2) {
+    show_error_to_user(e2);
     await exit_fatal_error();
     unreachable();
   }
-  Q(
-    ke`
+  B(
+    x`
       <h2>Loading...</h2>
       <p>Rendering diffs...</p>
     `,
     loading_elt
   );
   const merge_views = MergeState.renderInDomElement("lit", input);
-  Q(ke``, loading_elt);
+  B(x``, loading_elt);
   const save_or_tell_user = async () => await run_and_show_any_errors_to_user(async () => {
     await save(merge_views.values());
   });
@@ -14002,14 +14002,14 @@ window.addEventListener("DOMContentLoaded", async () => {
     save_button.disabled = true;
     save_and_quit_button.disabled = true;
     exit_success();
-    await new Promise((r) => setTimeout(r, 100));
+    await new Promise((r2) => setTimeout(r2, 100));
     window.close();
   });
   const abandon_changes_and_quit = async () => await run_and_show_any_errors_to_user(async () => {
     save_button.disabled = true;
     save_and_quit_button.disabled = true;
     exit_user_abandoned_merge();
-    await new Promise((r) => setTimeout(r, 100));
+    await new Promise((r2) => setTimeout(r2, 100));
     window.close();
   });
   const revert = () => {
@@ -14035,15 +14035,15 @@ window.addEventListener("DOMContentLoaded", async () => {
       async (_event) => exit_user_abandoned_merge()
     );
   } else {
-    document.addEventListener("keydown", async (e) => {
-      const CtrlOrCmd = e.metaKey || e.ctrlKey;
-      if (e.key == "s" && CtrlOrCmd) {
+    document.addEventListener("keydown", async (e2) => {
+      const CtrlOrCmd = e2.metaKey || e2.ctrlKey;
+      if (e2.key == "s" && CtrlOrCmd) {
         await save_or_tell_user();
-        e.preventDefault();
+        e2.preventDefault();
         return false;
       }
       return true;
     });
   }
 });
-//# sourceMappingURL=index-CGtoHi7v.js.map
+//# sourceMappingURL=index-CFJ3RJMv.js.map
