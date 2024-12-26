@@ -10,9 +10,11 @@ use indexmap::IndexMap;
 // tokio::sync::Mutex, but the docs suggest only using it if absolutely
 // neccessary.
 use parking_lot::Mutex;
+/*
 use tauri::menu::{Menu, MenuEvent, MenuItem, Submenu};
 use tauri::window::MenuType;
 use tauri::Manager;
+*/
 // TODO: https://tauri.app/start/migrate/from-tauri-1/#migrate-to-menu-module
 
 type DataMutex = Mutex<Box<dyn DataInterface>>;
@@ -51,6 +53,7 @@ fn main() {
 
     tauri::Builder::default()
         .plugin(tauri_plugin_process::init())
+        /*
         .setup(|app| {
             let menu_items = vec![
                 &MenuItem::new("save", "Save", MenuType::Item, true)
@@ -68,19 +71,18 @@ fn main() {
                     true,
                 )? as &dyn tauri::menu::IsMenuItem<_>,
             ];
-
             let file_menu = Menu::with_items(app, &menu_items)?;
             let menu = Menu::with_items(
                 app,
                 &[&Submenu::new("File", file_menu)? as &dyn tauri::menu::IsMenuItem<_>],
             )?;
-
             app.set_menu(menu)?;
             Ok(())
         })
         .on_menu_event(|event| {
             event.window().emit(event.menu_item_id(), ()).unwrap();
         })
+        */
         .manage(input_mutex)
         .invoke_handler(tauri::generate_handler![get_merge_data, save])
         .run(tauri::generate_context!())

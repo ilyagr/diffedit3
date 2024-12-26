@@ -23,7 +23,9 @@ export function to_text(file_entry: FileEntry): string | null {
 // Tauri interop
 
 // https://github.com/tauri-apps/tauri/discussions/6119
-export const TAURI_BACKEND = "__TAURI__" in globalThis;
+// TODO: Can this be replaced with https://github.com/tauri-apps/tauri/discussions/6119#discussioncomment-11666454
+// or something less brittle?
+export const TAURI_BACKEND = "__TAURI_INTERNALS__" in globalThis;
 
 async function backend_request(
   command_name: string,
