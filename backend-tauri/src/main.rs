@@ -6,38 +6,28 @@
 use clap::Parser;
 use diffedit3::DataInterface;
 use indexmap::IndexMap;
-// Using parking_lot::Mutex for a timeout. We could alternatively use
-// tokio::sync::Mutex, but the docs suggest only using it if absolutely
-// neccessary.
 use parking_lot::Mutex;
-use tauri::menu::{Menu, MenuItemBuilder, Submenu};
-// TODO: https://tauri.app/start/migrate/from-tauri-1/#migrate-to-menu-module
+use tauri::menu::{MenuBuilder, MenuItemBuilder, Submenu};
+use tauri::{Manager, State};
+use tauri_plugin_process::init as process_init;
 
 type DataMutex = Mutex<Box<dyn DataInterface>>;
 
 #[tauri::command]
 fn save(
     result: IndexMap<String, String>,
-    state: tauri::State<DataMutex>,
+    state: State<DataMutex>,
 ) -> Result<(), diffedit3::DataSaveError> {
-    // TODO: Add timeout like in diffedit3-web
     state.lock().save(result)
 }
 
 #[tauri::command]
 fn get_merge_data(
-    state: tauri::State<DataMutex>,
+    state: State<DataMutex>,
 ) -> Result<diffedit3::EntriesToCompare, diffedit3::DataReadError> {
-    // TODO: Add timeout like in diffedit3-web
     state.lock().scan()
 }
 
-// TODO: Zoom. The `zoom` CSS property does not work with CodeMirror.
-// See https://github.com/tauri-apps/tauri/issues/3310. Or just use a browser
-// https://github.com/phcode-dev/phoenix-desktop/pull/162/files
-//
-// So far, the most promising approach is to change the `font-size` root
-// CSS property
 fn main() {
     let cli = diffedit3::Cli::parse();
     let input: Box<dyn diffedit3::DataInterface> =
@@ -47,33 +37,51 @@ fn main() {
         });
     let input_mutex: DataMutex = Mutex::new(input);
 
-    let abandon_changes_and_quit = CustomMenuItem::new(
-        "abandon_changes_and_quit".to_string(),
-        "Abandon Changes and Quit",
-    );
-    let revert = CustomMenuItem::new("revert".to_string(), "Revert to Last Save");
-    let save_menu = CustomMenuItem::new("save".to_string(), "Save").accelerator("CmdOrControl+S");
-    let save_and_quit = CustomMenuItem::new("save_and_quit".to_string(), "Save and Quit")
-        .accelerator("CmdOrControl+Q");
-    let submenu = Submenu::new(
-        "File",
-        Menu::new()
-            .add_item(save_menu)
-            .add_item(save_and_quit)
-            .add_item(revert)
-            .add_item(abandon_changes_and_quit),
-    );
-    // TODO: It'd be nice to keep Tauri's default menu and add a few items to it
-    // instead of starting with a blank menu. Apparently, this is possible with
-    // Tauri 2.0 (currently in beta), though the docs mention that only Submenus
-    // can be added to the menu. See
-    // https://github.com/tauri-apps/tauri/discussions/8853#discussioncomment-8483258
-    let menu = Menu::new().add_submenu(submenu);
-
     tauri::Builder::default()
-        .plugin(tauri_plugin_process::init())
-        .menu(menu)
-        .on_menu_event(|event| event.window().emit(event.menu_item_id(), ()).unwrap())
+        .plugin(process_init())
+        .setup(|app| {
+            let manager = app.handle();
+
+            let abandon_changes_and_quit =
+                MenuItemBuilder::with_id("abandon_changes_and_quit", "Abandon Changes and Quit")
+                    .build(manager)?;
+
+            let revert =
+                MenuItemBuilder::with_id("revert", "Revert to Last Save").build(manager)?;
+
+            let save_menu = MenuItemBuilder::with_id("save", "Save")
+                .accelerator("CmdOrControl+S")
+                .build(manager)?;
+
+            let save_and_quit = MenuItemBuilder::with_id("save_and_quit", "Save and Quit")
+                .accelerator("CmdOrControl+Q")
+                .build(manager)?;
+
+            // Build the File menu
+            let mut file_menu = MenuBuilder::new(manager);
+            file_menu = file_menu.item(&save_menu);
+            file_menu = file_menu.item(&save_and_quit);
+            file_menu = file_menu.item(&revert);
+            file_menu = file_menu.item(&abandon_changes_and_quit);
+            let file_menu = file_menu.build()?;
+
+            // Create a Submenu from the File menu
+            let file_submenu = Submenu::new(manager, "File", file_menu);
+
+            // Build the top-level menu
+            let mut menu_builder = MenuBuilder::new(manager);
+            menu_builder = menu_builder.submenu(file_submenu);
+            let menu = menu_builder.build()?;
+
+            if let Some(main_window) = app.get_window("main") {
+                main_window.set_menu(menu)?;
+                main_window.on_menu_event(move |event| {
+                    main_window.emit(event.menu_item_id(), ()).unwrap();
+                });
+            }
+
+            Ok(())
+        })
         .manage(input_mutex)
         .invoke_handler(tauri::generate_handler![get_merge_data, save])
         .run(tauri::generate_context!())
