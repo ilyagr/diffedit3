@@ -35,11 +35,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
-      # - name: Install packages (Ubuntu)
-      #   if: matrix.os == 'ubuntu-22.04'
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt-get install -y --no-install-recommends xz-utils liblz4-tool musl-tools
       - name: Install Rust
         uses: dtolnay/rust-toolchain@1482605bfc5719782e1267fd0c0cc350fe7646b8
         with:
@@ -78,13 +73,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # TODO: Make this more consistent with the other binary
         platform: [macos-latest, ubuntu-22.04, windows-latest]
         include:
           - platform: macos-latest
             os: darwin
           - platform: ubuntu-22.04
-            os: linux # TODO: musl?
+            os: linux # Unlike the -web binary, this is not -musl (and cannot be, statically linked Tauri makes no sense)
           - platform: windows-latest
             os: windows-2022
 
@@ -102,11 +96,7 @@ jobs:
 
       - name: install dependencies (ubuntu only)
         if: matrix.platform == 'ubuntu-22.04'
-        run: |
-          sudo apt-get update
-          # From https://github.com/tauri-apps/tauri-action/blob/084d50df57534d31b5af88966da31affc0be8ea3/README.md?plain=1#L63
-          # see more recent versions for updates
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+        run: ./.github/scripts/ubuntu_install_tauri_dependencies.sh
 
       - name: install frontend dependencies
         run: npm clean-install

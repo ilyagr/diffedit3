@@ -27,17 +27,6 @@ jobs:
           - os: ubuntu-latest
             cargo_flags: "--all-features"
     runs-on: ${{ matrix.os }}
-
-    # TODO FIXME (aseipp): keep the timeout limit to ~15 minutes. this is long
-    # enough to give us runway for the future, but also once we hit it, we're at
-    # the "builds are taking too long" stage and we should start looking at ways
-    # to optimize the CI.
-    #
-    # at the same time, this avoids some issues where some flaky, bugged tests
-    # seem to be causing multi-hour runs on Windows (GPG signing issues), which
-    # is a problem we should fix. in the mean time, this will make these flakes
-    # less harmful, as it won't cause builds to spin for multiple hours, requiring
-    # manual cancellation.
     timeout-minutes: 15
 
     steps:
@@ -101,11 +90,7 @@ jobs:
           toolchain: 1.81
           components: clippy
       - name: install dependencies (ubuntu + Tauri only)
-        run: |
-          sudo apt-get update
-          # From https://github.com/tauri-apps/tauri-action/blob/084d50df57534d31b5af88966da31affc0be8ea3/README.md?plain=1#L63
-          # see more recent versions for updates
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+        run: ./.github/scripts/ubuntu_install_tauri_dependencies.sh
       - name: Clippy
         run: cargo clippy --workspace --all-targets --verbose
 
