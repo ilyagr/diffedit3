@@ -48,19 +48,19 @@ main_menu_logo.onclick = function(event) {
     main_menu_logo.style["background-color"] = "whitesmoke";
   }
 };
-var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
 function getDefaultExportFromCjs(x2) {
   return x2 && x2.__esModule && Object.prototype.hasOwnProperty.call(x2, "default") ? x2["default"] : x2;
 }
-var codemirror = { exports: {} };
+var codemirror$1 = { exports: {} };
+var codemirror = codemirror$1.exports;
 var hasRequiredCodemirror;
 function requireCodemirror() {
-  if (hasRequiredCodemirror) return codemirror.exports;
+  if (hasRequiredCodemirror) return codemirror$1.exports;
   hasRequiredCodemirror = 1;
   (function(module, exports) {
-    (function(global2, factory) {
+    (function(global, factory) {
       module.exports = factory();
-    })(commonjsGlobal, function() {
+    })(codemirror, function() {
       var userAgent = navigator.userAgent;
       var platform = navigator.platform;
       var gecko = /gecko\/\d/i.test(userAgent);
@@ -269,12 +269,12 @@ function requireCodemirror() {
         this.time = 0;
         this.handler = bind(this.onTimeout, this);
       };
-      Delayed.prototype.onTimeout = function(self2) {
-        self2.id = 0;
-        if (self2.time <= +/* @__PURE__ */ new Date()) {
-          self2.f();
+      Delayed.prototype.onTimeout = function(self) {
+        self.id = 0;
+        if (self.time <= +/* @__PURE__ */ new Date()) {
+          self.f();
         } else {
-          setTimeout(self2.handler, self2.time - +/* @__PURE__ */ new Date());
+          setTimeout(self.handler, self.time - +/* @__PURE__ */ new Date());
         }
       };
       Delayed.prototype.set = function(ms, f2) {
@@ -10792,8 +10792,8 @@ function requireCodemirror() {
       CodeMirror2.version = "5.65.18";
       return CodeMirror2;
     });
-  })(codemirror);
-  return codemirror.exports;
+  })(codemirror$1);
+  return codemirror$1.exports;
 }
 var codemirrorExports = requireCodemirror();
 const CodeMirror = /* @__PURE__ */ getDefaultExportFromCjs(codemirrorExports);
@@ -11319,7 +11319,7 @@ function requireMerge() {
         var hasLeft = origLeft != null, hasRight = origRight != null;
         var panes = 1 + (hasLeft ? 1 : 0) + (hasRight ? 1 : 0);
         var wrap = [], left = this.left = null, right = this.right = null;
-        var self2 = this;
+        var self = this;
         if (hasLeft) {
           left = this.left = new DiffView(this, "left");
           var leftPane = elt("div", null, "CodeMirror-merge-pane CodeMirror-merge-left");
@@ -11342,7 +11342,7 @@ function requireMerge() {
         if (right) right.init(rightPane, origRight, options);
         if (options.collapseIdentical)
           this.editor().operation(function() {
-            collapseIdenticalStretches(self2, options.collapseIdentical);
+            collapseIdenticalStretches(self, options.collapseIdentical);
           });
         if (options.connect == "align") {
           this.aligners = [];
@@ -11628,37 +11628,37 @@ function requireMerge() {
         this.cm = cm;
         this.alignable = [];
         this.height = cm.doc.height;
-        var self2 = this;
+        var self = this;
         cm.on("markerAdded", function(_2, marker) {
           if (!marker.collapsed) return;
           var found = marker.find(1);
-          if (found != null) self2.set(found.line, F_MARKER);
+          if (found != null) self.set(found.line, F_MARKER);
         });
         cm.on("markerCleared", function(_2, marker, _min, max) {
           if (max != null && marker.collapsed)
-            self2.check(max, F_MARKER, self2.hasMarker);
+            self.check(max, F_MARKER, self.hasMarker);
         });
         cm.on("markerChanged", this.signal.bind(this));
         cm.on("lineWidgetAdded", function(_2, widget, lineNo) {
           if (widget.mergeSpacer) return;
-          if (widget.above) self2.set(lineNo - 1, F_WIDGET_BELOW);
-          else self2.set(lineNo, F_WIDGET);
+          if (widget.above) self.set(lineNo - 1, F_WIDGET_BELOW);
+          else self.set(lineNo, F_WIDGET);
         });
         cm.on("lineWidgetCleared", function(_2, widget, lineNo) {
           if (widget.mergeSpacer) return;
-          if (widget.above) self2.check(lineNo - 1, F_WIDGET_BELOW, self2.hasWidgetBelow);
-          else self2.check(lineNo, F_WIDGET, self2.hasWidget);
+          if (widget.above) self.check(lineNo - 1, F_WIDGET_BELOW, self.hasWidgetBelow);
+          else self.check(lineNo, F_WIDGET, self.hasWidget);
         });
         cm.on("lineWidgetChanged", this.signal.bind(this));
         cm.on("change", function(_2, change) {
           var start = change.from.line, nBefore = change.to.line - change.from.line;
           var nAfter = change.text.length - 1, end = start + nAfter;
-          if (nBefore || nAfter) self2.map(start, nBefore, nAfter);
-          self2.check(end, F_MARKER, self2.hasMarker);
-          if (nBefore || nAfter) self2.check(change.from.line, F_MARKER, self2.hasMarker);
+          if (nBefore || nAfter) self.map(start, nBefore, nAfter);
+          self.check(end, F_MARKER, self.hasMarker);
+          if (nBefore || nAfter) self.check(change.from.line, F_MARKER, self.hasMarker);
         });
         cm.on("viewportChange", function() {
-          if (self2.cm.doc.height != self2.height) self2.signal();
+          if (self.cm.doc.height != self.height) self.signal();
         });
       }
       TrackAlignable.prototype = {
@@ -12688,6 +12688,7 @@ function requireDiff_match_patch() {
             }
             break;
           case "-":
+          // Fall through.
           case "=":
             var n2 = parseInt(param, 10);
             if (isNaN(n2) || n2 < 0) {
@@ -14091,4 +14092,4 @@ window.addEventListener("DOMContentLoaded", async () => {
     });
   }
 });
-//# sourceMappingURL=index-BmB2tnWD.js.map
+//# sourceMappingURL=index-zIY2gN-i.js.map
