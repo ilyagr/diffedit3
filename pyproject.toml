@@ -1,0 +1,19 @@
+[project]
+name = "diffedit3-tools"
+version = "0.1.0"
+requires-python = ">=3.9"
+
+[dependency-groups]
+dev = [
+    "codespell[toml]>=2.4.0",
+]
+
+[tool.codespell]
+check-filenames=true
+check-hidden=true
+# Codespell does not respect .gitignore. It is possible to add to the skip
+# list by running e.g. `uv run codespell --skip=./.flox` if you have less
+# common ignored files or globally ignored files present.  Alternatively,
+# try `uv run codespell $(jj file list | grep -v '^webapp/dist')`.
+skip="target,node_modules,./.jj,*.lock,./.git,./.venv,./webapp/dist,./backend-tauri/gen"
+# ignore-words-list="crate"

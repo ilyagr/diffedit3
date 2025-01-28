@@ -132,7 +132,7 @@ easily modify the staging area.
 
 ## Notes on implementation and alternative possibilities
 
-For now, the code is of proof-of-concept quality. I tried to make this useable
+For now, the code is of proof-of-concept quality. I tried to make this usable
 enough for people to get a sense of the tool, quickly.
 
 Most of this tool is a web-app, which is a thin wrapper around the [CodeMirror 5

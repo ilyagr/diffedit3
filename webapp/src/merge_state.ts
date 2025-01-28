@@ -167,7 +167,7 @@ export class MergeState {
     // to have CodeMirror rendered on an already shown DOM element, which is
     // hopefully the use-case CodeMirror 5 was most tested for. lit-html is used
     // mainly for its contextual escaping functionality as opposed to its
-    // rendering opimizations.
+    // rendering optimizations.
     //
     // TODO: Consider improving this design and making it more modern.
     //    - We can't use lit-element because it's unlikely CodeMirror5 works

@@ -238,7 +238,7 @@ details[open] > summary > .if-details-closed {
 .pinned-mode details.merge-view > summary:hover,
 .pinned-mode details.merge-view > summary:active,
 .pinned-mode details.merge-view > summary:focus {
-  overflow-x: auto; /* Show a scroll bar if neccessary */
+  overflow-x: auto; /* Show a scroll bar if necessary */
 }
 
 .pinned-mode details.merge-view > div {
@@ -301,7 +301,7 @@ dialog {
 .main-menu:hover,
 .main-menu:active,
 .main-menu:focus {
-  overflow-x: auto; /* Show a scroll bar if neccessary */
+  overflow-x: auto; /* Show a scroll bar if necessary */
 }
 
 .main-menu button.main-menu-toggle {

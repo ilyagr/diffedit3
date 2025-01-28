@@ -13,7 +13,7 @@ import "codemirror/addon/merge/merge";
 // diff_match_patch needs to be in the global scope for merge addon to work
 // Conceivably, it could be imported from the HTML, but I have not found a way to convince
 // Vite/TS/Rollup to do that. If using Webpack instead of Rollup, it's possible that this
-// can be done as disucussed in
+// can be done as discussed in
 // https://discuss.codemirror.net/t/issues-on-using-merge-addon-and-diff-match-patch-solved/4371/4.
 import {
   diff_match_patch,

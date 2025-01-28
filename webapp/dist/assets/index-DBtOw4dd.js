@@ -10789,7 +10789,7 @@ function requireCodemirror() {
       };
       CodeMirror2.fromTextArea = fromTextArea;
       addLegacyProps(CodeMirror2);
-      CodeMirror2.version = "5.65.18";
+      CodeMirror2.version = "5.65.19";
       return CodeMirror2;
     });
   })(codemirror$1);
@@ -11735,7 +11735,7 @@ function requireMerge() {
           if (widgetFrom > -1) {
             var flags = this.alignable[widgetFrom + 1];
             if (flags == F_WIDGET_BELOW) this.alignable.splice(widgetFrom, 2);
-            else this.alignable[widgetFrom + 1] = flags & ~F_WIDGET_BELOW;
+            else this.alignable[widgetFrom + 1] = flags & -3;
           }
           if (widgetTo > -1 && nAfter)
             this.set(from + nAfter, F_WIDGET_BELOW);
@@ -13470,7 +13470,7 @@ class z {
   }
 }
 const j = t.litHtmlPolyfillSupport;
-j == null ? void 0 : j(N, R), (t.litHtmlVersions ?? (t.litHtmlVersions = [])).push("3.2.1");
+j == null ? void 0 : j(N, R), (t.litHtmlVersions ?? (t.litHtmlVersions = [])).push("3.3.0");
 const B = (t2, i2, s2) => {
   const e2 = i2;
   let h2 = e2._$litPart$;
@@ -13491,7 +13491,7 @@ async function invoke(cmd, args = {}, options) {
   return window.__TAURI_INTERNALS__.invoke(cmd, args, options);
 }
 function isTauri() {
-  return "isTauri" in window && !!window.isTauri;
+  return !!(globalThis || window).isTauri;
 }
 var TauriEvent;
 (function(TauriEvent2) {
@@ -14047,4 +14047,4 @@ window.addEventListener("DOMContentLoaded", async () => {
     });
   }
 });
-//# sourceMappingURL=index-CCA20b_a.js.map
+//# sourceMappingURL=index-DBtOw4dd.js.map

@@ -25,7 +25,7 @@ pub enum DataSaveError {
     IOError(PathBuf, std::io::Error),
     #[error("Cannot save the demo fake data")]
     CannotSaveFakeData,
-    #[error("Failed to retreive valid paths for saving: {0}")]
+    #[error("Failed to retrieve valid paths for saving: {0}")]
     ValidationIOError(#[from] DataReadError),
     #[error(
         "Security error: got request to save to a file that wasn't one of the files being merged: \

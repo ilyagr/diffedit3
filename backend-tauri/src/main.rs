@@ -8,7 +8,7 @@ use diffedit3::DataInterface;
 use indexmap::IndexMap;
 // Using parking_lot::Mutex for a timeout. We could alternatively use
 // tokio::sync::Mutex, but the docs suggest only using it if absolutely
-// neccessary.
+// necessary.
 use parking_lot::Mutex;
 /*
 use tauri::menu::{Menu, MenuEvent, MenuItem, Submenu};
