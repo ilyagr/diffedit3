@@ -1,6 +1,8 @@
 use clap::Parser;
 use diffedit3::local_server::{run_server, MergeToolError};
 use thiserror::Error;
+use tracing_subscriber::layer::SubscriberExt as _;
+use tracing_subscriber::util::SubscriberInitExt as _;
 
 type PortRange = std::ops::RangeInclusive<usize>;
 
@@ -89,14 +91,15 @@ async fn main() -> Result<(), MergeToolError> {
         }
     };
 
+    // Allow adjusting logging with `RUST_LOG` environment variable
+    let mut tracing_filter = tracing_subscriber::EnvFilter::from_default_env();
     if cli.verbose {
-        // TODO: We may consider deleting this or finding a way to get poem
-        // to log each connection.
-        if std::env::var_os("RUST_LOG").is_none() {
-            std::env::set_var("RUST_LOG", "poem=debug");
-        }
-        tracing_subscriber::fmt::init();
+        tracing_filter = tracing_filter.add_directive("poem=info".parse().unwrap());
     }
+    tracing_subscriber::registry()
+        .with(tracing_filter)
+        .with(tracing_subscriber::fmt::layer())
+        .init();
 
     if let Err(err) = run_server(
         input,

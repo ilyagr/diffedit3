@@ -41,7 +41,7 @@ tokio = { version = "1.38.0", features = [
     "signal",
 ] }
 toml = { version = "0.8.15", features = ["indexmap"] }
-tracing-subscriber = "0.3.18"
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 walkdir = "2.4.0"
 
 [dev-dependencies]
