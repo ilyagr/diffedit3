@@ -10,7 +10,12 @@ use indexmap::IndexMap;
 // tokio::sync::Mutex, but the docs suggest only using it if absolutely
 // neccessary.
 use parking_lot::Mutex;
-use tauri::{CustomMenuItem, Menu, Submenu};
+/*
+use tauri::menu::{Menu, MenuEvent, MenuItem, Submenu};
+use tauri::window::MenuType;
+use tauri::Manager;
+*/
+// TODO: https://tauri.app/start/migrate/from-tauri-1/#migrate-to-menu-module
 
 type DataMutex = Mutex<Box<dyn DataInterface>>;
 
@@ -46,32 +51,38 @@ fn main() {
         });
     let input_mutex: DataMutex = Mutex::new(input);
 
-    let abandon_changes_and_quit = CustomMenuItem::new(
-        "abandon_changes_and_quit".to_string(),
-        "Abandon Changes and Quit",
-    );
-    let revert = CustomMenuItem::new("revert".to_string(), "Revert to Last Save");
-    let save_menu = CustomMenuItem::new("save".to_string(), "Save").accelerator("CmdOrControl+S");
-    let save_and_quit = CustomMenuItem::new("save_and_quit".to_string(), "Save and Quit")
-        .accelerator("CmdOrControl+Q");
-    let submenu = Submenu::new(
-        "File",
-        Menu::new()
-            .add_item(save_menu)
-            .add_item(save_and_quit)
-            .add_item(revert)
-            .add_item(abandon_changes_and_quit),
-    );
-    // TODO: It'd be nice to keep Tauri's default menu and add a few items to it
-    // instead of starting with a blank menu. Apparently, this is possible with
-    // Tauri 2.0 (currently in beta), though the docs mention that only Submenus
-    // can be added to the menu. See
-    // https://github.com/tauri-apps/tauri/discussions/8853#discussioncomment-8483258
-    let menu = Menu::new().add_submenu(submenu);
-
     tauri::Builder::default()
-        .menu(menu)
-        .on_menu_event(|event| event.window().emit(event.menu_item_id(), ()).unwrap())
+        .plugin(tauri_plugin_process::init())
+        /*
+        .setup(|app| {
+            let menu_items = vec![
+                &MenuItem::new("save", "Save", MenuType::Item, true)
+                    .with_accelerator("CmdOrControl+S")?
+                    as &dyn tauri::menu::IsMenuItem<_>,
+                &MenuItem::new("save_and_quit", "Save and Quit", MenuType::Item, true)
+                    .with_accelerator("CmdOrControl+Q")?
+                    as &dyn tauri::menu::IsMenuItem<_>,
+                &MenuItem::new("revert", "Revert to Last Save", MenuType::Item, true)?
+                    as &dyn tauri::menu::IsMenuItem<_>,
+                &MenuItem::new(
+                    "abandon_changes_and_quit",
+                    "Abandon Changes and Quit",
+                    MenuType::Item,
+                    true,
+                )? as &dyn tauri::menu::IsMenuItem<_>,
+            ];
+            let file_menu = Menu::with_items(app, &menu_items)?;
+            let menu = Menu::with_items(
+                app,
+                &[&Submenu::new("File", file_menu)? as &dyn tauri::menu::IsMenuItem<_>],
+            )?;
+            app.set_menu(menu)?;
+            Ok(())
+        })
+        .on_menu_event(|event| {
+            event.window().emit(event.menu_item_id(), ()).unwrap();
+        })
+        */
         .manage(input_mutex)
         .invoke_handler(tauri::generate_handler![get_merge_data, save])
         .run(tauri::generate_context!())

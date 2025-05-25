@@ -1,5 +1,9 @@
-import { InvokeArgs, invoke as tauriInvoke } from "@tauri-apps/api/tauri";
-import { exit as tauriExit } from "@tauri-apps/api/process";
+import {
+  InvokeArgs,
+  invoke as tauriInvoke,
+  isTauri,
+} from "@tauri-apps/api/core";
+import { exit as tauriExit } from "@tauri-apps/plugin-process";
 
 export type FileEntry =
   | { type: "Missing" }
@@ -23,7 +27,7 @@ export function to_text(file_entry: FileEntry): string | null {
 // Tauri interop
 
 // https://github.com/tauri-apps/tauri/discussions/6119
-export const TAURI_BACKEND = "__TAURI__" in globalThis;
+export const TAURI_BACKEND = isTauri();
 
 async function backend_request(
   command_name: string,

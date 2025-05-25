@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * The Rust MSRV is now 1.81 (up from 1.76)
 
+* The (still unsupported) Tauri binaries now use Tauri 2 instead of Tauri 1. Some features were lost in the process, the menu bar in particular.
+
 ### New features
 
 ### Fixed bugs
