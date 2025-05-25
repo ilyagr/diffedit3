@@ -4,13 +4,14 @@
   "version": "0.5.0",
   "type": "module",
   "dependencies": {
-    "@tauri-apps/api": "^1.5.3",
+    "@tauri-apps/api": "^2.0.1",
+    "@tauri-apps/plugin-process": "^2.0.0",
     "codemirror": "^5.65",
     "diff_match_patch": "^0.1.1",
     "lit-html": "^3.2.0"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^1.6.2",
+    "@tauri-apps/cli": "^2.0.1",
     "@types/codemirror": "5",
     "@types/diff-match-patch": "^1.0.36",
     "prettier": "3.4.2",
