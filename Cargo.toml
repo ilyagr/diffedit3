@@ -2,6 +2,14 @@
 members = ["backend-tauri"]
 default-members = ["."]
 
+[workspace.package]
+version = "0.5.0"  # Also update package.json and tauri.conf.json
+rust-version = "1.85"  # Also update test.yml
+edition = "2024"
+license = "Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/ilyagr/diffedit3"
+
 [package]
 name = "diffedit3"
 description = "Edit diffs in a 3-pane view"
@@ -16,14 +24,6 @@ include = ["/src", "/webapp/dist", "/*.md"]
 [package.metadata.binstall]
 # `cargo binstall` gets confused by the `v` before versions in archive name.
 pkg-url = "{ repo }/releases/download/v{ version }/diffedit3-v{ version }-{ target }.{ archive-format }"
-
-[workspace.package]
-version = "0.5.0"  # Also update package.json and tauri.conf.json
-rust-version = "1.85"  # Also update test.yml
-edition = "2024"
-license = "Apache-2.0"
-readme = "README.md"
-repository = "https://github.com/ilyagr/diffedit3"
 
 [dependencies]
 clap = { version = "4.5.18", features = ["derive"] }

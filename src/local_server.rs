@@ -73,6 +73,7 @@ impl ResponseError for ServerHTTPError {
 
 type ExitCodeSender = tokio::sync::mpsc::Sender<ExitCode>;
 
+#[expect(clippy::result_large_err, reason = "has to be fixed in poem")]
 #[handler]
 fn get_merge_data(
     Data(input): Data<&DataInterfacePointer>,
@@ -88,6 +89,7 @@ fn get_merge_data(
     Ok(Json(input.scan().map_err(ServerHTTPError::from)?))
 }
 
+#[expect(clippy::result_large_err, reason = "has to be fixed in poem")]
 #[handler]
 fn save(
     Data(input): Data<&DataInterfacePointer>,
@@ -157,7 +159,7 @@ pub async fn run_server(
     let acceptor = 'acceptor: {
         let mut error = None;
         for port in ports_to_try {
-            let listener = TcpListener::bind(format!("127.0.0.1:{}", port));
+            let listener = TcpListener::bind(format!("127.0.0.1:{port}"));
             match listener.into_acceptor().await {
                 Ok(a) => break 'acceptor a,
                 Err(err) => {
