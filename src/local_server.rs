@@ -11,7 +11,7 @@ use poem::http::StatusCode;
 use poem::listener::{Acceptor, Listener, TcpListener};
 use poem::middleware::AddData;
 use poem::web::{Data, Json};
-use poem::{handler, EndpointExt, Result, Route, Server};
+use poem::{EndpointExt, Result, Route, Server, handler};
 use thiserror::Error;
 
 use crate::DataInterface;

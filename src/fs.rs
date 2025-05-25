@@ -100,7 +100,7 @@ impl Cli {
 // implementation of max_snapshot_size.
 const MAX_FILE_LENGTH: usize = 200_000;
 
-fn scan(root: &Path) -> impl Iterator<Item = (DirEntry, FileEntry)> {
+fn scan(root: &Path) -> impl Iterator<Item = (DirEntry, FileEntry)> + use<> {
     // As an alternative to WalkDir, see
     // https://github.com/martinvonz/jj/blob/af8eb3fd74956effee00acf00011ff0413607213/lib/src/local_working_copy.rs#L849
     WalkDir::new(root)
@@ -174,7 +174,7 @@ mod tests {
         path.to_string_lossy().replace('\\', "/")
     }
 
-    fn showdir(path: &Path) -> impl Serialize {
+    fn showdir(path: &Path) -> impl Serialize + use<> {
         BTreeMap::from_iter(scan(path).map(|(dir_path, file_type)| {
             (
                 to_slash_string_lossy(dir_path.path().strip_prefix(path).unwrap()),
@@ -183,7 +183,7 @@ mod tests {
         }))
     }
 
-    fn showscan(input: &ThreeDirInput) -> impl Serialize {
+    fn showscan(input: &ThreeDirInput) -> impl Serialize + use<> {
         let entries = input.scan().unwrap();
         BTreeMap::from_iter(
             entries

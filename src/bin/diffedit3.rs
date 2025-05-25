@@ -1,5 +1,5 @@
 use clap::Parser;
-use diffedit3::local_server::{run_server, MergeToolError};
+use diffedit3::local_server::{MergeToolError, run_server};
 use thiserror::Error;
 use tracing_subscriber::layer::SubscriberExt as _;
 use tracing_subscriber::util::SubscriberInitExt as _;
