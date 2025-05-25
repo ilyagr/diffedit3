@@ -5,16 +5,17 @@ edition = { workspace = true }
 rust-version = { workspace = true }
 
 [build-dependencies]
-tauri-build = { version = "1.5", features = [] }
+tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "1.8", features = ["process-exit", "process-relaunch"] }
+tauri = { version = "2", features = [] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 indexmap = { version = "2.5.0", features = ["serde"] }
 clap = { version = "4.5.18", features = ["derive"] }
 diffedit3 = { path = ".." }
 parking_lot = "0.12.2"
+tauri-plugin-process = "2"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

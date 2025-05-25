@@ -70,6 +70,7 @@ fn main() {
     let menu = Menu::new().add_submenu(submenu);
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_process::init())
         .menu(menu)
         .on_menu_event(|event| event.window().emit(event.menu_item_id(), ()).unwrap())
         .manage(input_mutex)

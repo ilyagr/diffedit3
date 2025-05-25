@@ -2,26 +2,19 @@
   "build": {
     "beforeDevCommand": "npm run tauri-dev",
     "beforeBuildCommand": "npm run build",
-    "devPath": "http://localhost:1420",
-    "distDir": "../webapp/dist",
-    "withGlobalTauri": true
+    "frontendDist": "../webapp/dist",
+    "devUrl": "http://localhost:1420"
   },
-  "package": {
-    "productName": "diffedit3-gui",
-    "version": "0.5.0"
+  "bundle": {
+    "active": false
   },
-  "tauri": {
-    "allowlist": {
-      "all": false,
-      "shell": {
-        "all": false
-      },
-      "process": {
-        "all": false,
-        "exit": true,
-        "relaunch": true
-      }
-    },
+  "productName": "diffedit3-gui",
+  "mainBinaryName": "diffedit3-gui",
+  "version": "0.5.0",
+  "identifier": "io.github.ilyagr.diffedit3",
+  "plugins": {},
+  "app": {
+    "withGlobalTauri": true,
     "windows": [
       {
         "fullscreen": false,
@@ -33,10 +26,6 @@
     ],
     "security": {
       "csp": null
-    },
-    "bundle": {
-      "active": false,
-      "identifier": "io.github.ilyagr.diffedit3"
     }
   }
 }

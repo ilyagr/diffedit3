@@ -1,5 +1,5 @@
-import { InvokeArgs, invoke as tauriInvoke } from "@tauri-apps/api/tauri";
-import { exit as tauriExit } from "@tauri-apps/api/process";
+import { InvokeArgs, invoke as tauriInvoke } from "@tauri-apps/api/core";
+import { exit as tauriExit } from "@tauri-apps/plugin-process";
 
 export type FileEntry =
   | { type: "Missing" }
