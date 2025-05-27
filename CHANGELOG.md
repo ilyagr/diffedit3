@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed bugs
 
-## [0.6.0]
+## [0.6.0] - 2025-05-27
 
 No new features, just dependency updates.
 
