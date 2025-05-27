@@ -15,5 +15,5 @@ check-hidden=true
 # list by running e.g. `uv run codespell --skip=./.flox` if you have less
 # common ignored files or globally ignored files present.  Alternatively,
 # try `uv run codespell $(jj file list | grep -v '^webapp/dist')`.
-skip="target,node_modules,./.jj,*.lock,./.git,./.venv,./webapp/dist,./backend-tauri/gen"
+skip="target,node_modules,./.jj,*.lock,package-lock.json,./.git,./.venv,./webapp/dist,./backend-tauri/gen"
 # ignore-words-list="crate"
