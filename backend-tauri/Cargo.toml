@@ -14,7 +14,7 @@ serde_json = "1.0"
 indexmap = { version = "2.5.0", features = ["serde"] }
 clap = { version = "4.5.39", features = ["derive"] }
 diffedit3 = { path = ".." }
-parking_lot = "0.12.2"
+parking_lot = "0.12.4"
 tauri-plugin-process = "2"
 
 [features]
