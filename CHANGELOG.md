@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed bugs
 
+* Non-error user info messages are now printed to `stdout`. This makes
+some versions of `jjui` happier.
+
 ## [0.6.0] - 2025-05-27
 
 No new features, just dependency updates.

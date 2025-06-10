@@ -110,7 +110,7 @@ async fn exit(
     Json(code): Json<ExitCode>,
     Data(terminate_channel): Data<&ExitCodeSender>,
 ) -> Result<Json<()>> {
-    eprintln!("Stopping the local server and exiting the diff editor with error code {code}.");
+    println!("Stopping the local server and exiting the diff editor with error code {code}.");
     terminate_channel
         .send(code)
         .await
@@ -163,7 +163,7 @@ pub async fn run_server(
             match listener.into_acceptor().await {
                 Ok(a) => break 'acceptor a,
                 Err(err) => {
-                    eprintln!("Couldn't bind to port {port}.");
+                    println!("Couldn't bind to port {port}.");
                     error = Some(err)
                 }
             };
@@ -177,16 +177,16 @@ pub async fn run_server(
     let socket_addr = acceptor_to_socket_address(&acceptor)?;
     // Now that the acceptor exists, the browser should be able to connect.
     let http_address = format!("http://{socket_addr}");
-    eprintln!("Listening at {http_address}.");
+    println!("Listening at {http_address}.");
     if open_browser {
         tokio::task::spawn_blocking(move || {
             // Use `spawn_blocking` since `webbrowser::open` may block (for text-mode
             // browsers. TODO: find out if it blocks when running a fresh instance of
             // `firefox` on Linux.)
-            eprintln!("Trying to launch a browser...");
+            println!("Trying to launch a browser...");
             match open::that(http_address) {
-                Ok(_) => eprintln!("Successfully launched browser."),
-                Err(err) => eprintln!("Failed to launch a browser: {err}"),
+                Ok(_) => println!("Successfully launched browser."),
+                Err(err) => println!("Failed to launch a browser: {err}"),
             }
         });
     }
