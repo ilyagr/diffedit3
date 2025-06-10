@@ -82,7 +82,7 @@ fn exit_with_cli_error(s: String) -> ! {
 }
 
 #[tokio::main]
-async fn main() -> Result<(), MergeToolError> {
+async fn main() {
     let cli = LocalServerCli::parse();
     let input: Box<dyn diffedit3::DataInterface> = match cli.lib_cli.into_data_interface() {
         Ok(i) => i,
@@ -123,5 +123,4 @@ async fn main() -> Result<(), MergeToolError> {
             MergeToolError::CtrlC => 130,
         });
     };
-    Ok(())
 }
