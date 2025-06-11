@@ -11735,7 +11735,7 @@ function requireMerge() {
           if (widgetFrom > -1) {
             var flags = this.alignable[widgetFrom + 1];
             if (flags == F_WIDGET_BELOW) this.alignable.splice(widgetFrom, 2);
-            else this.alignable[widgetFrom + 1] = flags & -3;
+            else this.alignable[widgetFrom + 1] = flags & ~F_WIDGET_BELOW;
           }
           if (widgetTo > -1 && nAfter)
             this.set(from + nAfter, F_WIDGET_BELOW);
@@ -14047,4 +14047,4 @@ window.addEventListener("DOMContentLoaded", async () => {
     });
   }
 });
-//# sourceMappingURL=index-DBtOw4dd.js.map
+//# sourceMappingURL=index-BNp7E963.js.map
