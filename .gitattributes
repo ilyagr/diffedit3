@@ -1,0 +1,5 @@
+# https://docs.github.com/en/repositories/working-with-files/managing-files/customizing-how-changed-files-appear-on-github
+
+# We store the compiled webapp in the repo so that `diffedit3` can be compiled
+# without Node installed.
+webapp/dist/** linguist-generated merge=binary
