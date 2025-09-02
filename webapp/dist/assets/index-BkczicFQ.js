@@ -1,38 +1,27 @@
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 (function polyfill() {
   const relList = document.createElement("link").relList;
-  if (relList && relList.supports && relList.supports("modulepreload")) {
-    return;
-  }
-  for (const link of document.querySelectorAll('link[rel="modulepreload"]')) {
-    processPreload(link);
-  }
+  if (relList && relList.supports && relList.supports("modulepreload")) return;
+  for (const link of document.querySelectorAll('link[rel="modulepreload"]')) processPreload(link);
   new MutationObserver((mutations) => {
     for (const mutation of mutations) {
-      if (mutation.type !== "childList") {
-        continue;
-      }
-      for (const node of mutation.addedNodes) {
-        if (node.tagName === "LINK" && node.rel === "modulepreload")
-          processPreload(node);
-      }
+      if (mutation.type !== "childList") continue;
+      for (const node of mutation.addedNodes) if (node.tagName === "LINK" && node.rel === "modulepreload") processPreload(node);
     }
-  }).observe(document, { childList: true, subtree: true });
+  }).observe(document, {
+    childList: true,
+    subtree: true
+  });
   function getFetchOpts(link) {
     const fetchOpts = {};
     if (link.integrity) fetchOpts.integrity = link.integrity;
     if (link.referrerPolicy) fetchOpts.referrerPolicy = link.referrerPolicy;
-    if (link.crossOrigin === "use-credentials")
-      fetchOpts.credentials = "include";
+    if (link.crossOrigin === "use-credentials") fetchOpts.credentials = "include";
     else if (link.crossOrigin === "anonymous") fetchOpts.credentials = "omit";
     else fetchOpts.credentials = "same-origin";
     return fetchOpts;
   }
   function processPreload(link) {
-    if (link.ep)
-      return;
+    if (link.ep) return;
     link.ep = true;
     const fetchOpts = getFetchOpts(link);
     fetch(link.href, fetchOpts);
@@ -42,7 +31,7 @@ button_collapse_uncollapse_menu.onclick = function() {
   this.closest(".main-menu").classList.toggle("collapsed");
 };
 main_menu_logo.onclick = function(event) {
-  if ((event == null ? void 0 : event.buttons) == 2 || event.shiftKey || event.ctrlKey || event.metaKey) {
+  if (event?.buttons == 2 || event.shiftKey || event.ctrlKey || event.metaKey) {
     main_menu_logo.style["background-color"] = "#" + Math.floor(Math.random() * 16777215).toString(16);
   } else {
     main_menu_logo.style["background-color"] = "whitesmoke";
@@ -4690,7 +4679,7 @@ function requireCodemirror() {
         d2.scroller = elt("div", [d2.sizer, d2.heightForcer, d2.gutters], "CodeMirror-scroll");
         d2.scroller.setAttribute("tabIndex", "-1");
         d2.wrapper = elt("div", [d2.scrollbarFiller, d2.gutterFiller, d2.scroller], "CodeMirror");
-        if (chrome && chrome_version >= 105) {
+        if (chrome && chrome_version === 105) {
           d2.wrapper.style.clipPath = "inset(0px)";
         }
         d2.wrapper.setAttribute("translate", "no");
@@ -10789,7 +10778,7 @@ function requireCodemirror() {
       };
       CodeMirror2.fromTextArea = fromTextArea;
       addLegacyProps(CodeMirror2);
-      CodeMirror2.version = "5.65.19";
+      CodeMirror2.version = "5.65.20";
       return CodeMirror2;
     });
   })(codemirror$1);
@@ -13250,7 +13239,7 @@ globalThis.DIFF_DELETE = diff_match_patchExports.DIFF_DELETE;
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const t = globalThis, i = t.trustedTypes, s = i ? i.createPolicy("lit-html", { createHTML: (t2) => t2 }) : void 0, e = "$lit$", h = `lit$${Math.random().toFixed(9).slice(2)}$`, o = "?" + h, n = `<${o}>`, r = document, l = () => r.createComment(""), c = (t2) => null === t2 || "object" != typeof t2 && "function" != typeof t2, a = Array.isArray, u = (t2) => a(t2) || "function" == typeof (t2 == null ? void 0 : t2[Symbol.iterator]), d = "[ 	\n\f\r]", f = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, v = /-->/g, _ = />/g, m = RegExp(`>|${d}(?:([^\\s"'>=/]+)(${d}*=${d}*(?:[^ 	
+const t = globalThis, i = t.trustedTypes, s = i ? i.createPolicy("lit-html", { createHTML: (t2) => t2 }) : void 0, e = "$lit$", h = `lit$${Math.random().toFixed(9).slice(2)}$`, o = "?" + h, n = `<${o}>`, r = document, l = () => r.createComment(""), c = (t2) => null === t2 || "object" != typeof t2 && "function" != typeof t2, a = Array.isArray, u = (t2) => a(t2) || "function" == typeof t2?.[Symbol.iterator], d = "[ 	\n\f\r]", f = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, v = /-->/g, _ = />/g, m = RegExp(`>|${d}(?:([^\\s"'>=/]+)(${d}*=${d}*(?:[^ 	
 \f\r"'\`<>=]|("|')|))|$)`, "g"), p = /'/g, g = /"/g, $ = /^(?:script|style|textarea|title)$/i, y = (t2) => (i2, ...s2) => ({ _$litType$: t2, strings: i2, values: s2 }), x = y(1), T = Symbol.for("lit-noChange"), E = Symbol.for("lit-nothing"), A = /* @__PURE__ */ new WeakMap(), C = r.createTreeWalker(r, 129);
 function P(t2, i2) {
   if (!a(t2) || !t2.hasOwnProperty("raw")) throw Error("invalid template strings array");
@@ -13306,11 +13295,10 @@ class N {
   }
 }
 function S(t2, i2, s2 = t2, e2) {
-  var _a, _b;
   if (i2 === T) return i2;
-  let h2 = void 0 !== e2 ? (_a = s2._$Co) == null ? void 0 : _a[e2] : s2._$Cl;
+  let h2 = void 0 !== e2 ? s2._$Co?.[e2] : s2._$Cl;
   const o2 = c(i2) ? void 0 : i2._$litDirective$;
-  return (h2 == null ? void 0 : h2.constructor) !== o2 && ((_b = h2 == null ? void 0 : h2._$AO) == null ? void 0 : _b.call(h2, false), void 0 === o2 ? h2 = void 0 : (h2 = new o2(t2), h2._$AT(t2, s2, e2)), void 0 !== e2 ? (s2._$Co ?? (s2._$Co = []))[e2] = h2 : s2._$Cl = h2), void 0 !== h2 && (i2 = S(t2, h2._$AS(t2, i2.values), h2, e2)), i2;
+  return h2?.constructor !== o2 && (h2?._$AO?.(false), void 0 === o2 ? h2 = void 0 : (h2 = new o2(t2), h2._$AT(t2, s2, e2)), void 0 !== e2 ? (s2._$Co ??= [])[e2] = h2 : s2._$Cl = h2), void 0 !== h2 && (i2 = S(t2, h2._$AS(t2, i2.values), h2, e2)), i2;
 }
 class M {
   constructor(t2, i2) {
@@ -13323,7 +13311,7 @@ class M {
     return this._$AM._$AU;
   }
   u(t2) {
-    const { el: { content: i2 }, parts: s2 } = this._$AD, e2 = ((t2 == null ? void 0 : t2.creationScope) ?? r).importNode(i2, true);
+    const { el: { content: i2 }, parts: s2 } = this._$AD, e2 = (t2?.creationScope ?? r).importNode(i2, true);
     C.currentNode = e2;
     let h2 = C.nextNode(), o2 = 0, n2 = 0, l2 = s2[0];
     for (; void 0 !== l2; ) {
@@ -13331,7 +13319,7 @@ class M {
         let i3;
         2 === l2.type ? i3 = new R(h2, h2.nextSibling, this, t2) : 1 === l2.type ? i3 = new l2.ctor(h2, l2.name, l2.strings, this, t2) : 6 === l2.type && (i3 = new z(h2, this, t2)), this._$AV.push(i3), l2 = s2[++n2];
       }
-      o2 !== (l2 == null ? void 0 : l2.index) && (h2 = C.nextNode(), o2++);
+      o2 !== l2?.index && (h2 = C.nextNode(), o2++);
     }
     return C.currentNode = r, e2;
   }
@@ -13342,16 +13330,15 @@ class M {
 }
 class R {
   get _$AU() {
-    var _a;
-    return ((_a = this._$AM) == null ? void 0 : _a._$AU) ?? this._$Cv;
+    return this._$AM?._$AU ?? this._$Cv;
   }
   constructor(t2, i2, s2, e2) {
-    this.type = 2, this._$AH = E, this._$AN = void 0, this._$AA = t2, this._$AB = i2, this._$AM = s2, this.options = e2, this._$Cv = (e2 == null ? void 0 : e2.isConnected) ?? true;
+    this.type = 2, this._$AH = E, this._$AN = void 0, this._$AA = t2, this._$AB = i2, this._$AM = s2, this.options = e2, this._$Cv = e2?.isConnected ?? true;
   }
   get parentNode() {
     let t2 = this._$AA.parentNode;
     const i2 = this._$AM;
-    return void 0 !== i2 && 11 === (t2 == null ? void 0 : t2.nodeType) && (t2 = i2.parentNode), t2;
+    return void 0 !== i2 && 11 === t2?.nodeType && (t2 = i2.parentNode), t2;
   }
   get startNode() {
     return this._$AA;
@@ -13372,9 +13359,8 @@ class R {
     this._$AH !== E && c(this._$AH) ? this._$AA.nextSibling.data = t2 : this.T(r.createTextNode(t2)), this._$AH = t2;
   }
   $(t2) {
-    var _a;
     const { values: i2, _$litType$: s2 } = t2, e2 = "number" == typeof s2 ? this._$AC(t2) : (void 0 === s2.el && (s2.el = N.createElement(P(s2.h, s2.h[0]), this.options)), s2);
-    if (((_a = this._$AH) == null ? void 0 : _a._$AD) === e2) this._$AH.p(i2);
+    if (this._$AH?._$AD === e2) this._$AH.p(i2);
     else {
       const t3 = new M(e2, this), s3 = t3.u(this.options);
       t3.p(i2), this.T(s3), this._$AH = t3;
@@ -13392,15 +13378,13 @@ class R {
     e2 < i2.length && (this._$AR(s2 && s2._$AB.nextSibling, e2), i2.length = e2);
   }
   _$AR(t2 = this._$AA.nextSibling, i2) {
-    var _a;
-    for ((_a = this._$AP) == null ? void 0 : _a.call(this, false, true, i2); t2 && t2 !== this._$AB; ) {
+    for (this._$AP?.(false, true, i2); t2 !== this._$AB; ) {
       const i3 = t2.nextSibling;
       t2.remove(), t2 = i3;
     }
   }
   setConnected(t2) {
-    var _a;
-    void 0 === this._$AM && (this._$Cv = t2, (_a = this._$AP) == null ? void 0 : _a.call(this, t2));
+    void 0 === this._$AM && (this._$Cv = t2, this._$AP?.(t2));
   }
 }
 class k {
@@ -13420,7 +13404,7 @@ class k {
     else {
       const e3 = t2;
       let n2, r2;
-      for (t2 = h2[0], n2 = 0; n2 < h2.length - 1; n2++) r2 = S(this, e3[s2 + n2], i2, n2), r2 === T && (r2 = this._$AH[n2]), o2 || (o2 = !c(r2) || r2 !== this._$AH[n2]), r2 === E ? t2 = E : t2 !== E && (t2 += (r2 ?? "") + h2[n2 + 1]), this._$AH[n2] = r2;
+      for (t2 = h2[0], n2 = 0; n2 < h2.length - 1; n2++) r2 = S(this, e3[s2 + n2], i2, n2), r2 === T && (r2 = this._$AH[n2]), o2 ||= !c(r2) || r2 !== this._$AH[n2], r2 === E ? t2 = E : t2 !== E && (t2 += (r2 ?? "") + h2[n2 + 1]), this._$AH[n2] = r2;
     }
     o2 && !e2 && this.j(t2);
   }
@@ -13454,8 +13438,7 @@ class L extends k {
     e2 && this.element.removeEventListener(this.name, this, s2), h2 && this.element.addEventListener(this.name, this, t2), this._$AH = t2;
   }
   handleEvent(t2) {
-    var _a;
-    "function" == typeof this._$AH ? this._$AH.call(((_a = this.options) == null ? void 0 : _a.host) ?? this.element, t2) : this._$AH.handleEvent(t2);
+    "function" == typeof this._$AH ? this._$AH.call(this.options?.host ?? this.element, t2) : this._$AH.handleEvent(t2);
   }
 }
 class z {
@@ -13470,7 +13453,7 @@ class z {
   }
 }
 const j = t.litHtmlPolyfillSupport;
-j == null ? void 0 : j(N, R), (t.litHtmlVersions ?? (t.litHtmlVersions = [])).push("3.3.0");
+j?.(N, R), (t.litHtmlVersions ??= []).push("3.3.1");
 const B = (t2, i2, s2) => {
   const e2 = i2;
   let h2 = e2._$litPart$;
@@ -13511,6 +13494,7 @@ var TauriEvent;
   TauriEvent2["DRAG_LEAVE"] = "tauri://drag-leave";
 })(TauriEvent || (TauriEvent = {}));
 async function _unlisten(event, eventId) {
+  window.__TAURI_EVENT_PLUGIN_INTERNALS__.unregisterListener(event, eventId);
   await invoke("plugin:event|unlisten", {
     event,
     eventId
@@ -13615,6 +13599,10 @@ function replaceElementByIdWithNewEmptyDiv(id) {
   return new_element;
 }
 class MergeState {
+  merge_views;
+  dom_ids;
+  initial_values;
+  parent_window;
   /// `parent_window` is an Element that should contain the element that
   /// MergeState will operate in. It will have a CSS class set when the editor
   /// transitions to the pinned mode or single-editor mode.
@@ -13623,10 +13611,6 @@ class MergeState {
   // private to the MergeState, and have the caller supply a call-back so that
   // it can react to the setting of pinned or single-editor state.
   constructor(parent_window) {
-    __publicField(this, "merge_views");
-    __publicField(this, "dom_ids");
-    __publicField(this, "initial_values");
-    __publicField(this, "parent_window");
     this.merge_views = {};
     this.dom_ids = {};
     this.initial_values = {};
@@ -14047,4 +14031,4 @@ window.addEventListener("DOMContentLoaded", async () => {
     });
   }
 });
-//# sourceMappingURL=index-BNp7E963.js.map
+//# sourceMappingURL=index-BkczicFQ.js.map
