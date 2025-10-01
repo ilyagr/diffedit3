@@ -26,32 +26,32 @@ include = ["/src", "/webapp/dist", "/*.md"]
 pkg-url = "{ repo }/releases/download/v{ version }/diffedit3-v{ version }-{ target }.{ archive-format }"
 
 [dependencies]
-clap = { version = "4.5.39", features = ["derive"] }
-indexmap = { version = "2.5.0", features = ["serde"] }
+clap = { version = "4.5.48", features = ["derive"] }
+indexmap = { version = "2.11.4", features = ["serde"] }
 open = "5.3.0"
-parking_lot = "0.12.2"
-poem = { version = "3.1.0", features = ["embed"] }
+parking_lot = "0.12.4"
+poem = { version = "3.1.12", features = ["embed"] }
 rust-embed = { version = "8.5.0" , features = ["include-exclude"] }
 serde = { version = "1.0.210", features = ["serde_derive"] }
-thiserror = "2.0.9"
-tokio = { version = "1.38.0", features = [
+thiserror = "2.0.17"
+tokio = { version = "1.47.1", features = [
     "macros",
     "rt-multi-thread",
     "signal",
 ] }
 toml = { version = "0.8.15", features = ["indexmap"] }
-tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
+tracing-subscriber = { version = "0.3.20", features = ["env-filter"] }
 walkdir = "2.4.0"
 
 [dev-dependencies]
 assert_matches = "1.5.0"
 indoc = "2.0.4"
-insta = { version = "1.40.0", features = [
+insta = { version = "1.43.2", features = [
     "redactions",
     "serde",
     "yaml",
     "json",
 ] }
 itertools = "0.14"
-tempfile = "3.11.0"
+tempfile = "3.23.0"
 txtar = "1.0.0"
