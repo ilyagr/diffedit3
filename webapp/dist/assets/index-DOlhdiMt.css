@@ -224,6 +224,11 @@ details[open] > summary > .if-details-closed {
   height: 100%;
 }
 
+.pinned-mode details.merge-view {
+  height: 100%;
+  position: relative;
+}
+
 .pinned-mode details.merge-view > summary {
   /* TODO: Stop using `<details>` and get rid of this spacing hack.
    * It should be 2px, not 0.3em without the space for the scroll bar.
@@ -242,7 +247,11 @@ details[open] > summary > .if-details-closed {
 }
 
 .pinned-mode details.merge-view > div {
-  height: calc(100% - (3.2em + 0.3em));
+  position: absolute;
+  top: calc(3.2em + 0.3em);
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
 .pinned-mode .merge-view .CodeMirror-merge,
