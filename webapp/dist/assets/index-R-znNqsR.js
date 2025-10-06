@@ -13639,18 +13639,18 @@ class MergeState {
       const error = to_error(merge_input[k2]);
       if (error != null) {
         templates.push(x`
-          <details id="details_${k_uid(k2)}" class="merge-view">
-            <summary>
-              <code>${k2}</code><span class="if-details-closed">: ${error}</span>
-            </summary>
-            ${error}
-          </details>
+          <div id="details_${k_uid(k2)}" class="merge-view collapsed">
+            <div class="merge-view-header">
+              <code>${k2}</code><span class="if-collapsed">: ${error}</span>
+            </div>
+            <div class="merge-view-content">${error}</div>
+          </div>
         `);
       } else {
         templates.push(x`
-          <details open id="details_${k_uid(k2)}" class="merge-view">
-            <!-- We will close this details element with javascript shortly. See below. -->
-            <summary>
+          <div id="details_${k_uid(k2)}" class="merge-view expanded">
+            <!-- We will collapse this element with javascript shortly. See below. -->
+            <div class="merge-view-header">
               <span id="pin_${k_uid(k2)}" class="pin-span">
                 <!-- TODO: This could be a toggleable checkbox as in
                   ---- https://developer.mozilla.org/en-US/docs/Web/CSS/:checked#toggling_elements_with_a_hidden_checkbox
@@ -13673,7 +13673,7 @@ class MergeState {
                 />
               </span>
               <code>${k2}</code>
-              <span class="if-details-open">
+              <span class="if-expanded">
                 <button
                   id="prevChange_${k_uid(k2)}"
                   alt="Previous Change (Ctrl-↑, Super-↑)"
@@ -13730,9 +13730,9 @@ class MergeState {
                   (Un)Align
                 </button>
               </span>
-            </summary>
-            <div id="cm_${k_uid(k2)}"></div>
-          </details>
+            </div>
+            <div class="merge-view-content" id="cm_${k_uid(k2)}"></div>
+          </div>
         `);
       }
     }
@@ -13775,7 +13775,8 @@ class MergeState {
       `nextChange_${unique_id}`
     );
     const pinButtonEl = document.getElementById(`pin_${unique_id}`);
-    const detailsButtonEl = document.getElementById(`details_${unique_id}`);
+    const detailsEl = document.getElementById(`details_${unique_id}`);
+    const headerEl = detailsEl.querySelector(".merge-view-header");
     const cmEl = document.getElementById(`cm_${unique_id}`);
     let rightSide = void 0;
     if (merge_state.showRightSide) {
@@ -13820,18 +13821,35 @@ class MergeState {
         return false;
       }
     };
-    detailsButtonEl.open = false;
-    detailsButtonEl.ontoggle = () => {
+    const isExpanded = () => detailsEl.classList.contains("expanded");
+    const toggleCollapsed = () => {
       if (this.singleEditor()) {
-        detailsButtonEl.open = true;
-      } else if (!detailsButtonEl.open) {
-        if (this.parent_window.classList.contains("pinned-mode")) {
-          this.toggle_pinning(unique_id);
-        }
+        detailsEl.classList.remove("collapsed");
+        detailsEl.classList.add("expanded");
       } else {
-        merge_view.editor().refresh();
+        const wasExpanded = isExpanded();
+        if (wasExpanded) {
+          detailsEl.classList.remove("expanded");
+          detailsEl.classList.add("collapsed");
+          if (this.parent_window.classList.contains("pinned-mode")) {
+            this.toggle_pinning(unique_id);
+          }
+        } else {
+          detailsEl.classList.remove("collapsed");
+          detailsEl.classList.add("expanded");
+          merge_view.editor().refresh();
+        }
       }
     };
+    headerEl.onclick = () => {
+      toggleCollapsed();
+    };
+    setTimeout(() => {
+      if (!this.singleEditor()) {
+        detailsEl.classList.remove("expanded");
+        detailsEl.classList.add("collapsed");
+      }
+    }, 0);
     this.merge_views[filename] = merge_view;
     this.dom_ids[filename] = unique_id;
     this.initial_values[filename] = input;
@@ -13875,8 +13893,9 @@ class MergeState {
       filename,
       flip(current_state, option)
     );
-    const detailsButtonEl = document.getElementById(`details_${dom_id}`);
-    detailsButtonEl.open = true;
+    const detailsEl = document.getElementById(`details_${dom_id}`);
+    detailsEl.classList.remove("collapsed");
+    detailsEl.classList.add("expanded");
   }
   toggle_pinning(unique_id) {
     this.parent_window.classList.toggle("pinned-mode");
@@ -13887,7 +13906,8 @@ class MergeState {
         merge_view.classList.toggle("pinned-mode-selected");
         merge_view.classList.add("pinned-mode-was-last-toggled");
         if (merge_view.classList.contains("pinned-mode-selected")) {
-          merge_view.open = true;
+          merge_view.classList.remove("collapsed");
+          merge_view.classList.add("expanded");
         }
       } else {
         merge_view.classList.remove("pinned-mode-selected");
@@ -14031,4 +14051,4 @@ window.addEventListener("DOMContentLoaded", async () => {
     });
   }
 });
-//# sourceMappingURL=index-MPhP5O05.js.map
+//# sourceMappingURL=index-R-znNqsR.js.map

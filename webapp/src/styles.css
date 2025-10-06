@@ -111,27 +111,34 @@ button[disabled]:active {
   background-color: inherit;
 }
 
-details > summary {
+.merge-view-header {
   line-height: 3.2em;
   vertical-align: middle;
   justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-details:not([open]) > summary {
+.merge-view.collapsed .merge-view-header {
   height: 3.2em;
   overflow: hidden;
   white-space: nowrap;
 }
 
-details:not([open]) > summary > .if-details-open {
+.merge-view.collapsed .merge-view-content {
   display: none;
 }
 
-details[open] > summary > .if-details-open {
+.merge-view.collapsed > .merge-view-header > .if-expanded {
+  display: none;
+}
+
+.merge-view.expanded > .merge-view-header > .if-expanded {
   white-space: nowrap;
 }
 
-details[open] > summary > .if-details-closed {
+.merge-view.expanded > .merge-view-header > .if-collapsed {
   display: none;
 }
 
@@ -153,7 +160,6 @@ details[open] > summary > .if-details-closed {
 }
 
 .pin-span {
-  /* TODO: Stop using `<details>` and get rid of this spacing hack */
   position: relative;
   top: 0.2em;
   left: -0.6em;
@@ -163,16 +169,11 @@ details[open] > summary > .if-details-closed {
 .single-editor .pin-span {
   display: none;
 }
-.single-editor details > summary {
-  /* Spacing hack to hide the details button */
-  position: relative;
-  left: -1em;
-}
 
 @supports (not (-moz-appearance: button)) and (contain: paint) and
   (-webkit-appearance: none) {
   /* Is meant to filter out Chrome. https://stackoverflow.com/a/73264364/563359
-   * It has different spaceing after the details toggle.
+   * It has different spacing behavior.
    * Not the end of the world if it doesn't work perfectly.
    *
    * Seems to affect Safari as well, unfortunately.
@@ -224,15 +225,12 @@ details[open] > summary > .if-details-closed {
   height: 100%;
 }
 
-.pinned-mode details.merge-view {
+.pinned-mode .merge-view {
   height: 100%;
   position: relative;
 }
 
-.pinned-mode details.merge-view > summary {
-  /* TODO: Stop using `<details>` and get rid of this spacing hack.
-   * It should be 2px, not 0.3em without the space for the scroll bar.
-   */
+.pinned-mode .merge-view > .merge-view-header {
   height: calc(
     3.2em + 0.3em
   ); /* Should match the height of the div. Approximately what it would be anyway + scroll bar space*/
@@ -240,13 +238,13 @@ details[open] > summary > .if-details-closed {
   overflow: hidden;
 }
 
-.pinned-mode details.merge-view > summary:hover,
-.pinned-mode details.merge-view > summary:active,
-.pinned-mode details.merge-view > summary:focus {
+.pinned-mode .merge-view > .merge-view-header:hover,
+.pinned-mode .merge-view > .merge-view-header:active,
+.pinned-mode .merge-view > .merge-view-header:focus {
   overflow-x: auto; /* Show a scroll bar if necessary */
 }
 
-.pinned-mode details.merge-view > div {
+.pinned-mode .merge-view > .merge-view-content {
   position: absolute;
   top: calc(3.2em + 0.3em);
   bottom: 0;
