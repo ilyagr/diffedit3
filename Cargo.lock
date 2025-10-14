@@ -672,7 +672,7 @@ dependencies = [
 
 [[package]]
 name = "diffedit3"
-version = "0.6.0"
+version = "0.6.1"
 dependencies = [
  "assert_matches",
  "clap",
@@ -696,7 +696,7 @@ dependencies = [
 
 [[package]]
 name = "diffedit3-gui"
-version = "0.6.0"
+version = "0.6.1"
 dependencies = [
  "clap",
  "diffedit3",

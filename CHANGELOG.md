@@ -13,12 +13,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed bugs
 
+## [v0.6.1] - 2025-10-14
+
+### Fixed bugs
+
 * Scrollbars no longer disappear in pinned mode in newer web browsers.
 
 * Non-error user info messages are now printed to `stdout`. This makes
 some versions of `jjui` happier.
 
-## [0.6.0] - 2025-05-27
+## [v0.6.0] - 2025-05-27
 
 No new features, just dependency updates.
 
