@@ -7,6 +7,8 @@ use tracing_subscriber::util::SubscriberInitExt as _;
 type PortRange = std::ops::RangeInclusive<usize>;
 
 /// Compare three directories in a browser and allow editing one of them
+///
+/// See https://github.com/ilyagr/diffedit3 for more info.
 #[derive(Parser)]
 #[command(version, about)]
 pub struct LocalServerCli {
